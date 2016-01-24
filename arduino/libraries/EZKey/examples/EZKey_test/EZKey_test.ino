@@ -13,7 +13,7 @@ void setup(){
   pinMode(5, INPUT_PULLUP);
 }
 bool keys[4];
-uint8_t key_map[4] = {0, KEY_B, KEY_C, KEY_D};
+uint8_t key_map[4] = {KEY_KEYPAD_1, KEY_KEYPAD_2, KEY_KEYPAD_3, KEY_KEYPAD_4};
 bool last_keys[4];
 
 void getKeys(){
@@ -30,18 +30,14 @@ void getKeys(){
       last_keys[i] = keys[i];
     }
   }
-  if(keys[0]){
-    modifier = MODIFIER_SHIFT_LEFT;
-  }
-  else{
-    modifier = MODIFIER_NONE;
-  }
+  
+  modifier = MODIFIER_NONE;
+  
   if(stale){
     keyCommand(modifier, 
 	       key_codes[0], key_codes[1], 
 	       key_codes[2], key_codes[3], 
 	       0, 0);
-    SerialUSB.println("Key Change");
   }
 }
 

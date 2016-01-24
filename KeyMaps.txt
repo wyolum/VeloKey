@@ -1,1 +1,70 @@
-Velo
+VeloKey KeyMaps
+
+VeloKey has 
+	11 Keys (0-10): Two sets of 5 arrow keys and a 2-key-wide space bar.
+	Rotary Switch: for selecting key maps
+	3 position switch: for selecting rotary functions
+
+Rotary Modes:
+       1: Alphabet mode.  Turn rotary selector to letter of alphabet
+       2: Layout Selection Mode.  Turn rotary to select keyboard layout.
+       3: Lock
+
+KeyMaps:
+	KeyMaps will be used to change the keyboard layout.
+        KeyMaps will be user definable.
+	KeyMaps will be uploaded via BlueTooth or USB.
+
+KeyBoard Layout
+
+Orientation 1:
+     ---------------
+     |  Display    |
+     |             |
+   0 --------------- 5
+ 1 2 3      R      6 7 8
+   4                 9                
+           10
+
+
+Orientation 2:
+
+           10
+   4                 9                
+ 1 2 3      R      6 7 8
+   0 --------------- 5
+     |  Display    |
+     |             |
+     ---------------
+
+
+Each KeyMap defines the function of each of the 11 keys including:
+Key# (0-10), KeyCode, Two-Char, Bitmap
+
+Example Camera Veiws
+Key#,          KeyCode, Two-Char, Bitmap, Description
+  00,            KEY_1,       C1,   NONE, Side View
+  01,            KEY_1,       C1,   NONE, RearView
+  02,            KEY_3,       FP,   NONE, Panorama
+  03,            KEY_1,       C1,   NONE, Standard view
+  04,            KEY_4,       04,   NONE,
+  05,            KEY_5,       05,   NONE,
+  06,            KEY_6,       06,   NONE,
+  07,            KEY_7,       07,   NONE,
+  08,            KEY_8,       08,   NONE,
+  09,            KEY_9,       09,   NONE,
+  10, KEY_KEYPAD_ENTER,       <-,   NONE,
+
+Example Function Keys
+Key#,        KeyCode,   Two-Char, Bitmap
+  00,          KEY_F10,       FA,   NONE,
+  01,           KEY_F1,       F1,   NONE,
+  02,           KEY_F2,       F2,   NONE,
+  03,           KEY_F3,       F3,   NONE,
+  04,           KEY_F4,       F4,   NONE,
+  05,           KEY_F5,       F5,   NONE,
+  06,           KEY_F6,       F6,   NONE,
+  07,           KEY_F7,       F7,   NONE,
+  08,           KEY_F8,       F8,   NONE,
+  09,           KEY_F9,       F9,   NONE,
+  10, KEY_CONTROL_LEFT,       Ct,   NONE,
