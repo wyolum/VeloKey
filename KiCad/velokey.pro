@@ -1,4 +1,4 @@
-update=Mon Jan 25 21:43:17 2016
+update=Tue Jan 26 01:12:04 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,24 +23,6 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[eeschema]
-version=1
-LibDir=
-[eeschema/libraries]
-LibName1=velokey
-LibName2=power
-LibName3=device
-LibName4=transistors
-LibName5=conn
-LibName6=linear
-LibName7=regul
-LibName8=microcontrollers
-LibName9=microchip
-LibName10=interface
-LibName11=display
-LibName12=opto
-LibName13=atmel
-LibName14=contrib
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -51,5 +33,12 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=40
+[eeschema]
+version=1
+LibDir=
+[eeschema/libraries]
+LibName1=velokey
+LibName2=power
+LibName3=PiPower_sch
 [general]
 version=1
