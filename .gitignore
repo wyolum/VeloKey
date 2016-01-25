@@ -14,13 +14,13 @@
 *.dll
 
 # Fortran module files
-*.mod
+# *.mod
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-*.lib
+# *.lib
 
 # Executables
 *.exe
