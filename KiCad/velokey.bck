@@ -1,3 +1,9 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP MMBF170
+D 60V Vds 0.5A Id, N-Channel MOSFET, SOT-23
+K N-Channel MOSFET
+F http://www.fairchildsemi.com/ds/BS/BS170.pdf
+$ENDCMP
+#
 #End Doc Library

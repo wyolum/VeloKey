@@ -1,4 +1,4 @@
-update=Mon Jan 25 00:17:15 2016
+update=Mon Jan 25 21:43:17 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -41,5 +41,15 @@ LibName11=display
 LibName12=opto
 LibName13=atmel
 LibName14=contrib
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=pdf/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=40
 [general]
 version=1
