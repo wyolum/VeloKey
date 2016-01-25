@@ -24,7 +24,6 @@ as well as Adafruit raw 1.8" TFT display
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
-#include <Wire.h>
 
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
@@ -47,7 +46,6 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RS
 void setup(void) {
   Serial.begin(9600);
   // Serial1.begin(115200);
-  Wire.begin();
   Serial.print("Hello! Adafruit ST7735 rotation test");
 
   // Use this initializer if you're using a 1.8" TFT
@@ -62,6 +60,7 @@ void setup(void) {
 
   Serial.println("This is a test of the rotation capabilities of the TFT library!");
   Serial.println("Press <SEND> (or type a character) to advance");
+  rotateDrawrect();
 }
 
 union{
