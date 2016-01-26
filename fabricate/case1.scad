@@ -1,4 +1,4 @@
-intersection()
+color([.5, .4, .5])intersection()
 {
 
 rotate(v=[1, 0, 0], a=90)linear_extrude(height = 400, center = true, convexity = 10)

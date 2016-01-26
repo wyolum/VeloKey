@@ -1,4 +1,4 @@
-update=Tue Jan 26 01:12:04 2016
+update=Tue Jan 26 16:39:28 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -39,6 +39,5 @@ LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
-LibName3=PiPower_sch
 [general]
 version=1
