@@ -73,15 +73,15 @@ void keyCommand(SoftwareSerial Serial1,
 		uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
 		uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
 		uint8_t keycode6) {
-  Serial1.write(0xFD);       // our command
-  Serial1.write(modifiers);  // modifier!
-  Serial1.write((byte)0x00); // 0x00  
-  Serial1.write(keycode1);   // key code #1
-  Serial1.write(keycode2); // key code #2
-  Serial1.write(keycode3); // key code #3
-  Serial1.write(keycode4); // key code #4
-  Serial1.write(keycode5); // key code #5
-  Serial1.write(keycode6); // key code #6
+  Serial.write(0xFD);       // our command
+  Serial.write(modifiers);  // modifier!
+  Serial.write((byte)0x00); // 0x00  
+  Serial.write(keycode1);   // key code #1
+  Serial.write(keycode2); // key code #2
+  Serial.write(keycode3); // key code #3
+  Serial.write(keycode4); // key code #4
+  Serial.write(keycode5); // key code #5
+  Serial.write(keycode6); // key code #6
 }
 
 
@@ -101,23 +101,24 @@ void mouseCommand(SoftwareSerial Serial1,
 }
 
 void setup(void) {
+  pinMode(2, HIGH);
+  pinMode(3, LOW);
   Serial.begin(9600);
-  Serial.print("Hello! Adafruit ST7735 rotation test");
-
   ncodr.begin(28800);
+  ncodr.write('a'); // zero out encoder a
+  delay(1);
+  ncodr.write('b'); // zero out encoder b
+  delay(1);
+  // ezkey.begin(9600);
   // Use this initializer if you're using a 1.8" TFT
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
 
   // Use this initializer (uncomment) if you're using a 1.44" TFT
   //tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
 
-  Serial.println("init");
-
   tft.setTextWrap(false); // Allow text to run off right edge
   tft.fillScreen(ST7735_BLACK);
 
-  Serial.println("This is a test of the rotation capabilities of the TFT library!");
-  Serial.println("Press <SEND> (or type a character) to advance");
 }
 
 void loop(void) {
@@ -155,11 +156,17 @@ void rotateText() {
  readEncoder();
  int position = enca_u.value / 4;
  int last_position = -999;
+ unsigned long long last_enca_press = 0;
  while(1){
    readEncoder();
    if(enca_u.bytes[2]){
      //send a key_command
-     keyCommand(ezkey, MODIFIER_NONE, KEY_F1, 0, 0, 0, 0, 0); // test keycode
+     if(millis() - last_enca_press > 1000){
+       last_enca_press = millis();
+       // Serial.println("F1"); delay(100);
+       keyCommand(ezkey, MODIFIER_NONE, KEY_F1, 0, 0, 0, 0, 0); // test keycode
+       keyCommand(ezkey, MODIFIER_NONE, 0, 0, 0, 0, 0, 0); // test keycode
+     }
    }
    position = enca_u.value / 4;
    if(position < 0)position = 8 - (-position % 8);
@@ -175,18 +182,11 @@ void rotateText() {
      tft.setCursor(0, position * fontsize);
      tft.setTextColor(ST7735_WHITE);
      tft.println(Camera_Views[position]);
-     Serial.print(last_position);
-     Serial.print(" ");
-     Serial.print(position);
-     Serial.print(" ");
-     Serial.println(enca_u.value);
    }
    last_position = position;
    delay(10);
  }
 
- while (!Serial.available());
- Serial.read();  Serial.read();  Serial.read();
 }
 
 bool readEncoder(){
