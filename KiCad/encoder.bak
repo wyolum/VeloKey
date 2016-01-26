@@ -1,8 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:velokey
 LIBS:power
-LIBS:PiPower_sch
-LIBS:arthurc
 LIBS:velokey-cache
 EELAYER 25 0
 EELAYER END
@@ -73,9 +71,9 @@ Wire Wire Line
 Connection ~ 5100 7300
 Connection ~ 1600 6900
 Wire Wire Line
-	3400 3350 5750 3350
+	6050 3350 3400 3350
 Wire Wire Line
-	3400 3550 5550 3550
+	3400 3550 5750 3550
 Connection ~ 1075 800 
 Wire Wire Line
 	1075 1350 1075 800 
@@ -121,7 +119,7 @@ Wire Wire Line
 Wire Wire Line
 	4250 800  4250 1350
 Wire Wire Line
-	3400 3450 5950 3450
+	6250 3450 3400 3450
 Wire Wire Line
 	3400 3250 3975 3250
 Wire Wire Line
@@ -139,11 +137,11 @@ Wire Wire Line
 Wire Wire Line
 	3400 4050 3625 4050
 Wire Wire Line
-	3400 3850 6625 3850
+	3400 3850 7425 3850
 Wire Wire Line
-	3400 3750 7025 3750
+	7925 3750 3400 3750
 Wire Wire Line
-	3400 3650 6825 3650
+	7725 3650 3400 3650
 Wire Wire Line
 	3400 2850 4450 2850
 Wire Wire Line
@@ -168,7 +166,7 @@ Wire Wire Line
 Wire Wire Line
 	2775 6900 2875 6900
 Wire Wire Line
-	975  800  4250 800 
+	975  800  8075 800 
 Wire Wire Line
 	4400 7300 5300 7300
 Wire Wire Line
@@ -601,60 +599,60 @@ VBUS
 $Comp
 L ROT E1
 U 1 1 56A8236D
-P 5850 2175
-F 0 "E1" H 5700 2525 40  0000 L CNB
-F 1 "ROT" H 5900 2525 40  0000 L CNN
-F 2 "" H 5850 2175 40  0000 C CNN
-F 3 "" H 5850 2175 40  0000 C CNN
-F 4 "mfr_pn" H 5850 2175 40  0001 C CNN "manf#"
-	1    5850 2175
+P 6150 1875
+F 0 "E1" H 6000 2225 40  0000 L CNB
+F 1 "ROT" H 6200 2225 40  0000 L CNN
+F 2 "" H 6150 1875 40  0000 C CNN
+F 3 "" H 6150 1875 40  0000 C CNN
+F 4 "mfr_pn" H 6150 1875 40  0001 C CNN "manf#"
+	1    6150 1875
 	1    0    0    -1  
 $EndComp
 $Comp
 L ROT E2
 U 1 1 56A824EE
-P 6925 2175
-F 0 "E2" H 6775 2525 40  0000 L CNB
-F 1 "ROT" H 6975 2525 40  0000 L CNN
-F 2 "" H 6925 2175 40  0000 C CNN
-F 3 "" H 6925 2175 40  0000 C CNN
-F 4 "mfr_pn" H 6925 2175 40  0001 C CNN "manf#"
-	1    6925 2175
+P 7825 1875
+F 0 "E2" H 7675 2225 40  0000 L CNB
+F 1 "ROT" H 7875 2225 40  0000 L CNN
+F 2 "" H 7825 1875 40  0000 C CNN
+F 3 "" H 7825 1875 40  0000 C CNN
+F 4 "mfr_pn" H 7825 1875 40  0001 C CNN "manf#"
+	1    7825 1875
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6100 2025 6225 2025
+	6400 1725 6550 1725
 Wire Wire Line
-	6225 2025 6225 2675
+	6550 1725 6550 2675
 Wire Wire Line
-	5850 2675 7300 2675
+	5900 2675 8225 2675
 Wire Wire Line
-	5850 2675 5850 2425
+	6150 2675 6150 2125
 Wire Wire Line
-	7175 2025 7300 2025
+	8075 1725 8225 1725
 Wire Wire Line
-	7300 2025 7300 2675
+	8225 1725 8225 2675
 Wire Wire Line
-	6925 2675 6925 2425
-Connection ~ 6225 2675
-Connection ~ 6925 2675
+	7825 2675 7825 2125
+Connection ~ 6550 2675
+Connection ~ 7825 2675
 Wire Wire Line
-	5750 3350 5750 2425
+	6050 2125 6050 3350
 Wire Wire Line
-	5950 3450 5950 2425
+	6250 2125 6250 3450
 Wire Wire Line
-	5550 3550 5550 2025
+	5750 3550 5750 1725
 Wire Wire Line
-	5550 2025 5600 2025
+	5750 1725 5900 1725
 Wire Wire Line
-	6825 3650 6825 2425
+	7725 2125 7725 3650
 Wire Wire Line
-	7025 3750 7025 2425
+	7925 2125 7925 3750
 Wire Wire Line
-	6675 2025 6625 2025
+	7575 1725 7425 1725
 Wire Wire Line
-	6625 2025 6625 3850
-Text Label 6375 2675 0    40   ~ 8
+	7425 1725 7425 3850
+Text Label 6675 2675 0    40   ~ 8
 GND
 Text Label 3625 3550 0    40   ~ 8
 ENC_D4
@@ -713,4 +711,148 @@ F 3 "" H 4125 4250 50  0000 C CNN
 	1    4125 4250
 	1    0    0    -1  
 $EndComp
+$Comp
+L CP_Small C?
+U 1 1 56A75B87
+P 5900 2550
+F 0 "C?" H 5975 2550 40  0000 L CNB
+F 1 "1uF" H 5925 2475 40  0000 L CNN
+F 2 "ArthurC Lib:C_ELCO_SMD" H 5900 2550 60  0001 C CNN
+F 3 "" H 5900 2550 60  0000 C CNN
+F 4 "mfr_pn" H 5900 2550 60  0001 C CNN "manf#"
+	1    5900 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP_Small C?
+U 1 1 56A7615B
+P 6400 2550
+F 0 "C?" H 6475 2550 40  0000 L CNB
+F 1 "1uF" H 6425 2475 40  0000 L CNN
+F 2 "ArthurC Lib:C_ELCO_SMD" H 6400 2550 60  0001 C CNN
+F 3 "" H 6400 2550 60  0000 C CNN
+F 4 "mfr_pn" H 6400 2550 60  0001 C CNN "manf#"
+	1    6400 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP_Small C?
+U 1 1 56A7636B
+P 7575 2550
+F 0 "C?" H 7650 2550 40  0000 L CNB
+F 1 "1uF" H 7600 2475 40  0000 L CNN
+F 2 "ArthurC Lib:C_ELCO_SMD" H 7575 2550 60  0001 C CNN
+F 3 "" H 7575 2550 60  0000 C CNN
+F 4 "mfr_pn" H 7575 2550 60  0001 C CNN "manf#"
+	1    7575 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP_Small C?
+U 1 1 56A76452
+P 8075 2550
+F 0 "C?" H 8150 2550 40  0000 L CNB
+F 1 "1uF" H 8100 2475 40  0000 L CNN
+F 2 "ArthurC Lib:C_ELCO_SMD" H 8075 2550 60  0001 C CNN
+F 3 "" H 8075 2550 60  0000 C CNN
+F 4 "mfr_pn" H 8075 2550 60  0001 C CNN "manf#"
+	1    8075 2550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7575 2350 7575 2450
+Wire Wire Line
+	7575 2400 7725 2400
+Connection ~ 7725 2400
+Wire Wire Line
+	7925 2400 8075 2400
+Wire Wire Line
+	8075 2350 8075 2450
+Connection ~ 7925 2400
+Wire Wire Line
+	8075 2650 8075 2675
+Connection ~ 8075 2675
+Wire Wire Line
+	7575 2650 7575 2675
+Connection ~ 7575 2675
+Wire Wire Line
+	6400 2350 6400 2450
+Wire Wire Line
+	6400 2400 6250 2400
+Connection ~ 6250 2400
+Wire Wire Line
+	5900 2350 5900 2450
+Wire Wire Line
+	5900 2400 6050 2400
+Connection ~ 6050 2400
+Wire Wire Line
+	5900 2650 5900 2675
+Connection ~ 6150 2675
+Wire Wire Line
+	6400 2650 6400 2675
+Connection ~ 6400 2675
+$Comp
+L R_Small R?
+U 1 1 56A76C80
+P 5900 2250
+F 0 "R?" H 5950 2350 40  0000 C CNB
+F 1 "10k" V 5900 2250 40  0000 C CNN
+F 2 "ArthurC Lib:r_0805" H 5900 2250 60  0001 C CNN
+F 3 "" H 5900 2250 60  0001 C CNN
+F 4 "mfr_pn" H 5900 2250 60  0001 C CNN "manf#"
+	1    5900 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L R_Small R?
+U 1 1 56A77454
+P 6400 2250
+F 0 "R?" H 6450 2350 40  0000 C CNB
+F 1 "10k" V 6400 2250 40  0000 C CNN
+F 2 "ArthurC Lib:r_0805" H 6400 2250 60  0001 C CNN
+F 3 "" H 6400 2250 60  0001 C CNN
+F 4 "mfr_pn" H 6400 2250 60  0001 C CNN "manf#"
+	1    6400 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L R_Small R?
+U 1 1 56A774E4
+P 7575 2250
+F 0 "R?" H 7625 2350 40  0000 C CNB
+F 1 "10k" V 7575 2250 40  0000 C CNN
+F 2 "ArthurC Lib:r_0805" H 7575 2250 60  0001 C CNN
+F 3 "" H 7575 2250 60  0001 C CNN
+F 4 "mfr_pn" H 7575 2250 60  0001 C CNN "manf#"
+	1    7575 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L R_Small R?
+U 1 1 56A77700
+P 8075 2250
+F 0 "R?" H 8125 2350 40  0000 C CNB
+F 1 "10k" V 8075 2250 40  0000 C CNN
+F 2 "ArthurC Lib:r_0805" H 8075 2250 60  0001 C CNN
+F 3 "" H 8075 2250 60  0001 C CNN
+F 4 "mfr_pn" H 8075 2250 60  0001 C CNN "manf#"
+	1    8075 2250
+	1    0    0    -1  
+$EndComp
+Connection ~ 8075 2400
+Connection ~ 7575 2400
+Connection ~ 6400 2400
+Connection ~ 5900 2400
+Wire Wire Line
+	8075 800  8075 2150
+Connection ~ 4250 800 
+Wire Wire Line
+	7575 2150 7575 800 
+Connection ~ 7575 800 
+Wire Wire Line
+	6400 2150 6400 800 
+Connection ~ 6400 800 
+Wire Wire Line
+	5900 2150 5900 800 
+Connection ~ 5900 800 
 $EndSCHEMATC

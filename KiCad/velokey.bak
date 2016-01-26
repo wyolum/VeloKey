@@ -1,8 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:velokey
 LIBS:power
-LIBS:PiPower_sch
-LIBS:arthurc
 LIBS:velokey-cache
 EELAYER 25 0
 EELAYER END
@@ -571,58 +569,58 @@ Text Label 6175 5150 0    40   ~ 8
 $Comp
 L Led_Small D4
 U 1 1 56A6A71E
-P 6825 5575
-F 0 "D4" V 6825 5525 40  0000 R CNB
-F 1 "LED_RX" V 6750 5525 40  0000 R CNN
-F 2 "hack-footprints:LED_0603_HandSoldering" V 6825 5575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 6825 5575 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 6825 5575 60  0001 C CNN "manf#"
-	1    6825 5575
+P 6900 5575
+F 0 "D4" V 6900 5525 40  0000 R CNB
+F 1 "LED_RX" V 6825 5525 40  0000 R CNN
+F 2 "hack-footprints:LED_0603_HandSoldering" V 6900 5575 40  0001 C CNB
+F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 6900 5575 40  0001 C CNB
+F 4 "LTST-C190KRKT" V 6900 5575 60  0001 C CNN "manf#"
+	1    6900 5575
 	0    -1   -1   0   
 $EndComp
 $Comp
 L R_Small R9
 U 1 1 56A6A725
-P 6825 5350
-F 0 "R9" H 6875 5350 40  0000 L CNB
-F 1 "330" V 6825 5350 40  0000 C CNN
-F 2 "hack-footprints:R_0603_HandSoldering" H 6825 5350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 6825 5350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 6825 5350 60  0001 C CNN "manf#"
-	1    6825 5350
+P 6900 5350
+F 0 "R9" H 6950 5350 40  0000 L CNB
+F 1 "330" V 6900 5350 40  0000 C CNN
+F 2 "hack-footprints:R_0603_HandSoldering" H 6900 5350 40  0001 C CNB
+F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 6900 5350 40  0001 C CNB
+F 4 "RC0603FR-07330RL" H 6900 5350 60  0001 C CNN "manf#"
+	1    6900 5350
 	1    0    0    -1  
 $EndComp
-Text Label 6825 5150 0    40   ~ 8
+Text Label 6900 5150 0    40   ~ 8
 3V3
 $Comp
 L Led_Small D5
 U 1 1 56A6A918
-P 7225 5575
-F 0 "D5" V 7225 5525 40  0000 R CNB
-F 1 "LED_TX" V 7150 5525 40  0000 R CNN
-F 2 "hack-footprints:LED_0603_HandSoldering" V 7225 5575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 7225 5575 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 7225 5575 60  0001 C CNN "manf#"
-	1    7225 5575
+P 7275 5575
+F 0 "D5" V 7275 5525 40  0000 R CNB
+F 1 "LED_TX" V 7200 5525 40  0000 R CNN
+F 2 "hack-footprints:LED_0603_HandSoldering" V 7275 5575 40  0001 C CNB
+F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 7275 5575 40  0001 C CNB
+F 4 "LTST-C190KRKT" V 7275 5575 60  0001 C CNN "manf#"
+	1    7275 5575
 	0    -1   -1   0   
 $EndComp
 $Comp
 L R_Small R10
 U 1 1 56A6A91F
-P 7225 5350
-F 0 "R10" H 7275 5350 40  0000 L CNB
-F 1 "330" V 7225 5350 40  0000 C CNN
-F 2 "hack-footprints:R_0603_HandSoldering" H 7225 5350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 7225 5350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 7225 5350 60  0001 C CNN "manf#"
-	1    7225 5350
+P 7275 5350
+F 0 "R10" H 7325 5350 40  0000 L CNB
+F 1 "330" V 7275 5350 40  0000 C CNN
+F 2 "hack-footprints:R_0603_HandSoldering" H 7275 5350 40  0001 C CNB
+F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 7275 5350 40  0001 C CNB
+F 4 "RC0603FR-07330RL" H 7275 5350 60  0001 C CNN "manf#"
+	1    7275 5350
 	1    0    0    -1  
 $EndComp
-Text Label 7225 5150 0    40   ~ 8
+Text Label 7275 5150 0    40   ~ 8
 3V3
-Text Label 6825 5975 0    40   ~ 8
+Text Label 6900 5975 0    40   ~ 8
 RX_LED
-Text Label 7225 5975 0    40   ~ 8
+Text Label 7275 5975 0    40   ~ 8
 TX_LED
 $Comp
 L R_Small R11
@@ -817,8 +815,6 @@ GND
 Text Notes 1700 4475 0    40   ~ 0
 32.768kHz
 NoConn ~ 4475 2975
-Text Label 6550 5975 0    40   ~ 8
-D13
 $Comp
 L SPX3819-3V3 U4
 U 1 1 56A6D9C2
@@ -1296,17 +1292,17 @@ Wire Wire Line
 Wire Wire Line
 	6475 5975 6550 5975
 Wire Wire Line
-	6825 5450 6825 5475
+	6900 5450 6900 5475
 Wire Wire Line
-	6825 5250 6825 5150
+	6900 5250 6900 5150
 Wire Wire Line
-	6825 5675 6825 5975
+	6900 5675 6900 5975
 Wire Wire Line
-	7225 5450 7225 5475
+	7275 5450 7275 5475
 Wire Wire Line
-	7225 5250 7225 5150
+	7275 5250 7275 5150
 Wire Wire Line
-	7225 5675 7225 5975
+	7275 5675 7275 5975
 Wire Wire Line
 	6500 6050 6500 5975
 Connection ~ 6500 5975
@@ -1649,4 +1645,6 @@ NoConn ~ 750  6350
 NoConn ~ 750  6650
 Text Label 7475 2875 0    40   ~ 8
 PWM_LCD
+Text Label 6550 5975 0    40   ~ 8
+SCK_LCD
 $EndSCHEMATC
