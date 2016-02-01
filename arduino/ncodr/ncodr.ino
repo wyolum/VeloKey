@@ -1,5 +1,12 @@
 #include <Encoder.h>
 /*
+  2 --> ENCA_a
+  3 --> ENCA_b
+  4 --> ENCA_btn
+  5 --> ENCB_a
+  6 --> ENCB_b
+  7 --> ENBB_btn
+
   encoder interface
   commands:
   "R" -- Read six bytes from two encoders
@@ -15,12 +22,27 @@
   posb -- signed 2 byte int -- encoder b position
   btnb -- byte              -- number of button b clicks since last read
  */
+#ifdef PROTOTYPE
 #define ENCA_a 5
 #define ENCA_b 6
 #define ENCB_a A3
 #define ENCB_b A4
 #define ENCA_btn 2
 #define ENCB_btn 3
+#define LED_1 4
+#define LED_2 7
+#else
+
+#define ENCA_a   5
+#define ENCA_b   6
+#define ENCA_btn 7
+#define ENCB_a   2
+#define ENCB_b   3
+#define ENCB_btn 4
+
+#define LED_1 13
+#define LED_2 13
+#endif
 
 Encoder enca(ENCA_a, ENCA_b);
 Encoder encb(ENCB_a, ENCB_b);
@@ -44,27 +66,26 @@ void setup()
   pinMode(ENCB_btn, INPUT_PULLUP);
 
   // flash leds
-  pinMode(4, OUTPUT);
-  pinMode(7, OUTPUT);
+  pinMode(LED_1, OUTPUT);
+  pinMode(LED_2, OUTPUT);
   for(int ii=0; ii < 3; ii++){
-    digitalWrite(4, HIGH);
-    digitalWrite(7, LOW);
+    digitalWrite(LED_1, HIGH);
+    digitalWrite(LED_2, LOW);
     delay(100);
-    digitalWrite(7, HIGH);
-    digitalWrite(4, LOW);
+    digitalWrite(LED_2, HIGH);
+    digitalWrite(LED_1, LOW);
     delay(100);
   }
-  digitalWrite(7, LOW);
-  digitalWrite(4, LOW);
-  Serial.begin(28800);//Serial.println("Support open hardware and share the future");
+  digitalWrite(LED_2, LOW);
+  digitalWrite(LED_1, LOW);
+  Serial.begin(28800);// Serial.println("Support open hardware and share the future");
 }
-
 bool ba_was_open = true;
 bool bb_was_open = true;
 
 void loop() 
 {
-// buttons stays active till sent
+// buttonsstays active till sent
   bool ba_closed = (digitalRead(ENCA_btn) == LOW);
   bool bb_closed = (digitalRead(ENCB_btn) == LOW);
   if(ba_closed && ba_was_open){
@@ -89,8 +110,8 @@ void loop()
     }
     if(command == 'R'){
       enca_u.value = enca.read();
-      enca_u.bytes[2] = enca_button_count;
       encb_u.value = encb.read();
+      enca_u.bytes[2] = enca_button_count;
       encb_u.bytes[2] = encb_button_count;
       Serial.write(enca_u.bytes[0]);
       Serial.write(enca_u.bytes[1]);
@@ -108,8 +129,7 @@ void loop()
       encb.write(0);
     }
   }
-  digitalWrite(4, enca.read() & 0b1);
-  //digitalWrite(7, enca.read() & 0b10);
-  digitalWrite(7, enca_button_count);
+  digitalWrite(LED_1, enca.read() & 0b1);
+  digitalWrite(LED_2, enca_button_count);
 }
 

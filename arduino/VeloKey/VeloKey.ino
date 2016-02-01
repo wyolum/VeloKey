@@ -24,15 +24,30 @@ as well as Adafruit raw 1.8" TFT display
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
-#include <SoftwareSerial.h>
 #include <EZKey.h>
+// Serial2 pin and pad definitions (in Arduino files Variant.h & Variant.cpp)
+#define PIN_SERIAL2_RX       (34ul)               // Pin description number for PIO_SERCOM on D12
+#define PIN_SERIAL2_TX       (36ul)               // Pin description number for PIO_SERCOM on D10
+#define PAD_SERIAL2_TX       (UART_TX_PAD_2)      // SERCOM pad 2
+#define PAD_SERIAL2_RX       (SERCOM_RX_PAD_3)    // SERCOM pad 3
 
+// Instantiate the Serial2 class
+Uart Serial2(&sercom1, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX);
+//
+
+#ifdef USE_ATMEGA328
+#include <SoftwareSerial.h>
 SoftwareSerial ncodr = SoftwareSerial(A0, A1);
 SoftwareSerial ezkey = SoftwareSerial(A2, A3);
+#else
+#define ncodr Serial1
+#define ezkey Serial2
+#define Serial SerialUSB
+#endif
 
 // For the breakout, you can use any 2 or 3 pins
 // These pins will also work for the 1.8" TFT shield
-#define TFT_CS     10
+#define TFT_CS     8
 #define TFT_RST    9  // you can also connect this to the Arduino reset
                       // in which case, set this #define pin to 0!
 #define TFT_DC     8
@@ -69,33 +84,32 @@ char *Camera_Views[8] = {
 uint8_t last_mouse_delta_x;
 uint8_t last_mouse_delta_y;
 
-void keyCommand(SoftwareSerial Serial1, 
+void keyCommand(
 		uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
 		uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
 		uint8_t keycode6) {
-  Serial.write(0xFD);       // our command
-  Serial.write(modifiers);  // modifier!
-  Serial.write((byte)0x00); // 0x00  
-  Serial.write(keycode1);   // key code #1
-  Serial.write(keycode2); // key code #2
-  Serial.write(keycode3); // key code #3
-  Serial.write(keycode4); // key code #4
-  Serial.write(keycode5); // key code #5
-  Serial.write(keycode6); // key code #6
+  ezkey.write(0xFD);       // our command
+  ezkey.write(modifiers);  // modifier!
+  ezkey.write((byte)0x00); // 0x00  
+  ezkey.write(keycode1);   // key code #1
+  ezkey.write(keycode2); // key code #2
+  ezkey.write(keycode3); // key code #3
+  ezkey.write(keycode4); // key code #4
+  ezkey.write(keycode5); // key code #5
+  ezkey.write(keycode6); // key code #6
 }
 
 
-void mouseCommand(SoftwareSerial Serial1, 
-		  uint8_t buttons, uint8_t delta_x, uint8_t delta_y) {
-  Serial1.write(0xFD);
-  Serial1.write((byte)0x00);
-  Serial1.write((byte)0x03);
-  Serial1.write(buttons);
-  Serial1.write(delta_x);
-  Serial1.write(delta_y);
-  Serial1.write((byte)0x00);
-  Serial1.write((byte)0x00);
-  Serial1.write((byte)0x00);
+void mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y) {
+  ezkey.write(0xFD);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x03);
+  ezkey.write(buttons);
+  ezkey.write(delta_x);
+  ezkey.write(delta_y);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x00);
   last_mouse_delta_x = delta_x;
   last_mouse_delta_y = delta_y;
 }
@@ -154,8 +168,10 @@ void rotateText() {
  tft.setCursor(80, fontsize*8);
  tft.println("Screen Shot");
  readEncoder();
- int position = enca_u.value / 4;
- int last_position = -999;
+ int position_a = enca_u.value / 4;
+ int last_position_a = -999;
+ int position_b = enca_u.value / 4;
+ int last_position_b = -999;
  unsigned long long last_enca_press = 0;
  while(1){
    readEncoder();
@@ -164,26 +180,30 @@ void rotateText() {
      if(millis() - last_enca_press > 1000){
        last_enca_press = millis();
        // Serial.println("F1"); delay(100);
-       keyCommand(ezkey, MODIFIER_NONE, KEY_F1, 0, 0, 0, 0, 0); // test keycode
-       keyCommand(ezkey, MODIFIER_NONE, 0, 0, 0, 0, 0, 0); // test keycode
+       keyCommand(MODIFIER_NONE, KEY_F1, 0, 0, 0, 0, 0); // test keycode
+       keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0); // test keycode
      }
    }
-   position = enca_u.value / 4;
-   if(position < 0)position = 8 - (-position % 8);
-   if(position > 7)position = position % 8;
-   if(position != last_position){
+   position_a = enca_u.value / 4;
+   position_b = encb_u.value / 4;
+   Serial.print(position_a);
+   Serial.print(" ");
+   Serial.println(position_b);
+   if(position_a < 0)position_a = 8 - (-position_a % 8);
+   if(position_a > 7)position_a = position_a % 8;
+   if(position_a != last_position_a){
      // undo old selection
-     tft.fillRect(0, last_position * fontsize, 80, 9, ST7735_BLACK);
-     tft.setCursor(0, last_position * fontsize);
+     tft.fillRect(0, last_position_a * fontsize, 80, 9, ST7735_BLACK);
+     tft.setCursor(0, last_position_a * fontsize);
      tft.setTextColor(ST7735_YELLOW);
-     tft.println(Camera_Views[last_position]);
+     tft.println(Camera_Views[last_position_a]);
 
-     tft.fillRect(0, position * fontsize, 80, 9, ST7735_BLUE);
-     tft.setCursor(0, position * fontsize);
+     tft.fillRect(0, position_a * fontsize, 80, 9, ST7735_BLUE);
+     tft.setCursor(0, position_a * fontsize);
      tft.setTextColor(ST7735_WHITE);
-     tft.println(Camera_Views[position]);
+     tft.println(Camera_Views[position_a]);
    }
-   last_position = position;
+   last_position_a = position_a;
    delay(10);
  }
 
