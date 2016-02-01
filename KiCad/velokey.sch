@@ -6,7 +6,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 2
+Sheet 1 3
 Title "VeloKey"
 Date "2016-01-24"
 Rev "rev 1"
@@ -1647,4 +1647,10 @@ Text Label 7475 2875 0    40   ~ 8
 PWM_LCD
 Text Label 6550 5975 0    40   ~ 8
 SCK_LCD
+$Sheet
+S 9825 5200 775  700 
+U 56AF3299
+F0 "VELO" 40
+F1 "VELO.sch" 40
+$EndSheet
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-update=Tue Jan 26 16:39:28 2016
+update=Mon Feb  1 18:23:34 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,21 +23,21 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=pdf/
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=40
 [eeschema]
 version=1
 LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=pdf/OTH.pdf
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=40
 [general]
 version=1
