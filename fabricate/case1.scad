@@ -137,7 +137,7 @@ module screw_mounts(){
   }
 }
 module shebang(){
-  translate([0, 0, 10]) my_case("top");
+  // translate([0, 0, 10]) my_case("top");
   difference(){
     union(){
       my_case("bottom"); 
