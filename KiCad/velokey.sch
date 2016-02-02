@@ -22,9 +22,8 @@ U 1 1 565719DA
 P 1800 1600
 F 0 "R2" H 1850 1600 40  0000 L CNB
 F 1 "1M" V 1800 1600 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 1800 1600 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/301010151.pdf" H 1800 1600 40  0001 C CNB
-F 4 "RC0603FR-071ML" H 1800 1600 60  0001 C CNN "manf#"
+F 2 "" H 1800 1600 40  0001 C CNB
+F 3 "" H 1800 1600 40  0001 C CNB
 	1    1800 1600
 	1    0    0    -1  
 $EndComp
@@ -34,9 +33,9 @@ U 1 1 56571A23
 P 1475 1600
 F 0 "C3" H 1550 1600 40  0000 L CNB
 F 1 "4.7nF" H 1550 1525 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 1475 1600 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0100850P1.pdf" H 1475 1600 40  0001 C CNB
-F 4 "CC0603KRX7R9BB472" H 1475 1600 60  0001 C CNN "manf#"
+F 2 "" H 1475 1600 40  0001 C CNB
+F 3 "" H 1475 1600 40  0001 C CNB
+F 4 "" H 1475 1600 60  0001 C CNN "manf#"
 	1    1475 1600
 	1    0    0    -1  
 $EndComp
@@ -79,9 +78,9 @@ U 1 1 56575F2E
 P 1275 4425
 F 0 "C9" H 1350 4425 40  0000 L CNB
 F 1 "22pF" H 1350 4350 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 1275 4425 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/302010097.pdf" H 1275 4425 40  0001 C CNB
-F 4 "CC0603JRNPO9BN100" H 1275 4425 60  0001 C CNN "manf#"
+F 2 "" H 1275 4425 40  0001 C CNB
+F 3 "" H 1275 4425 40  0001 C CNB
+F 4 "" H 1275 4425 60  0001 C CNN "manf#"
 	1    1275 4425
 	1    0    0    -1  
 $EndComp
@@ -91,9 +90,9 @@ U 1 1 56587FAD
 P 6175 5575
 F 0 "D3" V 6175 5525 40  0000 R CNB
 F 1 "LED_BLINK" V 6100 5525 40  0000 R CNN
-F 2 "velokey-footprints:LED_0603_HandSoldering" V 6175 5575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 6175 5575 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 6175 5575 60  0001 C CNN "manf#"
+F 2 "" V 6175 5575 40  0001 C CNB
+F 3 "" V 6175 5575 40  0001 C CNB
+F 4 "" V 6175 5575 60  0001 C CNN "manf#"
 	1    6175 5575
 	0    -1   -1   0   
 $EndComp
@@ -103,9 +102,9 @@ U 1 1 56588562
 P 6175 5350
 F 0 "R8" H 6225 5350 40  0000 L CNB
 F 1 "330" V 6175 5350 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 6175 5350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 6175 5350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 6175 5350 60  0001 C CNN "manf#"
+F 2 "" H 6175 5350 40  0001 C CNB
+F 3 "" H 6175 5350 40  0001 C CNB
+F 4 "" H 6175 5350 60  0001 C CNN "manf#"
 	1    6175 5350
 	1    0    0    -1  
 $EndComp
@@ -115,9 +114,9 @@ U 1 1 5658420D
 P 8475 2300
 F 0 "S1" V 8475 2475 40  0000 L CNB
 F 1 "RST" V 8400 2475 40  0000 L CNN
-F 2 "velokey-footprints:SPST-PTS_810" H 8475 2300 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/311020045.pdf" H 8475 2300 40  0001 C CNB
-F 4 "PTS810 SJM 250 SMTR LFS" V 8475 2300 60  0001 C CNN "manf#"
+F 2 "" H 8475 2300 40  0001 C CNB
+F 3 "" H 8475 2300 40  0001 C CNB
+F 4 "" V 8475 2300 60  0001 C CNN "manf#"
 	1    8475 2300
 	0    1    -1   0   
 $EndComp
@@ -160,9 +159,9 @@ U 1 1 5659B02E
 P 8100 1525
 F 0 "R1" H 8150 1525 40  0000 L CNB
 F 1 "10k" V 8100 1525 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 8100 1525 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011240P1.pdf" H 8100 1525 40  0001 C CNB
-F 4 "RC0603FR-0710KL" H 8100 1525 60  0001 C CNN "manf#"
+F 2 "" H 8100 1525 40  0001 C CNB
+F 3 "" H 8100 1525 40  0001 C CNB
+F 4 "" H 8100 1525 60  0001 C CNN "manf#"
 	1    8100 1525
 	1    0    0    1   
 $EndComp
@@ -172,9 +171,9 @@ U 1 1 567ADE21
 P 925 3575
 F 0 "C6" H 1000 3575 40  0000 L CNB
 F 1 "10uF" H 1000 3500 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 925 3575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/UPY-GPHC_X5R_4V-to-50V_14_0717-202131.pdf" H 925 3575 40  0001 C CNB
-F 4 "CC0603MRX5R5BB225" H 925 3575 60  0001 C CNN "manf#"
+F 2 "" H 925 3575 40  0001 C CNB
+F 3 "" H 925 3575 40  0001 C CNB
+F 4 "" H 925 3575 60  0001 C CNN "manf#"
 	1    925  3575
 	1    0    0    -1  
 $EndComp
@@ -184,7 +183,7 @@ U 1 1 567C2921
 P 8950 6850
 F 0 "FID1" H 8950 7000 40  0000 C CNB
 F 1 "FIDUCIAL" H 8950 6700 40  0000 C CNB
-F 2 "velokey-footprints:FIDUCIAL" H 8950 6850 40  0001 C CNB
+F 2 "" H 8950 6850 40  0001 C CNB
 F 3 "" H 8950 6850 40  0000 C CNB
 	1    8950 6850
 	1    0    0    -1  
@@ -195,7 +194,7 @@ U 1 1 567C2A0D
 P 9375 6850
 F 0 "FID2" H 9375 7000 40  0000 C CNB
 F 1 "FIDUCIAL" H 9375 6700 40  0000 C CNB
-F 2 "velokey-footprints:FIDUCIAL" H 9375 6850 40  0001 C CNB
+F 2 "" H 9375 6850 40  0001 C CNB
 F 3 "" H 9375 6850 40  0000 C CNB
 	1    9375 6850
 	1    0    0    -1  
@@ -206,7 +205,7 @@ U 1 1 567C2EF2
 P 9800 6850
 F 0 "FID3" H 9800 7000 40  0000 C CNB
 F 1 "FIDUCIAL" H 9800 6700 40  0000 C CNB
-F 2 "velokey-footprints:FIDUCIAL" H 9800 6850 40  0001 C CNB
+F 2 "" H 9800 6850 40  0001 C CNB
 F 3 "" H 9800 6850 40  0000 C CNB
 	1    9800 6850
 	1    0    0    -1  
@@ -220,7 +219,7 @@ U 1 1 56826CD5
 P 10775 7000
 F 0 "LOGO1" H 10775 6950 40  0001 C CNN
 F 1 "OSHW" H 10775 7100 40  0001 C CNN
-F 2 "velokey-footprints:OSHW-LOGO" H 10775 7000 60  0001 C CNN
+F 2 "" H 10775 7000 60  0001 C CNN
 F 3 "" H 10775 7000 60  0000 C CNN
 F 4 "mfr_pn" H 10775 7000 60  0001 C CNN "manf#"
 	1    10775 7000
@@ -244,9 +243,9 @@ U 1 1 568DEDE0
 P 1025 775
 F 0 "P1" H 1025 825 40  0000 C CNB
 F 1 "USB_micro" H 1025 725 40  0000 C CNB
-F 2 "velokey-footprints:ST-USB-001G" H 1025 775 60  0001 C CNN
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/10118193.pdf" H 1025 825 60  0001 C CNN
-F 4 "10118193-0001LF" H 1125 925 60  0001 C CNN "manf#"
+F 2 "" H 1025 775 60  0001 C CNN
+F 3 "" H 1025 825 60  0001 C CNN
+F 4 "" H 1125 925 60  0001 C CNN "manf#"
 	1    1025 775 
 	1    0    0    -1  
 $EndComp
@@ -256,9 +255,9 @@ U 1 1 568E01AF
 P 2100 775
 F 0 "U1" H 1850 825 40  0000 C CNB
 F 1 "STF202" H 2100 825 40  0000 C CNB
-F 2 "velokey-footprints:TSOP-6" H 1750 725 60  0001 C CNN
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/STF202-22T1-D-117165.pdf" H 1850 825 60  0001 C CNN
-F 4 "STF202-22T1G" H 1950 925 60  0001 C CNN "manf#"
+F 2 "" H 1750 725 60  0001 C CNN
+F 3 "" H 1850 825 60  0001 C CNN
+F 4 "" H 1950 925 60  0001 C CNN "manf#"
 	1    2100 775 
 	1    0    0    -1  
 $EndComp
@@ -268,9 +267,9 @@ U 1 1 568E114E
 P 2425 3575
 F 0 "C7" H 2500 3575 40  0000 L CNB
 F 1 "10uF" H 2500 3500 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 2425 3575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/UPY-GPHC_X5R_4V-to-50V_14_0717-202131.pdf" H 2425 3575 40  0001 C CNB
-F 4 "CC0603MRX5R5BB225" H 2425 3575 60  0001 C CNN "manf#"
+F 2 "" H 2425 3575 40  0001 C CNB
+F 3 "" H 2425 3575 40  0001 C CNB
+F 4 "" H 2425 3575 60  0001 C CNN "manf#"
 	1    2425 3575
 	1    0    0    -1  
 $EndComp
@@ -280,9 +279,9 @@ U 1 1 568E1524
 P 2475 4425
 F 0 "C10" H 2550 4425 40  0000 L CNB
 F 1 "22pF" H 2550 4350 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 2475 4425 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/302010097.pdf" H 2475 4425 40  0001 C CNB
-F 4 "CC0603JRNPO9BN100" H 2475 4425 60  0001 C CNN "manf#"
+F 2 "" H 2475 4425 40  0001 C CNB
+F 3 "" H 2475 4425 40  0001 C CNB
+F 4 "" H 2475 4425 60  0001 C CNN "manf#"
 	1    2475 4425
 	1    0    0    -1  
 $EndComp
@@ -292,9 +291,9 @@ U 1 1 568E18BC
 P 1875 4275
 F 0 "X1" H 1875 4425 40  0000 C CNB
 F 1 "ABS07" H 1875 4275 40  0000 C CNB
-F 2 "velokey-footprints:xtal_3.2x1.5mm" H 1875 4275 60  0001 C CNN
+F 2 "" H 1875 4275 60  0001 C CNN
 F 3 "" H 1875 4125 60  0001 C CNN
-F 4 "ABS07-32.768KHZ-7-T" H 1975 4225 60  0001 C CNN "manf#"
+F 4 "" H 1975 4225 60  0001 C CNN "manf#"
 	1    1875 4275
 	1    0    0    -1  
 $EndComp
@@ -304,9 +303,9 @@ U 1 1 568E44C5
 P 8475 1975
 F 0 "R4" H 8525 1975 40  0000 L CNB
 F 1 "39" V 8475 1975 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 8475 1975 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 8475 1975 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 8475 1975 60  0001 C CNN "manf#"
+F 2 "" H 8475 1975 40  0001 C CNB
+F 3 "" H 8475 1975 40  0001 C CNB
+F 4 "" H 8475 1975 60  0001 C CNN "manf#"
 	1    8475 1975
 	1    0    0    -1  
 $EndComp
@@ -316,9 +315,9 @@ U 1 1 568E4FE1
 P 8100 2300
 F 0 "C4" H 8025 2300 40  0000 R CNB
 F 1 "100nF" H 8025 2225 40  0000 R CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 8100 2300 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0100020P1.pdf" H 8100 2300 40  0001 C CNB
-F 4 "CC0603KRX7R9BB104" H 8100 2300 60  0001 C CNN "manf#"
+F 2 "" H 8100 2300 40  0001 C CNB
+F 3 "" H 8100 2300 40  0001 C CNB
+F 4 "" H 8100 2300 60  0001 C CNN "manf#"
 	1    8100 2300
 	-1   0    0    -1  
 $EndComp
@@ -331,8 +330,8 @@ AR Path="/56A63B98" Ref="U2"  Part="1"
 F 0 "U2" H 4975 1375 40  0000 L CNB
 F 1 "SAMD21G18A" H 5325 1375 40  0000 L CNB
 F 2 "" H 5075 1175 60  0001 C CNN
-F 3 "https://github.com/Wyolum/VeloKey/tree/master/kicad/data/Atmel-42181-SAM-D21_Datasheet.pdf" H 6925 1575 60  0001 C CNN
-F 4 "SAMD21G18A-AUT" H 4975 1475 60  0001 C CNN "manf#"
+F 3 "" H 6925 1575 60  0001 C CNN
+F 4 "" H 4975 1475 60  0001 C CNN "manf#"
 	1    5725 1175
 	1    0    0    -1  
 $EndComp
@@ -393,8 +392,8 @@ AR Path="/56A64203" Ref="U2"  Part="2"
 F 0 "U2" H 4700 5700 40  0000 L CNB
 F 1 "SAMD21G18A" H 5050 5700 40  0000 L CNB
 F 2 "" H 4800 5500 60  0001 C CNN
-F 3 "https://github.com/Wyolum/VeloKey/tree/master/kicad/data/Atmel-42181-SAM-D21_Datasheet.pdf" H 6650 5900 60  0001 C CNN
-F 4 "SAMD21G18A-AUT" H 4700 5800 60  0001 C CNN "manf#"
+F 3 "" H 6650 5900 60  0001 C CNN
+F 4 "" H 4700 5800 60  0001 C CNN "manf#"
 	2    5450 5500
 	1    0    0    -1  
 $EndComp
@@ -406,7 +405,7 @@ F 0 "L1" H 3665 5590 40  0000 L CNB
 F 1 "FERRITE_BEAD" H 3515 5405 40  0000 L CNN
 F 2 "" H 3700 5500 60  0001 C CNN
 F 3 "" H 3665 5590 60  0000 C CNN
-F 4 "BLM18EG221SN1D" H 3765 5690 40  0000 C CNN "manf#"
+F 4 "" H 3765 5690 40  0000 C CNN "manf#"
 	1    3700 5500
 	1    0    0    -1  
 $EndComp
@@ -503,7 +502,7 @@ F 0 "L2" V 3625 6800 40  0000 C CNB
 F 1 "L_Small" V 3500 6800 40  0000 C CNN
 F 2 "" H 3550 6800 50  0001 C CNN
 F 3 "" H 3580 6840 50  0000 C CNN
-F 4 "ELL-VFG100MC" V 3425 6850 40  0000 C CNN "manf#"
+F 4 "" V 3425 6850 40  0000 C CNN "manf#"
 	1    3550 6800
 	0    -1   -1   0   
 $EndComp
@@ -521,9 +520,9 @@ U 1 1 56A6573A
 P 7925 1675
 F 0 "R3" H 7975 1675 40  0000 L CNB
 F 1 "330" V 7925 1675 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 7925 1675 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 7925 1675 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 7925 1675 60  0001 C CNN "manf#"
+F 2 "" H 7925 1675 40  0001 C CNB
+F 3 "" H 7925 1675 40  0001 C CNB
+F 4 "" H 7925 1675 60  0001 C CNN "manf#"
 	1    7925 1675
 	0    1    1    0   
 $EndComp
@@ -559,7 +558,7 @@ U 1 1 56A69564
 P 6275 5925
 F 0 "Q1" H 6475 6000 40  0000 L CNB
 F 1 "MMBF170" H 6475 5925 40  0000 L CNN
-F 2 "SOT-23" H 6475 5850 40  0001 L CIN
+F 2 "" H 6475 5850 40  0001 L CIN
 F 3 "" H 6275 5925 50  0000 L CNN
 	1    6275 5925
 	-1   0    0    -1  
@@ -572,9 +571,9 @@ U 1 1 56A6A71E
 P 6900 5575
 F 0 "D4" V 6900 5525 40  0000 R CNB
 F 1 "LED_RX" V 6825 5525 40  0000 R CNN
-F 2 "velokey-footprints:LED_0603_HandSoldering" V 6900 5575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 6900 5575 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 6900 5575 60  0001 C CNN "manf#"
+F 2 "" V 6900 5575 40  0001 C CNB
+F 3 "" V 6900 5575 40  0001 C CNB
+F 4 "" V 6900 5575 60  0001 C CNN "manf#"
 	1    6900 5575
 	0    -1   -1   0   
 $EndComp
@@ -584,9 +583,9 @@ U 1 1 56A6A725
 P 6900 5350
 F 0 "R9" H 6950 5350 40  0000 L CNB
 F 1 "330" V 6900 5350 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 6900 5350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 6900 5350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 6900 5350 60  0001 C CNN "manf#"
+F 2 "" H 6900 5350 40  0001 C CNB
+F 3 "" H 6900 5350 40  0001 C CNB
+F 4 "" H 6900 5350 60  0001 C CNN "manf#"
 	1    6900 5350
 	1    0    0    -1  
 $EndComp
@@ -598,9 +597,9 @@ U 1 1 56A6A918
 P 7275 5575
 F 0 "D5" V 7275 5525 40  0000 R CNB
 F 1 "LED_TX" V 7200 5525 40  0000 R CNN
-F 2 "velokey-footprints:LED_0603_HandSoldering" V 7275 5575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 7275 5575 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 7275 5575 60  0001 C CNN "manf#"
+F 2 "" V 7275 5575 40  0001 C CNB
+F 3 "" V 7275 5575 40  0001 C CNB
+F 4 "" V 7275 5575 60  0001 C CNN "manf#"
 	1    7275 5575
 	0    -1   -1   0   
 $EndComp
@@ -610,9 +609,9 @@ U 1 1 56A6A91F
 P 7275 5350
 F 0 "R10" H 7325 5350 40  0000 L CNB
 F 1 "330" V 7275 5350 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 7275 5350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 7275 5350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 7275 5350 60  0001 C CNN "manf#"
+F 2 "" H 7275 5350 40  0001 C CNB
+F 3 "" H 7275 5350 40  0001 C CNB
+F 4 "" H 7275 5350 60  0001 C CNN "manf#"
 	1    7275 5350
 	1    0    0    -1  
 $EndComp
@@ -628,9 +627,9 @@ U 1 1 56A6AEDB
 P 6500 6150
 F 0 "R11" H 6550 6150 40  0000 L CNB
 F 1 "330" V 6500 6150 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 6500 6150 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 6500 6150 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 6500 6150 60  0001 C CNN "manf#"
+F 2 "" H 6500 6150 40  0001 C CNB
+F 3 "" H 6500 6150 40  0001 C CNB
+F 4 "" H 6500 6150 60  0001 C CNN "manf#"
 	1    6500 6150
 	-1   0    0    1   
 $EndComp
@@ -823,7 +822,7 @@ F 0 "U4" H 1925 3625 40  0000 C CNB
 F 1 "SPX3819-3V3" H 1925 3525 40  0000 C CNB
 F 2 "" H 1925 3575 60  0001 C CNN
 F 3 "" H 1925 3575 60  0000 C CNN
-F 4 "SPX3819M5-L-3-3" H 2025 3725 40  0001 C CNN "manf#"
+F 4 "" H 2025 3725 40  0001 C CNN "manf#"
 	1    1925 3375
 	1    0    0    -1  
 $EndComp
@@ -834,9 +833,9 @@ U 1 1 56A6E523
 P 2700 3575
 F 0 "C8" H 2775 3575 40  0000 L CNB
 F 1 "1uF" H 2775 3500 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 2700 3575 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/UPY-GPHC_X5R_4V-to-50V_14_0717-202131.pdf" H 2700 3575 40  0001 C CNB
-F 4 "CC0603MRX5R5BB225" H 2700 3575 60  0001 C CNN "manf#"
+F 2 "" H 2700 3575 40  0001 C CNB
+F 3 "" H 2700 3575 40  0001 C CNB
+F 4 "" H 2700 3575 60  0001 C CNN "manf#"
 	1    2700 3575
 	1    0    0    -1  
 $EndComp
@@ -846,9 +845,9 @@ U 1 1 56A6ECC0
 P 1400 3425
 F 0 "R7" V 1475 3400 40  0000 L CNB
 F 1 "100k" V 1400 3425 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 1400 3425 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/301010151.pdf" H 1400 3425 40  0001 C CNB
-F 4 "RC0603FR-071ML" H 1400 3425 60  0001 C CNN "manf#"
+F 2 "" H 1400 3425 40  0001 C CNB
+F 3 "" H 1400 3425 40  0001 C CNB
+F 4 "" H 1400 3425 60  0001 C CNN "manf#"
 	1    1400 3425
 	0    1    1    0   
 $EndComp
@@ -882,9 +881,9 @@ U 1 1 56A7224C
 P 850 2450
 F 0 "D1" H 925 2500 40  0000 C CNB
 F 1 "LED_CHG" H 850 2375 40  0000 C CNN
-F 2 "velokey-footprints:LED_0603_HandSoldering" V 850 2450 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/S_110_LTST-C190KRKT.pdf" V 850 2450 40  0001 C CNB
-F 4 "LTST-C190KRKT" V 850 2450 60  0001 C CNN "manf#"
+F 2 "" V 850 2450 40  0001 C CNB
+F 3 "" V 850 2450 40  0001 C CNB
+F 4 "" V 850 2450 60  0001 C CNN "manf#"
 	1    850  2450
 	-1   0    0    1   
 $EndComp
@@ -894,9 +893,9 @@ U 1 1 56A72566
 P 1125 2450
 F 0 "R6" V 1200 2450 40  0000 C CNB
 F 1 "330" V 1125 2450 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 1125 2450 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 1125 2450 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 1125 2450 60  0001 C CNN "manf#"
+F 2 "" H 1125 2450 40  0001 C CNB
+F 3 "" H 1125 2450 40  0001 C CNB
+F 4 "" H 1125 2450 60  0001 C CNN "manf#"
 	1    1125 2450
 	0    1    1    0   
 $EndComp
@@ -908,9 +907,9 @@ U 1 1 56A746F6
 P 2125 2350
 F 0 "R5" V 2200 2350 40  0000 C CNB
 F 1 "2k" V 2125 2350 40  0000 C CNN
-F 2 "velokey-footprints:R_0603_HandSoldering" H 2125 2350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/0011330P1.pdf" H 2125 2350 40  0001 C CNB
-F 4 "RC0603FR-07330RL" H 2125 2350 60  0001 C CNN "manf#"
+F 2 "" H 2125 2350 40  0001 C CNB
+F 3 "" H 2125 2350 40  0001 C CNB
+F 4 "" H 2125 2350 60  0001 C CNN "manf#"
 	1    2125 2350
 	0    1    1    0   
 $EndComp
@@ -920,9 +919,9 @@ U 1 1 56A74CAA
 P 2450 2350
 F 0 "C5" H 2525 2350 40  0000 L CNB
 F 1 "10uF" H 2525 2275 40  0000 L CNN
-F 2 "velokey-footprints:C_0603_HandSoldering" H 2450 2350 40  0001 C CNB
-F 3 "https://github.com/MickMad/HACK/tree/master/kicad/datasheets/UPY-GPHC_X5R_4V-to-50V_14_0717-202131.pdf" H 2450 2350 40  0001 C CNB
-F 4 "CC0603MRX5R5BB225" H 2450 2350 60  0001 C CNN "manf#"
+F 2 "" H 2450 2350 40  0001 C CNB
+F 3 "" H 2450 2350 40  0001 C CNB
+F 4 "" H 2450 2350 60  0001 C CNN "manf#"
 	1    2450 2350
 	1    0    0    -1  
 $EndComp

@@ -1,4 +1,4 @@
-update=Tue Feb  2 00:37:17 2016
+update=Tue Feb  2 17:38:59 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -32,7 +32,7 @@ LibName2=power
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
-PlotDirectoryName=pdf/OTH.pdf
+PlotDirectoryName=pdf/OTS.pdf
 SubpartIdSeparator=0
 SubpartFirstId=65
 NetFmtName=
