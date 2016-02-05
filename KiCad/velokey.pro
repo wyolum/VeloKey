@@ -1,15 +1,9 @@
-update=Fri Feb  5 14:08:35 2016
+update=Fri Feb  5 19:57:27 2016
 version=1
 last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
-[eeschema]
-version=1
-LibDir=
-[eeschema/libraries]
-LibName1=velokey
-LibName2=power
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -41,3 +35,9 @@ BoardOutlineThickness=0.1524
 ModuleOutlineThickness=0.1524
 [general]
 version=1
+[eeschema]
+version=1
+LibDir=
+[eeschema/libraries]
+LibName1=velokey
+LibName2=power
