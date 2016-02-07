@@ -1,4 +1,4 @@
-update=Fri Feb  5 19:57:27 2016
+update=Fri Feb  5 22:53:25 2016
 version=1
 last_client=kicad
 [cvpcb]
@@ -33,11 +33,11 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2032
 BoardOutlineThickness=0.1524
 ModuleOutlineThickness=0.1524
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
+[general]
+version=1
