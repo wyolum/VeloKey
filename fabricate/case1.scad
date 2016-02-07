@@ -92,7 +92,19 @@ module my_case(side="top"){
 	translate([34.8 + MKY_R, -W_W/2, 35.82])
 	  translate([(W_L - D_L)/2, W_W- D_W + 7.5,-D_H + 1])
 	  cube([D_L + 2, D_W + 2, 2]);
-	
+	// display screw mounts
+	for(dy = [0, -2*inch]){
+	  for(dx = [0, 1.15*inch]){
+	    difference(){
+	      x = 37.7 + dx; 
+	      y = 26.5 + .075*inch + dy;
+	      z = 34.;
+	      color([1, 0, 0])
+		translate([x, y, z])cylinder(h = 2, d=.4*inch, $fn=6);
+	      //translate([x, y, z-1])cylinder(h = .3*inch+2, d=.06*inch, $fn=6);
+	    }
+	  }
+	}
       }
     }
     // display window
@@ -120,9 +132,10 @@ module rim(){
 }
 
 module screw_mounts(){
+  /*
   intersection(){
     translate([MKY_R/2, 0, MKY_R/2])
-    minkowski(){
+      minkowski(){
       sphere(r=MKY_R);
       internal_space();
     }
@@ -131,13 +144,14 @@ module screw_mounts(){
       translate([20, 22, 0])screw_mount(h1=30, h2=7.5, side="bottom");
     }
   }
+  */ // bottom
   union(){
     translate([20, -22, 0])screw_mount(h1=30, h2=7.5, side="top");
     translate([20, 22, 0])screw_mount(h1=30, h2=7.5, side="top");
   }
 }
 module shebang(){
-  // translate([0, 0, 10]) my_case("top");
+  translate([0, 0, 10]) my_case("top");
   difference(){
     union(){
       my_case("bottom"); 
@@ -148,8 +162,24 @@ module shebang(){
   }
 }
 
-shebang();
-screw_mounts();
+// shebang();
+screw_mounts(side="top");
+difference(){
+  translate([0, 0, 10]) my_case("top");
+  translate([20, 22, 40]) cylinder(d=1.6, h=200);
+  translate([20, -22, 40]) cylinder(d=1.6, h=200);
+  // display screw holes
+  for(dy = [0, -2*inch]){
+    for(dx = [0, 1.15*inch]){
+      difference(){
+	x = 37.7 + dx; 
+	y = 26.5 + .075*inch + dy;
+	z = 34. + 10;
+	translate([x, y, z - 1])cylinder(h = 3+1, d=.06*inch, $fn=10);
+      }
+    }
+  }
+}
 
 
 

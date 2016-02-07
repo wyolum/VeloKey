@@ -1,4 +1,6 @@
 #include <Encoder.h>
+#include <ClickButton.h>
+
 /*
   2 --> ENCA_a
   3 --> ENCA_b
@@ -19,8 +21,17 @@
 
   posa -- signed 2 byte int -- encoder a position
   btna -- byte              -- number of button a clicks since last read
+  0b00 -- not pressed
+  0b01 -- pressed
+  0b10 -- released
+  0b11 -- click
+  
   posb -- signed 2 byte int -- encoder b position
   btnb -- byte              -- number of button b clicks since last read
+  0b00 -- not pressed
+  0b01 -- pressed
+  0b10 -- released
+  0b11 -- click
  */
 #ifdef PROTOTYPE
 #define ENCA_a 5
@@ -46,7 +57,8 @@
 
 Encoder enca(ENCA_a, ENCA_b);
 Encoder encb(ENCB_a, ENCB_b);
-
+ClickButton buttons[2] = {ClickButton(ENCA_btn, LOW, CLICKBTN_PULLUP),
+			  ClickButton(ENCB_btn, LOW, CLICKBTN_PULLUP)};
 union Data{
   int value;
   unsigned char bytes[3];
@@ -55,15 +67,17 @@ union Data{
 Data enca_u;
 Data encb_u;
 
-byte enca_button_count = 0;
-byte encb_button_count = 0;
+byte enca_button = 0;
+byte encb_button = 0;
 unsigned long a_last_pressed = 0;
 unsigned long b_last_pressed = 0;
 
 void setup()
 {
-  pinMode(ENCA_btn, INPUT_PULLUP);
-  pinMode(ENCB_btn, INPUT_PULLUP);
+  // not needed with ClickButton library?
+  // pinMode(ENCA_btn, INPUT_PULLUP);
+  // pinMode(ENCB_btn, INPUT_PULLUP);
+  
 
   // flash leds
   pinMode(LED_1, OUTPUT);
@@ -78,31 +92,30 @@ void setup()
   }
   digitalWrite(LED_2, LOW);
   digitalWrite(LED_1, LOW);
-  Serial.begin(28800);// Serial.println("Support open hardware and share the future");
+  Serial.begin(57600);
 }
 bool ba_was_open = true;
 bool bb_was_open = true;
 
 void loop() 
 {
-// buttonsstays active till sent
-  bool ba_closed = (digitalRead(ENCA_btn) == LOW);
-  bool bb_closed = (digitalRead(ENCB_btn) == LOW);
-  if(ba_closed && ba_was_open){
-    if(millis() - a_last_pressed > 100){
-      enca_button_count++;
-      a_last_pressed = millis();
-    }
+  buttons[0].Update();
+  if(buttons[0].clicks){
+    enca_u.bytes[2] = (byte)(abs(buttons[0].clicks));
   }
-  ba_was_open = !ba_closed;
+  buttons[1].Update();
+  if(buttons[1].clicks){
+    encb_u.bytes[2] = (byte)(abs(buttons[1].clicks));
+  }
+  /*
+  if(buttons[0].clicks){
+    Serial.print(buttons[0].clicks);
+    Serial.print(" ");
+    Serial.print(buttons[0].depressed << 4);
+    Serial.print(" ");
+    Serial.println(abs(buttons[0].clicks) + (abs(buttons[0].depressed) << 4));
+    }*/
 
-  if(bb_closed && bb_was_open){
-    if(millis() - b_last_pressed > 100){
-      encb_button_count++;
-      b_last_pressed = millis();
-    }
-  }
-  bb_was_open = !bb_closed;
   if(Serial.available()){
     char command = Serial.read();
     while(Serial.available()){
@@ -111,16 +124,17 @@ void loop()
     if(command == 'R'){
       enca_u.value = enca.read();
       encb_u.value = encb.read();
-      enca_u.bytes[2] = enca_button_count;
-      encb_u.bytes[2] = encb_button_count;
+      enca_u.bytes[2] += (buttons[0].depressed << 4);
+      encb_u.bytes[2] += (buttons[1].depressed << 4);
+      // (buttons[1].depressed << 4));
       Serial.write(enca_u.bytes[0]);
       Serial.write(enca_u.bytes[1]);
       Serial.write(enca_u.bytes[2]);
       Serial.write(encb_u.bytes[0]);
       Serial.write(encb_u.bytes[1]);
       Serial.write(encb_u.bytes[2]);
-      enca_button_count = 0; // clear buttons
-      encb_button_count = 0;
+      enca_u.bytes[2] = 0;
+      encb_u.bytes[2] = 0;
     }
     else if (command == 'a'){
       enca.write(0);
@@ -130,6 +144,6 @@ void loop()
     }
   }
   digitalWrite(LED_1, enca.read() & 0b1);
-  digitalWrite(LED_2, enca_button_count);
+  digitalWrite(LED_2, enca_button);
 }
 

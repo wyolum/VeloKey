@@ -2,9 +2,9 @@
 Minimal Bluetooth Keyboard with rotary controller
 =======
 
-![VeloKey top](https://github.com/wyolum/VeloKey/blob/master/KiCad/images/velokey01.png)
+![VeloKey top](https://github.com/wyolum/VeloKey/blob/master/KiCad/images/OTS01.png)
 
-![Velokey bottom](https://github.com/wyolum/VeloKey/blob/master/KiCad/images/velokey02.png)
+![Velokey bottom](https://github.com/wyolum/VeloKey/blob/master/KiCad/images/OTS02.png)
 
 License
 -------

@@ -1,3 +1,6 @@
+#ifndef EZKEY_H
+#define EZKEY_H
+
 // Bits in usbHidKeyboardInput.modifiers
 #include <inttypes.h>
 
@@ -127,4 +130,8 @@ const byte KEY_CONTROL_RIGHT      =byte(0xE4);
 const byte KEY_SHIFT_RIGHT        =byte(0xE5);
 const byte KEY_ALT_RIGHT          =byte(0xE6);
 const byte KEY_GUI_RIGHT          =byte(0xE7);
+const byte KEY_LEFT_MOUSE_BUTTON  = byte(0b001); // for mouseCommnad
+const byte KEY_MIDDLE_MOUSE_BUTTON= byte(0b100); // for mouseCommnad
+const byte KEY_RIGHT_MOUSE_BUTTON = byte(0b010); // for mouseCommnad
 
+#endif
