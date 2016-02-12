@@ -22,4 +22,3 @@ difference(){
   }
   translate([.3 * D, 0, H + thumb_d/2 - 1.75])sphere(d=thumb_d, $fn=26);
 }
-o

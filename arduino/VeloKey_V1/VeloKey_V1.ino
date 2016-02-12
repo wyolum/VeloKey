@@ -79,7 +79,7 @@ char *Actions[n_action] = {
   "Snapshot",
   "End Ride",
   "",
-  "Mouse Mode"
+  "<Alt-Tab>"
 };
 byte ActionKeys[n_action+1]{
   KEY_F1,
@@ -93,7 +93,7 @@ byte ActionKeys[n_action+1]{
     KEY_F10,
     KEY_ESCAPE,
     0,
-    MOUSE_MODE,
+    ALT_TAB,
     };
 
 KeyMenu camera_views = KeyMenu(&tft, &ezkey, Camera_Views, 
@@ -161,21 +161,26 @@ void setup(void) {
 
   resetEncoder();
   ui_setup();
-  toggle_ui(); // start with mouse for testing
+  for(int i=0; i<n_active_ui; i++){
+    active_uis_pp[i]->begin();
+  }
+  // toggle_ui(); // start with mouse for testing
 }
 
 int last_enca_pos = -999;
 int last_encb_pos = -999;
+bool depressed_a = false;
+bool depressed_b = false;
 
 void handleEvents(){
   readEncoder();
   int enca_pos = enca_u.value / 4;
   int encb_pos = encb_u.value / 4;
   uint8_t btna = enca_u.bytes[2];
-  bool depressed_a = (bool)(btna >> 4);
+  depressed_a = (bool)(btna >> 4);
   btna &= 0b1111;
   uint8_t btnb = encb_u.bytes[2];
-  bool depressed_b = (bool)(btnb >> 4);
+  depressed_b = (bool)(btnb >> 4);
   btnb &= 0b1111;
 
   if(enca_pos != last_enca_pos){
@@ -215,7 +220,7 @@ void handleEvents(){
 
 void update(){
   for(int i=0; i<n_active_ui; i++){
-    active_uis_pp[i]->update();
+    active_uis_pp[i]->update(depressed_a, depressed_b);
   }
 }
 
