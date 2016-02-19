@@ -1,3 +1,6 @@
+/* 
+ * No changes to V1 yet.
+ */
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
@@ -66,7 +69,7 @@ byte CameraKeys[n_camera_view]{
     KEY_0,  
     };
 
-const uint8_t n_action = 12;
+const uint8_t n_action = 15;
 char *Actions[n_action] = {
   "Elbow Flick",
   "Wave",
@@ -79,7 +82,7 @@ char *Actions[n_action] = {
   "Snapshot",
   "End Ride",
   "",
-  "<Alt-Tab>"
+  "<Alt-Tab>",
 };
 byte ActionKeys[n_action+1]{
   KEY_F1,
@@ -113,21 +116,26 @@ Mouse mouse = Mouse(&tft, &ezkey,
 		    ST7735_BLACK, ST7735_RED,
 		    ST7735_BLUE, ST7735_WHITE,
 		    9);
-/*
-  Alpha alpha = Alpha(&tft, &ezkey,
-  ST7735_BLACK, ST7735_RED,
-  ST7735_BLUE, ST7735_WHITE,
-  64);
-*/
+
+
+Alpha alpha = Alpha(&tft, &ezkey,
+		    ST7735_BLACK, ST7735_RED,
+		    ST7735_BLUE, ST7735_WHITE,
+		    false,
+		    64);
+
 uint8_t last_mouse_delta_x;
 uint8_t last_mouse_delta_y;
-const int n_ui = 3;
-UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse};
+const int n_ui = 4;
+UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse, &alpha};
 
 int n_active_ui = 2;
-UI *active_uis_pp[20] = {&camera_views, &actions};
+//UI *active_uis_pp[20] = {&camera_views, &actions};
+UI *active_uis_pp[20] = {&alpha, &actions};
+//UI *active_uis_pp[20] = {&camera_views, &alpha};
 
 void ui_setup(){
+  analogRead(A7);
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
 
   // Use this initializer (uncomment) if you're using a 1.44" TFT
@@ -241,14 +249,12 @@ void splash(){
       //tft.drawPixel(127 - col, row, tft.Color565(r, g, b));
     }
   }
-  delay(1500);
+  delay(500);
 }
 
 void loop(void) {
-  int fontsize=9;
   int active_view = 5;
   
-  tft.setTextSize(1);
   for(int ii=0; ii<11; ii++){
     //tft.setCursor(80, ii * fontsize);
     //tft.setTextColor(ST7735_RED);
