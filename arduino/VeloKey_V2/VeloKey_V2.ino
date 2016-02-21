@@ -1,5 +1,8 @@
 /* 
- * No changes to V1 yet.
+ * changes from V1:
+ *     new splash screen
+ *     alpha UI
+ *     ezkey verification
  */
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
@@ -7,14 +10,14 @@
 #include <EZKey.h>
 #include "LimitedEnc.h"
 #include "UI.h"
-#include "logo.h"
+// #include "logo.h"
+#include "logo_rgb.h"
 
 // Serial2 pin and pad definitions (in Arduino files Variant.h & Variant.cpp)
 #define PIN_SERIAL2_RX       (34ul) // Pin number for PIO_SERCOM on D12
 #define PIN_SERIAL2_TX       (36ul) // Pin number for PIO_SERCOM on D10
 #define PAD_SERIAL2_TX       (UART_TX_PAD_2)      // SERCOM pad 2
 #define PAD_SERIAL2_RX       (SERCOM_RX_PAD_3)    // SERCOM pad 3
-
 // Instantiate the Serial2 class
 Uart Serial2(&sercom1, 
 	     PIN_SERIAL2_RX, PIN_SERIAL2_TX, 
@@ -34,6 +37,31 @@ Uart Serial2(&sercom1,
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, 
 				      TFT_SCLK, TFT_RST);
 Adafruit_ST7735 *tft_p = &tft;
+
+const int ezkey_l2 = A4;
+unsigned long last_high = 0;
+unsigned long ezkey_l2_period = 0;
+void ezkey_l2_cb(){
+  unsigned long now = millis();
+  ezkey_l2_period = now - last_high;
+  last_high = now;
+}
+
+bool ezkey_paired = false;
+bool update_ezkey_pairing(void) {
+  if((ezkey_l2_period > 3500) && 
+     (ezkey_l2_period < 4500)){
+    if(!ezkey_paired){
+      ezkey_paired = true;
+      ezkey.begin(9600);
+    }
+  }
+  else{
+    ezkey.end();
+    ezkey_paired = false;
+  }
+  return ezkey_paired;
+}
 
 union Data{
   int16_t value;
@@ -69,12 +97,12 @@ byte CameraKeys[n_camera_view]{
     KEY_0,  
     };
 
-const uint8_t n_action = 15;
+const uint8_t n_action = 12;
 char *Actions[n_action] = {
   "Elbow Flick",
   "Wave",
   "\"Ride On!\"",
-  "\"Hammer Time!\"",
+  "\"HammerTime\"",
   "\"Nice!\"",
   "\"Bring it!\"",
   "\"I'm Toast!\"",
@@ -101,14 +129,14 @@ byte ActionKeys[n_action+1]{
 
 KeyMenu camera_views = KeyMenu(&tft, &ezkey, Camera_Views, 
 			       CameraKeys, true,
-			       n_camera_view, false,
+			       n_camera_view, true,
 			       ST7735_BLACK, ST7735_YELLOW,
 			       ST7735_BLUE, ST7735_WHITE,
 			       9);
 
 KeyMenu actions = KeyMenu(&tft, &ezkey, Actions, 
 			  ActionKeys, false,
-			  n_action, true,
+			  n_action, false,
 			  ST7735_BLACK, ST7735_RED,
 			  ST7735_BLUE, ST7735_WHITE,
 			  9);
@@ -130,12 +158,9 @@ const int n_ui = 4;
 UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse, &alpha};
 
 int n_active_ui = 2;
-//UI *active_uis_pp[20] = {&camera_views, &actions};
-UI *active_uis_pp[20] = {&alpha, &actions};
-//UI *active_uis_pp[20] = {&camera_views, &alpha};
+UI *active_uis_pp[20] = {&actions, &camera_views};
 
 void ui_setup(){
-  analogRead(A7);
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
 
   // Use this initializer (uncomment) if you're using a 1.44" TFT
@@ -144,6 +169,9 @@ void ui_setup(){
   tft.fillScreen(ST7735_BLACK);
   tft.setRotation(3);
   splash();
+  //analogRead(A7);
+  pinMode(A7, OUTPUT);
+
 }
 
 void toggle_ui(){
@@ -166,7 +194,8 @@ void toggle_ui(){
 void setup(void) {
   SerialDBG.begin(9600);
   ncodr.begin(57600);
-  ezkey.begin(9600);
+  attachInterrupt(ezkey_l2, ezkey_l2_cb, RISING);
+  // ezkey.begin(9600);// begin after pairing
 
   resetEncoder();
   ui_setup();
@@ -183,6 +212,8 @@ bool depressed_b = false;
 
 void handleEvents(){
   readEncoder();
+  update_ezkey_pairing();
+  
   int enca_pos = enca_u.value / 4;
   int encb_pos = encb_u.value / 4;
   uint8_t btna = enca_u.bytes[2];
@@ -201,9 +232,6 @@ void handleEvents(){
     last_enca_pos = enca_pos;
   }
   if(btna){
-    if(btna > 1){
-      toggle_ui(); // swap uis
-    }
     for(int i=0; i<n_active_ui; i++){
       if(active_uis_pp[i]->onClickL()){
 	break;
@@ -219,9 +247,15 @@ void handleEvents(){
     last_encb_pos = encb_pos;
   }
   if(btnb > 0){
-    for(int i=0; i<n_active_ui; i++){
-      if(active_uis_pp[i]->onClickR()){
-	break;
+    if(btnb > 1){ // double click b to swap interfaces
+      toggle_ui(); // swap uis
+      btnb = 0;
+    }
+    else{
+      for(int i=0; i<n_active_ui; i++){
+	if(active_uis_pp[i]->onClickR()){
+	  break;
+	}
       }
     }
   }
@@ -236,20 +270,20 @@ void update(){
 }
 
 void splash(){
-  uint8_t i = 0; 
-  uint8_t r, g, b;
-  tft.setAddrWindow(0, 0, 159, 127);
-  for(uint8_t row = 0; row < 128; row++){
-    for(uint8_t col = 0; col < 160; col++){
-      int index = (col * 128 + row);
-      r = image[index];
-      g = r;
-      b = r;
-      tft.pushColor(tft.Color565(r, g, b));
-      //tft.drawPixel(127 - col, row, tft.Color565(r, g, b));
-    }
+  tft.fillScreen(ST7735_WHITE);
+  for(int i = 0; i < n_rgb565; i++){
+    //tft.drawPixel(rgb565_rows[i], rgb565_cols[i], tft.Color565(0, 0, 255));
+    tft.drawPixel(rgb565_rows[i], rgb565_cols[i], rgb565[i]);
   }
-  delay(500);
+  // color
+  while(!ezkey_paired){
+    update_ezkey_pairing();
+    tft.fillCircle(10, 10, 5, ST7735_BLUE);
+    delay(800);
+    tft.fillCircle(10, 10, 5, ST7735_WHITE);
+    delay(200);
+  }
+  delay(1000);
 }
 
 void loop(void) {
@@ -267,9 +301,7 @@ void loop(void) {
   }
   while(1){
     handleEvents();
-    SerialDBG.println("2");
     update();
-    SerialDBG.println("3");
     delay(4);
   }
   
@@ -277,7 +309,7 @@ void loop(void) {
 
 void resetEncoder(){
   ncodr.print("a");
-  delay(1);
+  delay(10);
   ncodr.print("b");
 }
 
