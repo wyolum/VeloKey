@@ -1,4 +1,4 @@
-update=Fri Feb  5 23:06:31 2016
+update=Sun Feb 21 22:33:30 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,11 +23,11 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
+[general]
+version=1
