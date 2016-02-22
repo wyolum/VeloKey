@@ -37,8 +37,8 @@ Uart Serial2(&sercom1,
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, 
 				      TFT_SCLK, TFT_RST);
 Adafruit_ST7735 *tft_p = &tft;
-
 const int ezkey_l2 = A4;
+const int powerup_pin = A5;
 unsigned long last_high = 0;
 unsigned long ezkey_l2_period = 0;
 void ezkey_l2_cb(){
@@ -47,20 +47,20 @@ void ezkey_l2_cb(){
   last_high = now;
 }
 
-bool ezkey_paired = false;
-bool update_ezkey_pairing(void) {
+bool ezkey_linked = false;
+bool update_ezkey_linking(void) {
   if((ezkey_l2_period > 3500) && 
      (ezkey_l2_period < 4500)){
-    if(!ezkey_paired){
-      ezkey_paired = true;
+    if(!ezkey_linked){
+      ezkey_linked = true;
       ezkey.begin(9600);
     }
   }
   else{
     ezkey.end();
-    ezkey_paired = false;
+    ezkey_linked = false;
   }
-  return ezkey_paired;
+  return ezkey_linked;
 }
 
 union Data{
@@ -97,7 +97,7 @@ byte CameraKeys[n_camera_view]{
     KEY_0,  
     };
 
-const uint8_t n_action = 12;
+const uint8_t n_action = 13;
 char *Actions[n_action] = {
   "Elbow Flick",
   "Wave",
@@ -109,7 +109,8 @@ char *Actions[n_action] = {
   "Bell",
   "Snapshot",
   "End Ride",
-  "",
+  "Changing Room",
+  "Message",
   "<Alt-Tab>",
 };
 byte ActionKeys[n_action+1]{
@@ -123,12 +124,14 @@ byte ActionKeys[n_action+1]{
     KEY_F8,
     KEY_F10,
     KEY_ESCAPE,
-    0,
+    KEY_T,
+    KEY_M,
     ALT_TAB,
     };
 
+bool camera_immediate = true; // for BT free demo
 KeyMenu camera_views = KeyMenu(&tft, &ezkey, Camera_Views, 
-			       CameraKeys, true,
+			       CameraKeys, camera_immediate,
 			       n_camera_view, true,
 			       ST7735_BLACK, ST7735_YELLOW,
 			       ST7735_BLUE, ST7735_WHITE,
@@ -149,8 +152,8 @@ Mouse mouse = Mouse(&tft, &ezkey,
 Alpha alpha = Alpha(&tft, &ezkey,
 		    ST7735_BLACK, ST7735_RED,
 		    ST7735_BLUE, ST7735_WHITE,
-		    false,
-		    64);
+		    true,
+		    15);
 
 uint8_t last_mouse_delta_x;
 uint8_t last_mouse_delta_y;
@@ -158,7 +161,7 @@ const int n_ui = 4;
 UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse, &alpha};
 
 int n_active_ui = 2;
-UI *active_uis_pp[20] = {&actions, &camera_views};
+UI *active_uis_pp[20] = {&camera_views, &actions};
 
 void ui_setup(){
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
@@ -195,14 +198,29 @@ void setup(void) {
   SerialDBG.begin(9600);
   ncodr.begin(57600);
   attachInterrupt(ezkey_l2, ezkey_l2_cb, RISING);
-  // ezkey.begin(9600);// begin after pairing
+  // ezkey.begin(9600);// begin after linking
 
+  pinMode(powerup_pin, INPUT);
   resetEncoder();
   ui_setup();
   for(int i=0; i<n_active_ui; i++){
     active_uis_pp[i]->begin();
   }
   // toggle_ui(); // start with mouse for testing
+}
+
+bool powerup_state = false;
+bool check_powerup(){
+  bool out = false;
+  bool new_powerup_state = !digitalRead(powerup_pin);
+  if(new_powerup_state != powerup_state){
+    // button changed
+    powerup_state = new_powerup_state;
+    if(!powerup_state){ // was button just released?
+      out = true;       // button was clicked
+    }
+  }
+  return out;
 }
 
 int last_enca_pos = -999;
@@ -212,11 +230,16 @@ bool depressed_b = false;
 
 void handleEvents(){
   readEncoder();
-  update_ezkey_pairing();
+  update_ezkey_linking();
+  
+  if(check_powerup() && ezkey_linked){
+    ezkey.print(" ");
+  }
   
   int enca_pos = enca_u.value / 4;
   int encb_pos = encb_u.value / 4;
   uint8_t btna = enca_u.bytes[2];
+
   depressed_a = (bool)(btna >> 4);
   btna &= 0b1111;
   uint8_t btnb = encb_u.bytes[2];
@@ -276,14 +299,15 @@ void splash(){
     tft.drawPixel(rgb565_rows[i], rgb565_cols[i], rgb565[i]);
   }
   // color
-  while(!ezkey_paired){
-    update_ezkey_pairing();
-    tft.fillCircle(10, 10, 5, ST7735_BLUE);
-    delay(800);
-    tft.fillCircle(10, 10, 5, ST7735_WHITE);
-    delay(200);
+  while(!ezkey_linked){
+    update_ezkey_linking();
+    tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
+    delay(666);
+    tft.fillCircle(160-10, 128-10, 5, ST7735_WHITE);
+    delay(334);
   }
-  delay(1000);
+  tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
+  delay(2000);
 }
 
 void loop(void) {
