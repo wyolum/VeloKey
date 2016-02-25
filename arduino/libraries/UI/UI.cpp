@@ -169,9 +169,9 @@ bool KeyMenu::onClick(){
     // send a key via ezlink
   byte key = keys_p[selected];
   if(key == ALT_TAB){
-    keyCommand(MODIFIER_ALT_LEFT, KEY_ALT_LEFT, KEY_TAB, 0, 0, 0, 0);
+    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, EZKEY_TAB, 0, 0, 0, 0);
     delay(100);
-    keyCommand(MODIFIER_ALT_LEFT, KEY_ALT_LEFT, 0, 0, 0, 0, 0);
+    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, 0, 0, 0, 0, 0);
     keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
   }
   else{
@@ -221,7 +221,7 @@ bool KeyMenu::onScrollR(int enc){
   return out;
 }
 
-Mouse::Mouse(Adafruit_ST7735* _tft_p,   Uart* _ezkey_p,
+Mouse_ui::Mouse_ui(Adafruit_ST7735* _tft_p,   Uart* _ezkey_p,
 	     uint16_t _bg_color, uint16_t _face_color, 
 	     uint16_t _bg_selected, uint16_t _face_selected,
 	     uint8_t _fontsize):
@@ -231,7 +231,7 @@ Mouse::Mouse(Adafruit_ST7735* _tft_p,   Uart* _ezkey_p,
   lencR = new LimitedEnc(0, 1, false);
   lencL = new LimitedEnc(0, 1, false);
 }
-void Mouse::begin(){
+void Mouse_ui::begin(){
   UI::begin();
   // draw a mouse
   int size = 8;
@@ -259,17 +259,17 @@ void Mouse::begin(){
   
 }
 
-bool Mouse::onClickL(){
-  mouseCommand(KEY_LEFT_MOUSE_BUTTON, 0, 0);
+bool Mouse_ui::onClickL(){
+  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
   mouseCommand(0, 0, 0);
   return true;
 }
-bool Mouse::onClickR(){
-  mouseCommand(KEY_LEFT_MOUSE_BUTTON, 0, 0);
+bool Mouse_ui::onClickR(){
+  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
   mouseCommand(0, 0, 0);
   return true;
 }
-bool Mouse::onScrollL(int enc){
+bool Mouse_ui::onScrollL(int enc){
   // right-left
   int delta_x = -lencL->getDelta(enc * velocity);
   mouseCommand(0, delta_x, 0);
@@ -296,7 +296,7 @@ bool Mouse::onScrollL(int enc){
   return true;
 }
 
-bool Mouse::onScrollR(int enc){
+bool Mouse_ui::onScrollR(int enc){
   // up/down
   int delta_y = lencR->getDelta(enc * velocity);
   mouseCommand(0, 0, delta_y);
@@ -319,10 +319,10 @@ bool Mouse::onScrollR(int enc){
   }
   return true;
 }
-bool Mouse::onPowerUp(){
+bool Mouse_ui::onPowerUp(){
   return true;
 }
-void Mouse::update(bool a_depressed, bool b_depressed){
+void Mouse_ui::update(bool a_depressed, bool b_depressed){
   unsigned long now = millis();
   if(!is_clear && now - last_action > 1000){
     // clear screen
@@ -343,7 +343,7 @@ Alpha::Alpha(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
 	     uint8_t _fontsize):
   KeyMenu(_tft_p, _ezkey_p,
 	  letters, keys, false,
-	  26, _right, 
+	  1, _right, 
 	  _bg_color, _face_color, _bg_selected, _face_selected,
 	  _fontsize)
   
@@ -361,14 +361,17 @@ void Alpha::draw_key(uint8_t pos, uint16_t color){
   int jj = pos / 6;
   tft_p->setTextColor(color);
   tft_p->setTextSize(2);
-  if(pos < 26){
+  if(pos < 26 + 0){
     tft_p->setCursor(12 * ii + right * 80, fontsize * jj);
     }
-  else if(pos == 26){
-    tft_p->setCursor(right * 80, fontsize * 5);
+  else if(pos == 26 + 0 + 0){ // backspace
+    tft_p->setCursor(12 * 4 + right * 80, fontsize * 4);
   }
-  else if(pos == 27){
-    tft_p->setCursor(right * 80, fontsize * 6);
+  else if(pos == 26 + 0 + 1){ // shift
+    tft_p->setCursor(12 * 0 + right * 80, fontsize * 5);
+  }
+  else if(pos == 26 + 0 + 2){ // enter
+    tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
   }
   if(pos < n){
     tft_p->print(letters[pos]);
@@ -392,11 +395,83 @@ bool Alpha::onScrollR(int enc){
   bool out = false;
   if(right){
     out = true;
-    select(lenc->get(enc));
+    select(enc);
   }
   return out;
 }
 bool Alpha::onScrollL(int enc){
+  bool out = false;
+  if(!right){
+    out = true;
+    select(enc);
+  }
+  return out;
+}
+
+Numeric::Numeric(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
+	     uint16_t _bg_color, uint16_t _face_color, 
+	     uint16_t _bg_selected, uint16_t _face_selected,
+	     bool _right,
+	     uint8_t _fontsize):
+  KeyMenu(_tft_p, _ezkey_p,
+	  letters, keys, false,
+	  1, _right, 
+	  _bg_color, _face_color, _bg_selected, _face_selected,
+	  _fontsize)
+  
+{
+}
+  
+void Numeric::begin(){
+  UI::begin();
+  for(int pos = 0; pos < n; pos++){
+    draw_key(pos, face_color);
+  }
+}
+void Numeric::draw_key(uint8_t pos, uint16_t color){
+  int ii = pos % 6;
+  int jj = pos / 6;
+  tft_p->setTextColor(color);
+  tft_p->setTextSize(2);
+  if(pos < 26 + 0){
+    tft_p->setCursor(12 * ii + right * 80, fontsize * jj);
+    }
+  else if(pos == 26 + 0 + 0){ // backspace
+    tft_p->setCursor(12 * 4 + right * 80, fontsize * 4);
+  }
+  else if(pos == 26 + 0 + 1){ // shift
+    tft_p->setCursor(12 * 0 + right * 80, fontsize * 5);
+  }
+  else if(pos == 26 + 0 + 2){ // enter
+    tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
+  }
+  if(pos < n){
+    tft_p->print(letters[pos]);
+  }
+}
+
+void Numeric::select(int position){
+  int value = -position;
+  int _x, _y;
+  while(value < 0){ // correct negative encoder value
+    value += n * ((abs(value)) / n + 1);
+  }
+  value = value % n;
+  char *msg = letters[value%n];
+  draw_key(selected, face_color);
+  draw_key(value, face_selected);
+  selected = value;
+}
+
+bool Numeric::onScrollR(int enc){
+  bool out = false;
+  if(right){
+    out = true;
+    select(enc);
+  }
+  return out;
+}
+bool Numeric::onScrollL(int enc){
   bool out = false;
   if(!right){
     out = true;

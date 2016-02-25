@@ -13,7 +13,7 @@ data = array(im.getdata())[:,:3]
 print data.shape
 rgbs = array(data).reshape((h, w, 3)).transpose((1, 0, 2))
 
-hfn = 'logo_rgb.h'
+hfn = 'logo_gs.h'
 f = open(hfn, 'w')
 print >> f, 'uint8_t rgb565_width = %d;' % (w, )
 print >> f, 'uint8_t rgb565_height = %d;' % (h, )
@@ -26,14 +26,17 @@ for i, row in enumerate(rgbs):
         l = linalg.norm(rgb)
         lens.append(l)
         if l < 256: ## change this for more colors
-            r, g, b = rgb
+            r, b, g = rgb 
             keep.append([i, j, r, g, b])
 
-def rgb565(r, g, b):
-    r = uint8(r)
-    g = uint8(g)
-    b = uint8(b)
-    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+def rgb565(r, b, g):
+    get_bin = lambda x, n: format(x, 'b').zfill(n)
+    out = 0xFFFF & (int((byte(r) & 0xF8) << 8) | 
+                    int((byte(g) & 0xFC) << 3) | 
+                    int(byte(b) >> 3))
+    # print '%s %s %s' % tuple([get_bin(c, 8) for c in (r, g, b)]), 
+    # print get_bin(out, 16)
+    return out;
 
 #hist(lens, 100);show()
 shuffle(keep)
@@ -55,7 +58,7 @@ print >> f, 'const unsigned int n_rgb565 = %d;' % len(keep)
 printArray(keep[:,0], 'uint8_t', 'rgb565_rows', f, 'n_rgb565')
 printArray(keep[:,1], 'uint8_t', 'rgb565_cols', f, 'n_rgb565')
 rgb565 = array([rgb565(*l[2:]) for l in keep])
-printArray(rgb565, 'uint16_t', 'rgb565', f, 'n_rgb565', per_row=5)
+printArray(rgb565.astype(uint16), 'uint16_t', 'rgb565', f, 'n_rgb565', per_row=5)
 print len(keep)
 print 'wrote', hfn
 im2 = Image.new('RGB', (w, h), (255, 255, 255))
@@ -63,5 +66,5 @@ print keep.shape
 print keep[0, 0].shape
 for ijrgb in keep:
     i, j, r, g, b = ijrgb
-    im2.putpixel((i, j), tuple([r, r, r]))
+    im2.putpixel((i, j), tuple([r, g, b]))
 im2.show()

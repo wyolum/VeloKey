@@ -4,6 +4,8 @@
  *     alpha UI
  *     ezkey verification
  */
+#include <Mouse.h>
+#include <Keyboard.h>
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
@@ -85,16 +87,16 @@ char *Camera_Views[n_camera_view] = {
   };
 
 byte CameraKeys[n_camera_view]{ 
-  KEY_3,
-    KEY_1,
-    KEY_2,
-    KEY_4,
-    KEY_5,
-    KEY_6,
-    KEY_7,
-    KEY_8,
-    KEY_9,
-    KEY_0,  
+  EZKEY_3,
+    EZKEY_1,
+    EZKEY_2,
+    EZKEY_4,
+    EZKEY_5,
+    EZKEY_6,
+    EZKEY_7,
+    EZKEY_8,
+    EZKEY_9,
+    EZKEY_0,  
     };
 
 const uint8_t n_action = 13;
@@ -114,18 +116,18 @@ char *Actions[n_action] = {
   "<Alt-Tab>",
 };
 byte ActionKeys[n_action+1]{
-  KEY_F1,
-    KEY_F2,
-    KEY_F3,
-    KEY_F4,
-    KEY_F5,
-    KEY_F6,
-    KEY_F7,
-    KEY_F8,
-    KEY_F10,
-    KEY_ESCAPE,
-    KEY_T,
-    KEY_M,
+  EZKEY_F1,
+    EZKEY_F2,
+    EZKEY_F3,
+    EZKEY_F4,
+    EZKEY_F5,
+    EZKEY_F6,
+    EZKEY_F7,
+    EZKEY_F8,
+    EZKEY_F10,
+    EZKEY_ESCAPE,
+    EZKEY_T,
+    EZKEY_M,
     ALT_TAB,
     };
 
@@ -143,7 +145,7 @@ KeyMenu actions = KeyMenu(&tft, &ezkey, Actions,
 			  ST7735_BLACK, ST7735_RED,
 			  ST7735_BLUE, ST7735_WHITE,
 			  9);
-Mouse mouse = Mouse(&tft, &ezkey,
+Mouse_ui mouse = Mouse_ui(&tft, &ezkey,
 		    ST7735_BLACK, ST7735_RED,
 		    ST7735_BLUE, ST7735_WHITE,
 		    9);
@@ -154,11 +156,16 @@ Alpha alpha = Alpha(&tft, &ezkey,
 		    ST7735_BLUE, ST7735_WHITE,
 		    true,
 		    15);
+Numeric numeric = Numeric(&tft, &ezkey,
+			  ST7735_BLACK, ST7735_BLUE,
+			  ST7735_BLUE, ST7735_WHITE,
+			  false,
+			  15);
 
 uint8_t last_mouse_delta_x;
 uint8_t last_mouse_delta_y;
-const int n_ui = 4;
-UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse, &alpha};
+const int n_ui = 5;
+UI *uis_pp[n_ui] = {&camera_views, &actions, &mouse, &alpha, &numeric};
 
 int n_active_ui = 2;
 UI *active_uis_pp[20] = {&camera_views, &actions};
@@ -177,7 +184,7 @@ void ui_setup(){
 
 }
 
-void toggle_ui(){
+void swap_mouse(){
   if(n_active_ui == 1){
     n_active_ui = 2;
     active_uis_pp[0] = &camera_views;
@@ -186,6 +193,23 @@ void toggle_ui(){
   else{
     n_active_ui = 1;
     active_uis_pp[0] = &mouse;
+  }
+  tft.fillScreen(ST7735_BLACK);
+  for(int i=0; i<n_active_ui; i++){
+    active_uis_pp[i]->begin();
+  }
+}
+
+void swap_kb(){
+  if(active_uis_pp[0] == &alpha){
+    n_active_ui = 2;
+    active_uis_pp[0] = &camera_views;
+    active_uis_pp[1] = &actions;
+  }
+  else{
+    n_active_ui = 2;
+    active_uis_pp[0] = &alpha;
+    active_uis_pp[1] = &numeric;
   }
   tft.fillScreen(ST7735_BLACK);
   for(int i=0; i<n_active_ui; i++){
@@ -206,7 +230,8 @@ void setup(void) {
   for(int i=0; i<n_active_ui; i++){
     active_uis_pp[i]->begin();
   }
-  // toggle_ui(); // start with mouse for testing
+  // swap_mouse(); // start with mouse for testing
+  Mouse.begin();
 }
 
 bool powerup_state = false;
@@ -255,9 +280,15 @@ void handleEvents(){
     last_enca_pos = enca_pos;
   }
   if(btna){
-    for(int i=0; i<n_active_ui; i++){
-      if(active_uis_pp[i]->onClickL()){
-	break;
+    if(btna > 1){ // double click a to swap interfaces
+      swap_kb(); // swap uis
+      btna = 0;
+    }
+    else{
+      for(int i=0; i<n_active_ui; i++){
+	if(active_uis_pp[i]->onClickL()){
+	  break;
+	}
       }
     }
   }
@@ -271,7 +302,7 @@ void handleEvents(){
   }
   if(btnb > 0){
     if(btnb > 1){ // double click b to swap interfaces
-      toggle_ui(); // swap uis
+      swap_mouse(); // swap uis
       btnb = 0;
     }
     else{
@@ -293,12 +324,26 @@ void update(){
 }
 
 void splash(){
-  tft.fillScreen(ST7735_WHITE);
-  for(int i = 0; i < n_rgb565; i++){
-    //tft.drawPixel(rgb565_rows[i], rgb565_cols[i], tft.Color565(0, 0, 255));
-    tft.drawPixel(rgb565_rows[i], rgb565_cols[i], rgb565[i]);
+  // grey scale
+  /*
+  uint8_t i = 0; 
+  uint8_t r, g, b;
+  tft.setAddrWindow(0, 0, 159, 127);
+  for(uint8_t row = 0; row < 128; row++){
+    for(uint8_t col = 0; col < 160; col++){
+      int index = (col * 128 + row);
+      r = image[index];
+      g = r;
+      b = r;
+      tft.pushColor(tft.Color565(r, g, b));
+    }
   }
+  */
   // color
+    tft.fillScreen(ST7735_WHITE);
+    for(int i = 0; i < n_rgb565; i++){
+      tft.drawPixel(rgb565_rows[i], rgb565_cols[i], rgb565[i]);
+    }
   while(!ezkey_linked){
     update_ezkey_linking();
     tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);

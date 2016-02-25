@@ -80,7 +80,7 @@ class KeyMenu: public MenuUI{
   bool onScrollR(int enc);
 };
 
-class Mouse: public UI{
+class Mouse_ui: public UI{
  public:
   bool keydown = false;
   LimitedEnc *lencL;
@@ -93,7 +93,7 @@ class Mouse: public UI{
   bool is_down = false;
   uint8_t velocity = 8;
 
-  Mouse(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
+  Mouse_ui(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
 	uint16_t _bg_color, uint16_t _face_color, 
 	uint16_t _bg_selected, uint16_t _face_selected,
 	uint8_t _fontsize);
@@ -109,17 +109,56 @@ class Mouse: public UI{
 
 class Alpha: public KeyMenu{
  public:
-  static const int n = 27;
-  char *letters[n] = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", 
-		      "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", 
-		      "u", "v", "w", "x", "y", "z", "del"};
+  static const int n = 26 + 0 + 3;
+  char *letters[n] = {"a", "b", "c", "d", "e", "f", 
+		      "g", "h", "i", "j", "k", "l",
+		      "m", "n", "o", "p", "q", "r",
+		      "s", "t", "u", "v", "w", "x", 
+		      "y", "z",               "<-",
+		      "<shift>",
+		      "<enter>"
+  };
   byte keys[n] = {
-    KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J,
-    KEY_K, KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R, KEY_S, KEY_T,
-    KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z, KEY_DELETE};
+    EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
+    EZKEY_I, EZKEY_J, EZKEY_K, EZKEY_L, EZKEY_M, EZKEY_N, EZKEY_O, EZKEY_P, 
+    EZKEY_Q, EZKEY_R, EZKEY_S, EZKEY_T, EZKEY_U, EZKEY_V, EZKEY_W, EZKEY_X, 
+    EZKEY_Y, EZKEY_Z, EZKEY_BACKSPACE,
+    EZKEY_SHIFT_RIGHT, EZKEY_RETURN};
   byte *keys_p;
   bool immediate;
   Alpha(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
+	uint16_t _bg_color, uint16_t _face_color, 
+	uint16_t _bg_selected, uint16_t _face_selected,
+	bool _right,
+	uint8_t _fontsize);
+  void draw_key(uint8_t pos, uint16_t color);
+  void select(int position);
+  void begin();
+  bool onScrollL(int enc);
+  bool onScrollR(int enc);
+};
+
+class Numeric: public KeyMenu{
+ public:
+  static const int n = 26 + 0 + 3;
+  char *letters[n] = {"1", "2", "3", "4", "5", "6", 
+		      "7", "8", "9", "0", "!", "@",
+		      "#", "$", "%", "^", "&", "*",
+		      "(", ")", "-", "=", "[", "]", 
+		      "?", ";",
+		      "<-",
+		      "<shift>",
+		      "<enter>"
+  };
+  byte keys[n] = {
+    EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
+    EZKEY_I, EZKEY_J, EZKEY_K, EZKEY_L, EZKEY_M, EZKEY_N, EZKEY_O, EZKEY_P, 
+    EZKEY_Q, EZKEY_R, EZKEY_S, EZKEY_T, EZKEY_U, EZKEY_V, EZKEY_W, EZKEY_X, 
+    EZKEY_Y, EZKEY_Z, EZKEY_BACKSPACE,
+    EZKEY_SHIFT_RIGHT, EZKEY_RETURN};
+  byte *keys_p;
+  bool immediate;
+  Numeric(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
 	uint16_t _bg_color, uint16_t _face_color, 
 	uint16_t _bg_selected, uint16_t _face_selected,
 	bool _right,
