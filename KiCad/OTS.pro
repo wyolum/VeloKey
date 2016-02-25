@@ -1,4 +1,4 @@
-update=Sun Feb 21 22:33:30 2016
+update=Mon Feb 22 13:36:51 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -31,3 +31,13 @@ LibName1=velokey
 LibName2=power
 [general]
 version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=pdf/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=Pcbnew
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
