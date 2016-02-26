@@ -72,62 +72,66 @@ union Data{
 Data enca_u;
 Data encb_u;
 
-const int n_camera_view = 10;
+const int n_camera_view = 8;
 char *Camera_Views[n_camera_view] = {
   "1st Person",
-  "2nd Person",
-  "3nd Person",
+  "3rd Person",
   "Side",
   "Right Rear",
   "Head On",
   "Specator",
   "Helicopter",
   "Birdseye",
-  "Rider Lock",
   };
 
 byte CameraKeys[n_camera_view]{ 
   EZKEY_3,
     EZKEY_1,
-    EZKEY_2,
     EZKEY_4,
     EZKEY_5,
     EZKEY_6,
     EZKEY_7,
     EZKEY_8,
     EZKEY_9,
-    EZKEY_0,  
     };
 
 const uint8_t n_action = 13;
 char *Actions[n_action] = {
-  "Elbow Flick",
-  "Wave",
-  "\"Ride On!\"",
-  "\"HammerTime\"",
-  "\"Nice!\"",
-  "\"Bring it!\"",
-  "\"I'm Toast!\"",
-  "Bell",
-  "Snapshot",
-  "End Ride",
-  "Changing Room",
-  "Message",
+  "Elbow Flick", // f1
+  "Wave",        // f2
+  "\"Ride On!\"",// f3
+  //  "\"HammerTime\"",// f4
+  // "\"Nice!\"",      // f5
+  // "\"Bring it!\"",  // f6
+  "\"I'm Toast!\"", // f7
+  // "Bell",           // f8
+  "Snapshot",      // f10
+  "End Ride",      // ESC
+  "Changing Room", // T
+  "Message",       // M
+  "< LEFT",
+  "^ STRAIGHT",
+  "> RIGHT",
+  "v U-Turn",
   "<Alt-Tab>",
 };
 byte ActionKeys[n_action+1]{
   EZKEY_F1,
     EZKEY_F2,
     EZKEY_F3,
-    EZKEY_F4,
-    EZKEY_F5,
-    EZKEY_F6,
+    //    EZKEY_F4,
+    //    EZKEY_F5,
+    //    EZKEY_F6,
     EZKEY_F7,
-    EZKEY_F8,
+    //    EZKEY_F8,
     EZKEY_F10,
     EZKEY_ESCAPE,
     EZKEY_T,
     EZKEY_M,
+    EZKEY_ARROW_LEFT,
+    EZKEY_ARROW_UP,
+    EZKEY_ARROW_RIGHT,
+    EZKEY_ARROW_DOWN,
     ALT_TAB,
     };
 

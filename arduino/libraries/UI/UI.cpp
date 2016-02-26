@@ -91,7 +91,7 @@ void MenuUI::begin(){
     tft_p->setCursor(x, ii * fontsize);
     tft_p->println(items[ii]);
   }
-  select(0);
+  select(selected);
 }
 void MenuUI::select(int position){
   tft_p->setTextSize(textsize); // test of larger font size
@@ -128,22 +128,25 @@ bool MenuUI::onClickR(){
   return out;
 }
 bool MenuUI::onScrollL(int enc){
-  int position = lenc->get(enc);
   bool out = false;
+  if(!right){
+    int position = lenc->get(enc);
 
-  if(!right && position != selected){    
-    select(position);
-    out = true;
+    if(position != selected){    
+      select(position);
+      out = true;
+    }
   }
   return out;
 }
 bool MenuUI::onScrollR(int enc){
-  int position = lenc->get(enc);
   bool out = false;
-
-  if(right && position != selected){    
-    select(position);
-    out = true;
+  if(right){
+    int position = lenc->get(enc);
+    if(position != selected){    
+      select(position);
+      out = true;
+    }
   }
   return out;
 }
