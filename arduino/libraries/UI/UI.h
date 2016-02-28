@@ -87,13 +87,15 @@ class Mouse_ui: public UI{
   LimitedEnc *lencL;
   LimitedEnc *lencR;
   unsigned int last_action = 0;
+  unsigned int last_scroll_l = 0;
+  unsigned int last_scroll_r = 0;
   bool is_clear = true;
   bool is_left = false;
   bool is_right = false;
   bool is_up = false;
   bool is_down = false;
-  uint8_t velocity = 8;
-
+  int velocity = 1;
+  
   Mouse_ui(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
 	uint16_t _bg_color, uint16_t _face_color, 
 	uint16_t _bg_selected, uint16_t _face_selected,
@@ -102,6 +104,7 @@ class Mouse_ui: public UI{
   void begin();
   bool onClickL();
   bool onClickR();
+  void accelerate(unsigned int now);
   bool onScrollL(int enc);
   bool onScrollR(int enc);
   bool onPowerUp();

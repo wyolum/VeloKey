@@ -276,11 +276,32 @@ bool Mouse_ui::onClickR(){
   mouseCommand(0, 0, 0);
   return true;
 }
+void Mouse_ui::accelerate(unsigned int now){
+  unsigned int dt = now - last_scroll_l;
+  if(dt < 100){
+    if(velocity < 16){
+      velocity++;
+    }
+  }
+  else{
+    velocity /= 2;
+    if(velocity < 4){
+      velocity = 4;
+    }
+  }
+  last_scroll_l = now;
+  
+}
+
 bool Mouse_ui::onScrollL(int enc){
   // right-left
-  int delta_x = -lencL->getDelta(enc * velocity);
+  unsigned int now = millis();
+  int delta_x;
+
+  accelerate(now);
+  delta_x = -lencL->getDelta(enc) * velocity;
   mouseCommand(0, delta_x, 0);
-  last_action = millis();
+  last_action = now;
 
   if(delta_x < 0 && !is_left){
     // left arrow
@@ -305,7 +326,10 @@ bool Mouse_ui::onScrollL(int enc){
 
 bool Mouse_ui::onScrollR(int enc){
   // up/down
-  int delta_y = lencR->getDelta(enc * velocity);
+  unsigned int now = millis();
+
+  accelerate(now);
+  int delta_y = lencR->getDelta(enc) * velocity;
   mouseCommand(0, 0, delta_y);
   last_action = millis();
   if(delta_y < 0 && !is_up){
