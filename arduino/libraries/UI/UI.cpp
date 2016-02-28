@@ -31,14 +31,19 @@ void UI::begin(){
 }
 
 bool UI::onClickL(){
+  return false;
 }
 bool UI::onClickR(){
+  return false;
 }
 bool UI::onScrollL(int enc){
+  return false;
 }
 bool UI::onScrollR(int enc){
+  return false;
 }
 bool UI::onPowerUp(){
+  return false;
 }
 void UI::update(bool a_depressed, bool b_depressed){
 }
@@ -178,9 +183,10 @@ bool KeyMenu::onClick(){
     keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
   }
   else{
-    keyCommand(MODIFIER_NONE, keys_p[selected], 0, 0, 0, 0, 0);
+    keyCommand(ez_modifier, keys_p[selected], 0, 0, 0, 0, 0);
     keydown = true;
   }
+  return true;
 }
 void KeyMenu::update(bool a_depressed, bool b_depressed){
   if(keydown && !(a_depressed || b_depressed)){
@@ -192,8 +198,7 @@ bool KeyMenu::onClickL(){
   bool out = false;
   if(!right){
     // send a key via ezlink
-    onClick();
-    out = true;
+    out = onClick();
   }
   return out;
 }
@@ -201,8 +206,7 @@ bool KeyMenu::onClickR(){
   bool out = false;
   if(right){
     // send a key via ezlink
-    onClick();
-    out = true;
+    out = onClick();
   }
   return out;
 }
@@ -353,11 +357,54 @@ Alpha::Alpha(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
 {
 }
   
+bool Alpha::onClick(){
+  //check for special char
+  // send a key via ezlink
+  byte key = keys_p[selected];
+  if(selected == n-2){ // kludge to detech shift button
+    if(shifted){
+      shifted = false;
+    }
+    else{
+      shifted = true;
+    }
+    begin();
+  }
+  else{
+    if(shifted){
+      ez_modifier = MODIFIER_SHIFT_RIGHT;
+    }
+    else{
+      ez_modifier = MODIFIER_NONE;
+    }
+    KeyMenu::onClick();
+  }
+  return true;
+}
+
+bool Alpha::onClickL(){
+  bool out = false;
+  if(!right){
+    onClick();
+    out = true;
+  }
+  return out;
+}
+bool Alpha::onClickR(){
+  bool out = false;
+  if(right){
+    onClick();
+    out = true;
+  }
+  return out;
+}
+
 void Alpha::begin(){
   UI::begin();
   for(int pos = 0; pos < n; pos++){
     draw_key(pos, face_color);
   }
+  draw_key(selected, face_selected);
 }
 void Alpha::draw_key(uint8_t pos, uint16_t color){
   int ii = pos % 6;
@@ -377,7 +424,12 @@ void Alpha::draw_key(uint8_t pos, uint16_t color){
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
   }
   if(pos < n){
-    tft_p->print(letters[pos]);
+    if(!shifted){
+      tft_p->print(letters[pos]);
+    }
+    else{
+      tft_p->print(shifted_letters[pos]);
+    }
   }
 }
 
@@ -430,26 +482,32 @@ void Numeric::begin(){
   for(int pos = 0; pos < n; pos++){
     draw_key(pos, face_color);
   }
+  draw_key(selected, face_selected);
 }
 void Numeric::draw_key(uint8_t pos, uint16_t color){
   int ii = pos % 6;
   int jj = pos / 6;
   tft_p->setTextColor(color);
   tft_p->setTextSize(2);
-  if(pos < 26 + 0){
+  if(pos < 21 + 0){
     tft_p->setCursor(12 * ii + right * 80, fontsize * jj);
     }
-  else if(pos == 26 + 0 + 0){ // backspace
+  else if(pos == 21 + 0 + 0){ // backspace
     tft_p->setCursor(12 * 4 + right * 80, fontsize * 4);
   }
-  else if(pos == 26 + 0 + 1){ // shift
+  else if(pos == 21 + 0 + 1){ // shift
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 5);
   }
-  else if(pos == 26 + 0 + 2){ // enter
+  else if(pos == 21 + 0 + 2){ // enter
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
   }
   if(pos < n){
-    tft_p->print(letters[pos]);
+    if(!shifted){
+      tft_p->print(letters[pos]);
+    }
+    else{
+      tft_p->print(shifted_letters[pos]);
+    }
   }
 }
 
@@ -482,6 +540,48 @@ bool Numeric::onScrollL(int enc){
   }
   return out;
 }
+bool Numeric::onClick(){
+  //check for special char
+  // send a key via ezlink
+  byte key = keys_p[selected];
+  if(selected == n-2){ // kludge to detech shift button
+    if(shifted){
+      shifted = false;
+    }
+    else{
+      shifted = true;
+    }
+    begin();
+  }
+  else{
+    if(shifted){
+      ez_modifier = MODIFIER_SHIFT_RIGHT;
+    }
+    else{
+      ez_modifier = MODIFIER_NONE;
+    }
+    KeyMenu::onClick();
+  }
+  return true;
+}
+
+bool Numeric::onClickL(){
+  bool out = false;
+  if(!right){
+    onClick();
+    out = true;
+  }
+  return out;
+}
+bool Numeric::onClickR(){
+  bool out = false;
+  if(right){
+    onClick();
+    out = true;
+  }
+  return out;
+}
+
 
 BattLevel::BattLevel(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
 		     int _x, int _y, int _w, int _h,

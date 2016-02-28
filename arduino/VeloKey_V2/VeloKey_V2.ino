@@ -74,29 +74,33 @@ Data encb_u;
 
 const int n_camera_view = 8;
 char *Camera_Views[n_camera_view] = {
-  "1st Person",
-  "3rd Person",
-  "Side",
-  "Right Rear",
   "Head On",
-  "Specator",
-  "Helicopter",
+  "1st Person",
+  "Side",
+  "3rd Person",
+  "Right Rear",
   "Birdseye",
+  "Helicopter",
+  "Specator",
   };
 
 byte CameraKeys[n_camera_view]{ 
-  EZKEY_3,
-    EZKEY_1,
-    EZKEY_4,
-    EZKEY_5,
-    EZKEY_6,
-    EZKEY_7,
-    EZKEY_8,
-    EZKEY_9,
+  EZKEY_6, // Head on
+    EZKEY_3, // first person
+    EZKEY_4, // Side
+    EZKEY_1, // third person
+    EZKEY_5, // Right Rear
+    EZKEY_9, // Birds eye
+    EZKEY_8, // Heli
+    EZKEY_7, // Spectator
     };
 
 const uint8_t n_action = 13;
 char *Actions[n_action] = {
+  "< LEFT",
+  "^ STRAIGHT",
+  "> RIGHT",
+  "v U-TURN",
   "Elbow Flick", // f1
   "Wave",        // f2
   "\"Ride On!\"",// f3
@@ -105,34 +109,30 @@ char *Actions[n_action] = {
   // "\"Bring it!\"",  // f6
   "\"I'm Toast!\"", // f7
   // "Bell",           // f8
-  "Snapshot",      // f10
-  "End Ride",      // ESC
-  "Changing Room", // T
   "Message",       // M
-  "< LEFT",
-  "^ STRAIGHT",
-  "> RIGHT",
-  "v U-Turn",
+  "Snapshot",      // f10
+  "Changing Room", // T
   "<Alt-Tab>",
+  "End Ride",      // ESC
 };
 byte ActionKeys[n_action+1]{
-  EZKEY_F1,
-    EZKEY_F2,
-    EZKEY_F3,
-    //    EZKEY_F4,
-    //    EZKEY_F5,
-    //    EZKEY_F6,
-    EZKEY_F7,
-    //    EZKEY_F8,
-    EZKEY_F10,
-    EZKEY_ESCAPE,
-    EZKEY_T,
-    EZKEY_M,
-    EZKEY_ARROW_LEFT,
+    EZKEY_ARROW_LEFT, 
     EZKEY_ARROW_UP,
     EZKEY_ARROW_RIGHT,
     EZKEY_ARROW_DOWN,
-    ALT_TAB,
+    EZKEY_F1, // Elbow
+    EZKEY_F2, // Wave
+    EZKEY_F3, // Ride on
+    //    EZKEY_F4, // Hammer Time
+    //    EZKEY_F5, // Nice
+    //    EZKEY_F6, // Bringit
+    EZKEY_F7, // I'm toast
+    //    EZKEY_F8, // Bell
+    EZKEY_M, // Message
+    EZKEY_F10, // Snapshot
+    EZKEY_T, // changing room
+    ALT_TAB, 
+    EZKEY_ESCAPE, // End ride
     };
 
 bool camera_immediate = true; // for BT free demo

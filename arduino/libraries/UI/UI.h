@@ -18,6 +18,7 @@ class UI{
   uint8_t selected;
   int last_mouse_delta_x;
   int last_mouse_delta_y;
+  byte ez_modifier = MODIFIER_NONE;
 
   UI(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
      int _x, int _y, int _w, int _h,
@@ -118,6 +119,14 @@ class Alpha: public KeyMenu{
 		      "<shift>",
 		      "<enter>"
   };
+  char *shifted_letters[n] = {"A", "B", "C", "D", "E", "F", 
+			      "G", "H", "I", "J", "K", "L",
+			      "M", "N", "O", "P", "Q", "R",
+			      "S", "T", "U", "V", "W", "X", 
+			      "Y", "Z",               "<-",
+			      "<SHIFT>",
+			      "<ENTER>"
+  };
   byte keys[n] = {
     EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
     EZKEY_I, EZKEY_J, EZKEY_K, EZKEY_L, EZKEY_M, EZKEY_N, EZKEY_O, EZKEY_P, 
@@ -126,6 +135,7 @@ class Alpha: public KeyMenu{
     EZKEY_SHIFT_RIGHT, EZKEY_RETURN};
   byte *keys_p;
   bool immediate;
+  bool shifted = false;
   Alpha(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
 	uint16_t _bg_color, uint16_t _face_color, 
 	uint16_t _bg_selected, uint16_t _face_selected,
@@ -136,28 +146,43 @@ class Alpha: public KeyMenu{
   void begin();
   bool onScrollL(int enc);
   bool onScrollR(int enc);
+  bool onClick();
+  bool onClickL();
+  bool onClickR();
 };
 
 class Numeric: public KeyMenu{
  public:
-  static const int n = 26 + 0 + 3;
-  char *letters[n] = {"1", "2", "3", "4", "5", "6", 
-		      "7", "8", "9", "0", "!", "@",
-		      "#", "$", "%", "^", "&", "*",
-		      "(", ")", "-", "=", "[", "]", 
-		      "?", ";",
+  static const int n = 21 + 0 + 3;
+  char *letters[n] = {"1", "2", "3", "4", "5",
+		      "6", "7", "8", "9", "0",
+		      "`", ",", ".", "/", ";", 
+		      "'", "[", "]", "-", "=",
+		      "\\",
 		      "<-",
 		      "<shift>",
 		      "<enter>"
   };
+  char *shifted_letters[n] = {"!", "@", "#", "$", "%",
+			      "^", "&", "*", "(", ")",
+			      "~", "<", ">", "?", ":", 
+			      "\"", "{", "}", "_", "+",
+			      "|",
+			      "<-",
+			      "<shift>",
+			      "<enter>"
+  };
   byte keys[n] = {
-    EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
-    EZKEY_I, EZKEY_J, EZKEY_K, EZKEY_L, EZKEY_M, EZKEY_N, EZKEY_O, EZKEY_P, 
-    EZKEY_Q, EZKEY_R, EZKEY_S, EZKEY_T, EZKEY_U, EZKEY_V, EZKEY_W, EZKEY_X, 
-    EZKEY_Y, EZKEY_Z, EZKEY_BACKSPACE,
-    EZKEY_SHIFT_RIGHT, EZKEY_RETURN};
+    EZKEY_1, EZKEY_2, EZKEY_3, EZKEY_4, EZKEY_5, EZKEY_6, EZKEY_7, EZKEY_8, 
+    EZKEY_9, EZKEY_0, EZKEY_GRAVE, EZKEY_COMMA, EZKEY_SLASH, EZKEY_SEMICOLON, 
+    EZKEY_APOSTROPHE, EZKEY_BRACKET_LEFT, EZKEY_BRACKET_RIGHT,
+    EZKEY_MINUS, EZKEY_EQUAL, EZKEY_BACKSLASH, 
+    EZKEY_BACKSPACE,
+    EZKEY_SHIFT_RIGHT, 
+    EZKEY_RETURN};
   byte *keys_p;
   bool immediate;
+  bool shifted = false;
   Numeric(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
 	uint16_t _bg_color, uint16_t _face_color, 
 	uint16_t _bg_selected, uint16_t _face_selected,
@@ -168,6 +193,9 @@ class Numeric: public KeyMenu{
   void begin();
   bool onScrollL(int enc);
   bool onScrollR(int enc);
+  bool onClick();
+  bool onClickL();
+  bool onClickR();
 };
 
 class BattLevel: public UI{
