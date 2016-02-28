@@ -116,16 +116,16 @@ class Alpha: public KeyMenu{
 		      "m", "n", "o", "p", "q", "r",
 		      "s", "t", "u", "v", "w", "x", 
 		      "y", "z",               "<-",
-		      "<shift>",
-		      "<enter>"
+		      "<Shift>",
+		      "<Enter>"
   };
   char *shifted_letters[n] = {"A", "B", "C", "D", "E", "F", 
 			      "G", "H", "I", "J", "K", "L",
 			      "M", "N", "O", "P", "Q", "R",
 			      "S", "T", "U", "V", "W", "X", 
 			      "Y", "Z",               "<-",
-			      "<SHIFT>",
-			      "<ENTER>"
+			      "<Shift>",
+			      "<Enter>"
   };
   byte keys[n] = {
     EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
@@ -160,8 +160,8 @@ class Numeric: public KeyMenu{
 		      "'", "[", "]", "-", "=",
 		      "\\",
 		      "<-",
-		      "<shift>",
-		      "<enter>"
+		      "<Shift>",
+		      "<Enter>"
   };
   char *shifted_letters[n] = {"!", "@", "#", "$", "%",
 			      "^", "&", "*", "(", ")",
@@ -169,8 +169,8 @@ class Numeric: public KeyMenu{
 			      "\"", "{", "}", "_", "+",
 			      "|",
 			      "<-",
-			      "<shift>",
-			      "<enter>"
+			      "<Shift>",
+			      "<Enter>"
   };
   byte keys[n] = {
     EZKEY_1, EZKEY_2, EZKEY_3, EZKEY_4, EZKEY_5, EZKEY_6, EZKEY_7, EZKEY_8, 

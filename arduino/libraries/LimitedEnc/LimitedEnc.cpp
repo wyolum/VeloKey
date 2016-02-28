@@ -37,3 +37,4 @@ int LimitedEnc::get(int enc_pos){
   }
   return selected;
 }
+

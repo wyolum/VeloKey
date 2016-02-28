@@ -49,6 +49,11 @@ void ezkey_l2_cb(){
   last_high = now;
 }
 
+int last_enca_pos = -999;
+int last_encb_pos = -999;
+bool depressed_a = false;
+bool depressed_b = false;
+
 bool ezkey_linked = false;
 bool update_ezkey_linking(void) {
   if((ezkey_l2_period > 3500) && 
@@ -185,7 +190,6 @@ void ui_setup(){
   splash();
   //analogRead(A7);
   pinMode(A7, OUTPUT);
-
 }
 
 void swap_mouse(){
@@ -193,6 +197,13 @@ void swap_mouse(){
     n_active_ui = 2;
     active_uis_pp[0] = &camera_views;
     active_uis_pp[1] = &actions;
+
+    // reset encoders to old selected positions
+    actions.lenc     ->last_enc_pos = last_enca_pos;
+    camera_views.lenc->last_enc_pos = last_encb_pos;
+
+    actions.lenc     ->selected =      actions.selected;
+    camera_views.lenc->selected = camera_views.selected;
   }
   else{
     n_active_ui = 1;
@@ -205,15 +216,29 @@ void swap_mouse(){
 }
 
 void swap_kb(){
-  if(active_uis_pp[0] == &alpha){
+  if(active_uis_pp[0] == &numeric){
     n_active_ui = 2;
-    active_uis_pp[0] = &camera_views;
-    active_uis_pp[1] = &actions;
+    active_uis_pp[0] = &actions;
+    active_uis_pp[1] = &camera_views;
+
+    // reset encoders to old selected positions
+    actions.lenc     ->last_enc_pos = last_enca_pos;
+    camera_views.lenc->last_enc_pos = last_encb_pos;
+
+    actions.lenc     ->selected =      actions.selected;
+    camera_views.lenc->selected = camera_views.selected;
   }
   else{
     n_active_ui = 2;
-    active_uis_pp[0] = &alpha;
-    active_uis_pp[1] = &numeric;
+    active_uis_pp[0] = &numeric;
+    active_uis_pp[1] = &alpha;
+
+    // reset encoders to old selected positions
+    numeric.lenc->last_enc_pos = last_enca_pos;
+    alpha.lenc  ->last_enc_pos = last_encb_pos;
+
+    alpha.lenc  ->selected = alpha.selected;
+    numeric.lenc->selected = numeric.selected;
   }
   tft.fillScreen(ST7735_BLACK);
   for(int i=0; i<n_active_ui; i++){
@@ -251,11 +276,6 @@ bool check_powerup(){
   }
   return out;
 }
-
-int last_enca_pos = -999;
-int last_encb_pos = -999;
-bool depressed_a = false;
-bool depressed_b = false;
 
 void handleEvents(){
   readEncoder();
