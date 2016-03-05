@@ -188,7 +188,6 @@ void ui_setup(){
   tft.fillScreen(ST7735_BLACK);
   tft.setRotation(3);
   splash();
-  //analogRead(A7);
   pinMode(A7, OUTPUT);
 }
 

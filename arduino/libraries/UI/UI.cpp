@@ -141,6 +141,16 @@ bool MenuUI::onScrollL(int enc){
       select(position);
       out = true;
     }
+    else if(position == 0){
+      // at top of left menu, send a left arrow
+      keyCommand(MODIFIER_NONE, EZKEY_ARROW_LEFT, 0, 0, 0, 0, 0);
+      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    }
+    else if(position == n - 1){
+      // at bottom of left menu, send a right arrow
+      keyCommand(MODIFIER_NONE, EZKEY_ARROW_RIGHT, 0, 0, 0, 0, 0);
+      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    }
   }
   return out;
 }
@@ -151,6 +161,17 @@ bool MenuUI::onScrollR(int enc){
     if(position != selected){    
       select(position);
       out = true;
+    }
+    else if(position == 0){
+      // at top of right menu, send a up arrow
+      keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP, 0, 0, 0, 0, 0);
+      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    }
+    else if(position == n - 1){
+      // at bottom of right menu, send a down arrow 
+      // NOPE! (this causes a u-turn in ZWIFT)
+      // keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN, 0, 0, 0, 0, 0);
+      // keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     }
   }
   return out;
@@ -283,11 +304,14 @@ void Mouse_ui::accelerate(unsigned int now){
       velocity++;
     }
   }
-  else{
+  else if(dt < 400){
     velocity /= 2;
     if(velocity < 4){
       velocity = 4;
     }
+  }
+  else{
+    velocity = 4;
   }
   last_scroll_l = now;
   
@@ -402,6 +426,11 @@ bool Alpha::onClick(){
       ez_modifier = MODIFIER_NONE;
     }
     KeyMenu::onClick();
+    if(ez_modifier == MODIFIER_SHIFT_RIGHT){
+      ez_modifier = MODIFIER_NONE;
+      shifted = false;
+      begin();
+    }
   }
   return true;
 }
@@ -565,7 +594,7 @@ bool Numeric::onScrollL(int enc){
   return out;
 }
 bool Numeric::onClick(){
-  //check for special char
+  // check for special char
   // send a key via ezlink
   byte key = keys_p[selected];
   if(selected == n-2){ // kludge to detech shift button
