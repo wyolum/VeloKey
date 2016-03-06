@@ -27,6 +27,8 @@ for i, row in enumerate(rgbs):
         lens.append(l)
         if l < 256: ## change this for more colors
             r, g, b = rgb
+            if r > g + 10:
+                r = min([2 * r, 255])
             keep.append([i, j, r, g, b])
 
 def rgb565(r, g, b):
@@ -63,5 +65,5 @@ print keep.shape
 print keep[0, 0].shape
 for ijrgb in keep:
     i, j, r, g, b = ijrgb
-    im2.putpixel((i, j), tuple([r, r, r]))
+    im2.putpixel((i, j), tuple([r, g, b]))
 im2.show()

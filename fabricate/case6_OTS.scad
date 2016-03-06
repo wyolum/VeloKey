@@ -17,10 +17,14 @@ module electronics(){
 module keepout(){
     hull(){
       translate([-18, -21 - .11*inch -3, 12+2.5+1])
-      color([0, 0, 0])
-      cube([WW, WL + 6, WH]);
-      translate([0, 49.6, 16.])cylinder(d=30, h=1);
-      translate([0, -49.6, 16])cylinder(d=30, h=1);
+	color([1, 0, 0])
+	cube([WW, WL + 6, WH]);
+      // left and right wings
+      translate([0, 49.6, 16.])cylinder(d=33, h=1);
+      translate([0, -49.6, 16])cylinder(d=33, h=1);
+      // pwr up
+      translate([-34, 0, 16])cylinder(d=33.5, h=1);
+      
       translate([-8.5, 0, 5])
 	rotate(a=-90, v=[0, 0, 1])
 	scale([1.05, 1.05, 9.65])import("board_OTS.stl");
@@ -104,23 +108,11 @@ module encoder_enclosures(){
   difference()
     {
       union(){
-	// right
-	color([1, 0, 0])hull(){
-	  translate([0, -49.6, 5.5])cylinder(h=.1, d1=38);
-	  translate([0, -49.6 , 21-2])cylinder(h=.1, d1=34);
-	}
-	// left
-	color([1, 0, 0])hull(){
-	  translate([0, 49.6, 5.5])cylinder(h=.1, d1=38);
-	  translate([0, 49.6 , 21-2])cylinder(h=.1, d1=34);
-	}
-	
-	
 	color([1, 0, 0])translate([-35, 0, -11.5])hull()
 	  { // power up
 	    translate([4, 0, 0])cylinder(h=1, d=41);
 	    //translate([0, 0, 29.5])cylinder(d=31.7, h=1);
-	    translate([0, 0, 29.5])cylinder(d=34, h=1);
+	    translate([0, 0, 29.5])cylinder(d=34, h=.001);
 	  }
 
       }

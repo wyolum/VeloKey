@@ -281,7 +281,7 @@ void handleEvents(){
   update_ezkey_linking();
   
   if(check_powerup() && ezkey_linked){
-    ezkey.print(" ");
+    // ezkey.print(" ");
   }
   
   int enca_pos = enca_u.value / 4;
@@ -316,10 +316,16 @@ void handleEvents(){
     }
   }
   if(encb_pos != last_encb_pos){
+    bool handled = false;
     for(int i=0; i<n_active_ui; i++){
       if(active_uis_pp[i]->onScrollR(encb_pos)){
+	handled = true;
 	break;
       }
+    }
+    if(!handled){
+      // send to mouse?
+      // SerialDBG.println("unhandled scrollR event");
     }
     last_encb_pos = encb_pos;
   }
@@ -367,15 +373,26 @@ void splash(){
     for(int i = 0; i < n_rgb565; i++){
       tft.drawPixel(rgb565_rows[i], rgb565_cols[i], rgb565[i]);
     }
-  while(!ezkey_linked){
-    update_ezkey_linking();
+    int blink_counter = 0;
+    char * by_wyolum = "by WyoLum";
     tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
-    delay(666);
-    tft.fillCircle(160-10, 128-10, 5, ST7735_WHITE);
-    delay(334);
-  }
-  tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
-  delay(2000);
+    tft.setCursor(80, 100);
+    tft.setTextColor(ST7735_BLUE);
+    tft.setTextSize(1);
+    for(int ii = 0; ii < 9; ii ++){
+      tft.print(by_wyolum[ii]);
+      delay(100);
+    }
+    // just in case it never got printed above
+    while(!ezkey_linked){
+      update_ezkey_linking();
+      tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
+      delay(666);
+      tft.fillCircle(160-10, 128-10, 5, ST7735_WHITE);
+      delay(334);
+      blink_counter++;
+    }
+    delay(1000);
 }
 
 void loop(void) {
