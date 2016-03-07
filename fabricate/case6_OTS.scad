@@ -20,12 +20,12 @@ module keepout(){
 	color([1, 0, 0])
 	cube([WW, WL + 6, WH]);
       // left and right wings
-      translate([0, 49.6, 16.])cylinder(d=33, h=1);
-      translate([0, -49.6, 16])cylinder(d=33, h=1);
+      translate([0, 49.6, 16.5])cylinder(d=33, h=1);
+      translate([0, -49.6, 16.5])cylinder(d=33, h=1);
       // pwr up
-      translate([-34, 0, 16])cylinder(d=33.5, h=1);
+      translate([-34, 0, 16.5])cylinder(d=33.5, h=1);
       
-      translate([-8.5, 0, 5])
+      translate([-8.5, 0, 4.5])// was [-8.5, 0, 5]
 	rotate(a=-90, v=[0, 0, 1])
 	scale([1.05, 1.05, 9.65])import("board_OTS.stl");
     }
@@ -154,10 +154,11 @@ module case(){
 }
 
 module screw_mounts(){
-  h=9.4;
+  // bottom upper right
+  h=8.4; // was 9.4
   color([1, 0, 0])
     difference(){
-    translate([15., -37.45, -11])cylinder(h=h, $fn=6, r1=8, r2=4);
+    translate([15., -37.45, -10.5])cylinder(h=h, $fn=6, r1=8, r2=4);
     //translate([15., -37.45, -13])cylinder(h=h, $fn=60, r=3);
     translate([15., -37.45, -12])cylinder(h=h+2, $fn=60, r=1.2);
   }
@@ -165,8 +166,8 @@ module screw_mounts(){
   x = 15.8;
   color([1, 0, 0]) // bottom upper left
     difference(){
-    translate([x, y, -11])cylinder(h=4.9, $fn=6, r1=8, r2=4);
-    translate([x, y, -11])cylinder(h=4.9+1, $fn=60, r=1.5);
+    translate([x, y, -11])cylinder(h=4.4, $fn=6, r1=8, r2=4); // was h=4.9
+    translate([x, y, -11])cylinder(h=4.4+1, $fn=60, r=1.5);   // was h=4.9
   }
   translate([0, 0, 1])color([0, 1, 0]) // top upper left
   difference(){ 
@@ -175,7 +176,7 @@ module screw_mounts(){
   }
   yy = 45.7;
   xx = -20.3;
-  hh = 9.4;
+  hh = 8.9; // was 9.4
   color([1, 0, 0])
     difference(){
     translate([xx, yy, -11])cylinder(h=hh, $fn=6, r1=8, r2=4);
@@ -198,7 +199,7 @@ module screw_mounts(){
   }
   dx = 15;
   dy = 25.45;
-  dz = 13.8+2 - .7;
+  dz = 13.8+2 - .6;
   difference(){
     union(){
       for(j=[-1, 1]){
@@ -250,8 +251,8 @@ module bottom(){
 }
 
 //keepout();
-top();
-// bottom();
+//top();
+bottom();
 //knob();
 // knobs();
 //encoder_shaft();
@@ -259,3 +260,4 @@ top();
 // color([0, 0, 1])electronics();
 //power_up();
 // color([1, 0, 0])translate([0, 0, 0])cylinder(d=2, h=13);
+//translate([10, 28, 16.6-1.4])cylinder(r=5, h=2.25);

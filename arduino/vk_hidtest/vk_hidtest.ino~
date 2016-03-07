@@ -1,0 +1,6 @@
+void setup(){
+  Mouse.begin();
+}
+
+void loop(){
+}

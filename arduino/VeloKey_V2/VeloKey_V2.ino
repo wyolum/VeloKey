@@ -281,7 +281,7 @@ void handleEvents(){
   update_ezkey_linking();
   
   if(check_powerup() && ezkey_linked){
-    // ezkey.print(" ");
+    ezkey.print(" ");
   }
   
   int enca_pos = enca_u.value / 4;
