@@ -1,4 +1,4 @@
-update=Mon Feb 22 13:36:51 2016
+update=Sun Mar 27 19:31:38 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -29,8 +29,6 @@ LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
-[general]
-version=1
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -41,3 +39,5 @@ NetFmtName=Pcbnew
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
+[general]
+version=1
