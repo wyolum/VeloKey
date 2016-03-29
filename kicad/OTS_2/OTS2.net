@@ -1,8 +1,8 @@
 (export (version D)
   (design
-    (source /home/anool/projects-git/VeloKey/kicad/OTS_2/OTS2.sch)
-    (date "Mon Mar 28 16:04:04 2016")
-    (tool "Eeschema 4.0.2-4+6225~38~ubuntu15.04.1-stable")
+    (source /home/samata/projects-git/VeloKey/kicad/OTS_2/OTS2.sch)
+    (date "Tue Mar 29 20:21:10 2016")
+    (tool "Eeschema 4.0.2-4+6225~38~ubuntu15.10.1-stable")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
         (title)
@@ -524,7 +524,7 @@
         (pin (num 15) (name ~) (type passive)))))
   (libraries
     (library (logical velokey)
-      (uri /home/anool/projects-git/VeloKey/kicad/OTS_2/velokey.lib)))
+      (uri /home/samata/projects-git/VeloKey/kicad/OTS_2/velokey.lib)))
   (nets
     (net (code 1) (name "Net-(C33-Pad1)")
       (node (ref C33) (pin 1))
