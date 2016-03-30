@@ -1,8 +1,8 @@
 (export (version D)
   (design
-    (source /home/samata/projects-git/VeloKey/kicad/OTS_2/OTS2.sch)
-    (date "Tue Mar 29 20:21:10 2016")
-    (tool "Eeschema 4.0.2-4+6225~38~ubuntu15.10.1-stable")
+    (source /home/anool/projects-git/VeloKey/kicad/OTS_2/OTS2.sch)
+    (date "Wed Mar 30 16:50:39 2016")
+    (tool "Eeschema 4.0.2-4+6225~38~ubuntu15.04.1-stable")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
         (title)
@@ -329,7 +329,7 @@
       (tstamp 56F90F09))
     (comp (ref S2)
       (value ON_OFF)
-      (footprint velokey-footprints:SW_SPST)
+      (footprint velokey-footprints:SW_500ASSP1S1)
       (fields
         (field (name manf#) Value))
       (libsource (lib velokey) (part SPST-M-2))
@@ -524,7 +524,7 @@
         (pin (num 15) (name ~) (type passive)))))
   (libraries
     (library (logical velokey)
-      (uri /home/samata/projects-git/VeloKey/kicad/OTS_2/velokey.lib)))
+      (uri /home/anool/projects-git/VeloKey/kicad/OTS_2/velokey.lib)))
   (nets
     (net (code 1) (name "Net-(C33-Pad1)")
       (node (ref C33) (pin 1))
@@ -604,8 +604,8 @@
       (node (ref E4) (pin 2))
       (node (ref E1) (pin 11))
       (node (ref C7) (pin 2))
-      (node (ref S2) (pin 1))
       (node (ref C6) (pin 2))
+      (node (ref S2) (pin 2))
       (node (ref C5) (pin 2)))
     (net (code 17) (name "Net-(C3-Pad1)")
       (node (ref C3) (pin 1))
@@ -626,8 +626,8 @@
       (node (ref R1) (pin 2))
       (node (ref S1) (pin 2))
       (node (ref U9) (pin 13)))
-    (net (code 21) (name "Net-(S2-Pad2)")
-      (node (ref S2) (pin 2))
+    (net (code 21) (name "Net-(S2-Pad1)")
+      (node (ref S2) (pin 1))
       (node (ref U9) (pin 11)))
     (net (code 22) (name "Net-(C5-Pad1)")
       (node (ref C5) (pin 1))
