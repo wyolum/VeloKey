@@ -77,7 +77,7 @@
     (solder_mask_margin 0.762) (clearance 0.762))
   (pad "" np_thru_hole circle (at 22.86 8.89) (size 3.048 3.048) (drill 3.048) (layers *.Cu *.Mask F.SilkS)
     (solder_mask_margin 0.762) (clearance 0.762))
-  (model FeatherM0.wrl
+  (model M0.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))
