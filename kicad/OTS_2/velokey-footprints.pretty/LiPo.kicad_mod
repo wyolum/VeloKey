@@ -1,0 +1,18 @@
+(module LiPo (layer F.Cu) (tedit 56FCF5DD)
+  (fp_text reference BT1 (at 0 0.5) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value LiPo (at 0 -0.5) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_line (start 13 17) (end 13 -17) (layer F.SilkS) (width 1))
+  (fp_line (start -23 17) (end -23 -17) (layer F.SilkS) (width 0.5))
+  (fp_line (start 23 17) (end -23 17) (layer F.SilkS) (width 0.5))
+  (fp_line (start 23 -17) (end 23 17) (layer F.SilkS) (width 0.5))
+  (fp_line (start -23 -17) (end 23 -17) (layer F.SilkS) (width 0.5))
+  (model LiPo.wrl
+    (at (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
+)
