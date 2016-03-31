@@ -1,4 +1,3 @@
 (fp_lib_table
   (lib (name velokey-footprints)(type KiCad)(uri "$(KIPRJMOD)/velokey-footprints.pretty")(options "")(descr ""))
-  (lib (name BADGEr_fp)(type Legacy)(uri /home/anool/projects-git/BADGEr/Kicad/BADGER_v41_lib/BADGEr_fp.mod)(options "")(descr ""))
 )
