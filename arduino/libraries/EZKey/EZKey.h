@@ -134,4 +134,22 @@ const byte EZKEY_LEFT_MOUSE_BUTTON  = byte(0b001); // for mouseCommnad
 const byte EZKEY_MIDDLE_MOUSE_BUTTON= byte(0b100); // for mouseCommnad
 const byte EZKEY_RIGHT_MOUSE_BUTTON = byte(0b010); // for mouseCommnad
 
+// Constants for ConsumerCommand // credit DudleyDoggins from Adafruit Forum
+// key                 mask1    mask0    = consumerComand() hex params
+// ----------------    -------- --------   ---------------------------
+// Home                00000000 00000001 = (0x01,0x00)
+// KeyboardLayout      00000000 00000010 = (0x02,0x00)
+// Search              00000000 00000100 = (0x04,0x00)
+// Snapshot            00000000 00001000 = (0x08,0x00)
+// VolumeUp            00000000 00010000 = (0x10,0x00)
+// VolumeDown          00000000 00100000 = (0x20,0x00)
+// Play/Pause          00000000 01000000 = (0x40,0x00)
+// Fast Forward        00000000 10000000 = (0x80,0x00)
+// Rewind              00000001 00000000 = (0x00,0x01)
+// Scan Next Track     00000010 00000000 = (0x00,0x02)
+// Scan Previous Track 00000100 00000000 = (0x00,0x04)
+// Random Play         00001000 00000000 = (0x00,0x08)
+// Stop                00010000 00000000 = (0x00,0x10)
+
+
 #endif

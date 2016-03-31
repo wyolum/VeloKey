@@ -70,6 +70,27 @@ bool update_ezkey_linking(void) {
   return ezkey_linked;
 }
 
+void consumerCommand(uint8_t mask0,uint8_t mask1) {
+  ezkey.write(0xFD);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x02);
+  ezkey.write(mask0);
+  ezkey.write(mask1);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x00);
+  ezkey.write((byte)0x00);
+}
+
+void ezkey_volume_up(){
+  consumerCommand(0x10, 0x00);
+  consumerCommand(0x00, 0x00);
+}
+void ezkey_volume_down(){
+  consumerCommand(0x20, 0x00);
+  consumerCommand(0x00, 0x00);
+}
+
 union Data{
   int16_t value;
   char bytes[3];
@@ -324,8 +345,20 @@ void handleEvents(){
       }
     }
     if(!handled){
-      // send to mouse?
-      // SerialDBG.println("unhandled scrollR event");
+      // send a volume command
+      if(encb_pos < last_encb_pos && last_encb_pos != -999){
+	ezkey_volume_up();
+	SerialDBG.print(encb_pos);
+	SerialDBG.print(" up ");
+	SerialDBG.println(last_encb_pos);
+      }
+      else if(encb_pos > last_encb_pos && last_encb_pos != -999){
+	ezkey_volume_down();
+	SerialDBG.print(encb_pos);
+	SerialDBG.print(" down ");
+	SerialDBG.println(last_encb_pos);
+      }
+      handled = true;
     }
     last_encb_pos = encb_pos;
   }
