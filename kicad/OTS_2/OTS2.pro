@@ -1,4 +1,4 @@
-update=Fri Apr  1 16:08:05 2016
+update=Fri Apr  1 17:37:36 2016
 version=1
 last_client=kicad
 [pcbnew]
@@ -33,11 +33,12 @@ NetFmtName=Pcbnew
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=
 [eeschema/libraries]
 LibName1=velokey
 LibName2=power
-[general]
-version=1
+LibName3=/home/anool/projects-git/mmM/kicad/mmM-cache
