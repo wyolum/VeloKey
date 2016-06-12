@@ -24,6 +24,8 @@ class ClickButton
     long debounceTime;
     long multiclickTime;
     long longClickTime;
+    boolean changed;              // state has changed since last Update()
+
   private:
     uint8_t _pin;                 // Arduino pin connected to the button
     boolean _activeHigh;          // Type of button: Active-low = 0 or 

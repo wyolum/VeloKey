@@ -8,16 +8,23 @@
   5 --> ENCB_a
   6 --> ENCB_b
   7 --> ENBB_btn
-
+  10 -->  West Button
+  11 --> North Button
+  12 -->  East Button
+  13 --> South Button
+  A0 --> Center Encoder A
+  A1 --> Center Encoder B
+  A2 --> Center Button
   encoder interface
   commands:
-  "R" -- Read six bytes from two encoders
+  "R" -- Read six bytes from three encoders with center buttons.  ENCC has NSWE uttons too
   "a" -- Reset encoder a to zero count, and button counts to zero
   "b" -- Reset encoder b to zero count, and button counts to zero
+  "c" -- Reset encoder c to zero count, and button counts to zero
   
   message format:
-  byte1  byte2  byte3  byte4  byte5  byte6 
-  <---posa--->  btna   <---pos2--->  btn2
+  byte1  byte2  byte3  byte4  byte5  byte6 byte7  byte8  byte9 byte10
+  <---posa--->  btna   <---posb--->  btn2  <---posc--->  btnc NSEW
 
   posa -- signed 2 byte int -- encoder a position
   btna -- byte              -- number of button a clicks since last read

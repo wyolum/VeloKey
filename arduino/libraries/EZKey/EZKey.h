@@ -2,10 +2,6 @@
 #define __EZKEY_H
 
 // Bits in usbHidKeyboardInput.modifiers
-#include <inttypes.h>
-
-typedef uint8_t byte;
-
 const byte MODIFIER_NONE          =byte((0));
 const byte MODIFIER_CONTROL_LEFT  =byte((1<<0));
 const byte MODIFIER_SHIFT_LEFT    =byte((1<<1));

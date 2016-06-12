@@ -1,3 +1,6 @@
+#ifndef UI_H
+#define UI_H
+
 #include "Adafruit_ST7735.h"
 #include "LimitedEnc.h"
 #include "EZKey.h"
@@ -19,6 +22,7 @@ class UI{
   int last_mouse_delta_x;
   int last_mouse_delta_y;
   byte ez_modifier = MODIFIER_NONE;
+  bool ez_key_ready = false;
 
   UI(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
      int _x, int _y, int _w, int _h,
@@ -26,6 +30,10 @@ class UI{
      uint16_t _bg_selected, uint16_t _face_selected,
      uint8_t _fontsize);
   virtual void begin();
+  virtual bool onPressR();
+  virtual bool onPressL();
+  virtual bool onReleaseR();
+  virtual bool onReleaseL();
   virtual bool onClickR();
   virtual bool onClickL();
   virtual bool onScrollR(int enc);
@@ -35,7 +43,16 @@ class UI{
   void keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
 		  uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
 		  uint8_t keycode6);
+  void EZ_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
+		     uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
+		     uint8_t keycode6);
+  void USB_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
+		      uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
+		      uint8_t keycode6);
+
   void mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
+  void EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
+  void USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
 };
 
 class MenuUI: public UI{
@@ -102,6 +119,10 @@ class Mouse_ui: public UI{
 	uint8_t _fontsize);
 
   void begin();
+  bool onPressL();
+  bool onPressR();
+  bool onReleaseL();
+  bool onReleaseR();
   bool onClickL();
   bool onClickR();
   void accelerate(unsigned int now);
@@ -212,3 +233,5 @@ class BattLevel: public UI{
 	    uint8_t _fontsize);
   void update(bool depressed_a, bool depressed_b);
 };
+
+#endif

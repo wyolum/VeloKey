@@ -1,5 +1,6 @@
 #include "UI.h"
 #include <EZKey.h>
+#include "Mouse.h"
 
 UI::UI(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
        int _x, int _y, int _w, int _h,
@@ -30,6 +31,18 @@ void UI::begin(){
    tft_p->fillRect(x, y, w, h, bg_color);  
 }
 
+bool UI::onPressL(){
+  return false;
+}
+bool UI::onPressR(){
+  return false;
+}
+bool UI::onReleaseL(){
+  return false;
+}
+bool UI::onReleaseR(){
+  return false;
+}
 bool UI::onClickL(){
   return false;
 }
@@ -47,7 +60,7 @@ bool UI::onPowerUp(){
 }
 void UI::update(bool a_depressed, bool b_depressed){
 }
-void UI::keyCommand(
+void UI::EZ_keyCommand(
 		    uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
 		    uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
 		    uint8_t keycode6) {
@@ -61,7 +74,28 @@ void UI::keyCommand(
   ezkey_p->write(keycode5); // key code #5
   ezkey_p->write(keycode6); // key code #6
 }
-void UI::mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
+void UI::USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
+  int wheel = 0;
+  Mouse.move(delta_x, delta_y, wheel);
+  if(buttons){
+    if(buttons == EZKEY_LEFT_MOUSE_BUTTON){
+      Mouse.press(MOUSE_LEFT);
+    }
+    if(buttons == EZKEY_RIGHT_MOUSE_BUTTON){
+      Mouse.press(MOUSE_RIGHT);
+    }
+    if(buttons == EZKEY_MIDDLE_MOUSE_BUTTON){
+      Mouse.press(MOUSE_MIDDLE);
+    }
+  }
+  else{
+    Mouse.release(MOUSE_LEFT);
+    Mouse.release(MOUSE_RIGHT);
+    Mouse.release(MOUSE_MIDDLE);
+  }
+}
+
+void UI::EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
   ezkey_p->write(0xFD);
   ezkey_p->write((byte)0x00);
   ezkey_p->write((byte)0x03);
@@ -74,6 +108,16 @@ void UI::mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
   last_mouse_delta_x = delta_x;
   last_mouse_delta_y = delta_y;
 }
+
+void UI::mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
+  if(ez_key_ready){
+    EZ_mouseCommand(buttons, delta_x, delta_y);
+  }
+  else{
+    USB_mouseCommand(buttons, delta_x, delta_y);
+  }
+}
+
 MenuUI::MenuUI(Adafruit_ST7735* _tft_p,   Uart* _ezkey_p,
 	       char **_items, int _n, bool _right, 
 	       uint16_t _bg_color, uint16_t _face_color, 
@@ -143,13 +187,13 @@ bool MenuUI::onScrollL(int enc){
     }
     else if(position == 0){
       // at top of left menu, send a left arrow
-      keyCommand(MODIFIER_NONE, EZKEY_ARROW_LEFT, 0, 0, 0, 0, 0);
-      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, EZKEY_ARROW_LEFT, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     }
     else if(position == n - 1){
       // at bottom of left menu, send a right arrow
-      keyCommand(MODIFIER_NONE, EZKEY_ARROW_RIGHT, 0, 0, 0, 0, 0);
-      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, EZKEY_ARROW_RIGHT, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     }
   }
   return out;
@@ -164,14 +208,14 @@ bool MenuUI::onScrollR(int enc){
     }
     else if(position == 0){
       // at top of right menu, send a up arrow
-      keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP, 0, 0, 0, 0, 0);
-      keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP, 0, 0, 0, 0, 0);
+      EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     }
     else if(position == n - 1){
       // at bottom of right menu, send a down arrow 
       // NOPE! (this causes a u-turn in ZWIFT)
-      // keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN, 0, 0, 0, 0, 0);
-      // keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+      // EZ_keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN, 0, 0, 0, 0, 0);
+      // EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     }
   }
   return out;
@@ -198,20 +242,20 @@ bool KeyMenu::onClick(){
     // send a key via ezlink
   byte key = keys_p[selected];
   if(key == ALT_TAB){
-    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, EZKEY_TAB, 0, 0, 0, 0);
+    EZ_keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, EZKEY_TAB, 0, 0, 0, 0);
     delay(100);
-    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, 0, 0, 0, 0, 0);
-    keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    EZ_keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, 0, 0, 0, 0, 0);
+    EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
   }
   else{
-    keyCommand(ez_modifier, keys_p[selected], 0, 0, 0, 0, 0);
+    EZ_keyCommand(ez_modifier, keys_p[selected], 0, 0, 0, 0, 0);
     keydown = true;
   }
   return true;
 }
 void KeyMenu::update(bool a_depressed, bool b_depressed){
   if(keydown && !(a_depressed || b_depressed)){
-    keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     keydown = false;
   }
 }
@@ -261,6 +305,7 @@ Mouse_ui::Mouse_ui(Adafruit_ST7735* _tft_p,   Uart* _ezkey_p,
 }
 void Mouse_ui::begin(){
   UI::begin();
+  Mouse.begin();
   // draw a mouse
   int size = 8;
   // ears
@@ -287,13 +332,41 @@ void Mouse_ui::begin(){
   
 }
 
+bool Mouse_ui::onPressL(){
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
+  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  return true;
+}
+bool Mouse_ui::onPressR(){
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
+  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0);
+  return true;
+}
+bool Mouse_ui::onReleaseL(){
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
+  mouseCommand(0, 0, 0);
+  return true;
+}
+bool Mouse_ui::onReleaseR(){
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
+  mouseCommand(0, 0, 0);
+  return true;
+}
 bool Mouse_ui::onClickL(){
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
   mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
   mouseCommand(0, 0, 0);
   return true;
 }
 bool Mouse_ui::onClickR(){
-  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  //EZ_mouseCommand(0, 0, 0);
+  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0);
   mouseCommand(0, 0, 0);
   return true;
 }
@@ -336,7 +409,7 @@ bool Mouse_ui::onScrollL(int enc){
     is_left = true;
     is_clear = false;
   }
-  else if(delta_x > 0 && !is_right){
+  if(delta_x > 0 && !is_right){
     // right arrow
     tft_p->fillTriangle(TFT_W/2+60, TFT_H/2, 
 			TFT_W/2+40, TFT_H/2+20, 
@@ -379,7 +452,7 @@ bool Mouse_ui::onPowerUp(){
 }
 void Mouse_ui::update(bool a_depressed, bool b_depressed){
   unsigned long now = millis();
-  if(!is_clear && now - last_action > 1000){
+  if(!is_clear && (now - last_action) > 1000){
     // clear screen
     begin();
     is_clear = true;
@@ -409,7 +482,7 @@ bool Alpha::onClick(){
   //check for special char
   // send a key via ezlink
   byte key = keys_p[selected];
-  if(selected == n-2){ // kludge to detech shift button
+  if(selected == n - 2){ // kludge to detech shift button
     if(shifted){
       shifted = false;
     }
@@ -487,7 +560,7 @@ void Alpha::draw_key(uint8_t pos, uint16_t color){
 }
 
 void Alpha::select(int position){
-  int value = -position;
+  int value = position;
   int _x, _y;
   while(value < 0){ // correct negative encoder value
     value += n * ((abs(value)) / n + 1);
@@ -565,7 +638,7 @@ void Numeric::draw_key(uint8_t pos, uint16_t color){
 }
 
 void Numeric::select(int position){
-  int value = -position;
+  int value = position;
   int _x, _y;
   while(value < 0){ // correct negative encoder value
     value += n * ((abs(value)) / n + 1);

@@ -34,6 +34,7 @@ as well as Adafruit raw 1.8" TFT display
                       // in which case, set this #define pin to 0!
 //#define TFT_DC     8 // orig
 #define TFT_DC     6
+const int DISPLAY_BACKLIGHT = A3;
 
 // Option 1 (recommended): must use the hardware SPI pins
 // (for UNO thats sclk = 13 and sid = 11) and pin 10 must be
@@ -53,6 +54,8 @@ void setup(void) {
   SerialDBG.print("Hello! Adafruit ST7735 rotation test");
 
   // Use this initializer if you're using a 1.8" TFT
+  pinMode(DISPLAY_BACKLIGHT, OUTPUT);
+  digitalWrite(DISPLAY_BACKLIGHT, HIGH);
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
 
   // Use this initializer (uncomment) if you're using a 1.44" TFT

@@ -127,6 +127,12 @@ void ClickButton::Update()
   // debounce the button (Check if a stable, changed state has occured)
   if (now - _lastBounceTime > debounceTime && _btnState != depressed)
   {
+    if(depressed != _btnState){
+      changed = true;
+    }
+    else{
+      changed = false;
+    }
     depressed = _btnState;
     if (depressed) _clickCount++;
   }
