@@ -40,15 +40,11 @@ class UI{
   virtual bool onScrollL(int enc);
   virtual bool onPowerUp();
   virtual void update(bool depressed_a, bool depressed_b);
-  void keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
+  void keyCommand(uint8_t modifiers, uint8_t keycode);
+  void EZ_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
 		  uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
 		  uint8_t keycode6);
-  void EZ_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
-		     uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
-		     uint8_t keycode6);
-  void USB_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
-		      uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
-		      uint8_t keycode6);
+  void USB_keyCommand(uint8_t modifiers, uint8_t keycode);
 
   void mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
   void EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
@@ -177,25 +173,25 @@ class Alpha: public KeyMenu{
 
 class Numeric: public KeyMenu{
  public:
+  char *numbers[24] = {"1", "2", "3", "4", "5",
+		       "6", "7", "8", "9", "0",
+		       "`", ",", ".", "/", ";", 
+		       "'", "[", "]", "-", "=",
+		       "\\",
+		       "<-",
+		       "<Shift>",
+		       "<Enter>"
+  };
+  char *shifted_numbers[24] = {"!", "@", "#", "$", "%",
+			       "^", "&", "*", "(", ")",
+			       "~", "<", ">", "?", ":", 
+			       "\"", "{", "}", "_", "+",
+			       "|",
+			       "<-",
+			       "<Shift>",
+			       "<Enter>"
+  };
   static const int n = 21 + 0 + 3;
-  char *letters[n] = {"1", "2", "3", "4", "5",
-		      "6", "7", "8", "9", "0",
-		      "`", ",", ".", "/", ";", 
-		      "'", "[", "]", "-", "=",
-		      "\\",
-		      "<-",
-		      "<Shift>",
-		      "<Enter>"
-  };
-  char *shifted_letters[n] = {"!", "@", "#", "$", "%",
-			      "^", "&", "*", "(", ")",
-			      "~", "<", ">", "?", ":", 
-			      "\"", "{", "}", "_", "+",
-			      "|",
-			      "<-",
-			      "<Shift>",
-			      "<Enter>"
-  };
   byte keys[n] = {
     EZKEY_1, EZKEY_2, EZKEY_3, EZKEY_4, EZKEY_5, EZKEY_6, EZKEY_7, EZKEY_8, 
     EZKEY_9, EZKEY_0, EZKEY_GRAVE, EZKEY_COMMA, EZKEY_PERIOD, EZKEY_SLASH, 

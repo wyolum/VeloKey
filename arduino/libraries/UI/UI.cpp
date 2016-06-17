@@ -1,6 +1,8 @@
 #include "UI.h"
+#include "KeyCodes.h"
 #include <EZKey.h>
 #include "Mouse.h"
+#include "Keyboard.h"
 
 UI::UI(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
        int _x, int _y, int _w, int _h,
@@ -60,10 +62,8 @@ bool UI::onPowerUp(){
 }
 void UI::update(bool a_depressed, bool b_depressed){
 }
-void UI::EZ_keyCommand(
-		    uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 
-		    uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
-		    uint8_t keycode6) {
+void UI::EZ_keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, 		       uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, 
+		       uint8_t keycode6) {
   ezkey_p->write(0xFD);       // our command
   ezkey_p->write(modifiers);  // modifier!
   ezkey_p->write((byte)0x00); // 0x00  
@@ -73,6 +73,29 @@ void UI::EZ_keyCommand(
   ezkey_p->write(keycode4); // key code #4
   ezkey_p->write(keycode5); // key code #5
   ezkey_p->write(keycode6); // key code #6
+ }
+void UI::USB_keyCommand(uint8_t modifiers, uint8_t keycode){
+  if(keycode){
+    uint8_t usb_keycode = convert_keycode(keycode, TO_USB);
+      
+    if(modifiers == MODIFIER_SHIFT_RIGHT || 
+       modifiers == MODIFIER_SHIFT_LEFT){
+      Keyboard.press(KEY_RIGHT_SHIFT);
+    }
+    Keyboard.press(usb_keycode);
+  }
+  else{
+    Keyboard.releaseAll();
+  }
+}
+
+void UI::keyCommand(uint8_t modifiers, uint8_t keycode){
+  if(ez_key_ready){
+    EZ_keyCommand(modifiers, keycode, 0, 0, 0, 0, 0);
+  }
+  else{
+    USB_keyCommand(modifiers, keycode);
+  }
 }
 void UI::USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
   int wheel = 0;
@@ -242,13 +265,16 @@ bool KeyMenu::onClick(){
     // send a key via ezlink
   byte key = keys_p[selected];
   if(key == ALT_TAB){
-    EZ_keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, EZKEY_TAB, 0, 0, 0, 0);
+    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT);
+    keyCommand(MODIFIER_ALT_LEFT, EZKEY_TAB);
     delay(100);
-    EZ_keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT, 0, 0, 0, 0, 0);
-    EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
+    keyCommand(MODIFIER_ALT_LEFT, EZKEY_ALT_LEFT);
+    keyCommand(MODIFIER_NONE, 0);
   }
   else{
-    EZ_keyCommand(ez_modifier, keys_p[selected], 0, 0, 0, 0, 0);
+    // keyCommand(ez_modifier, keys_p[selected]);
+    keyCommand(ez_modifier, keys_p[selected]);
+    keyCommand(ez_modifier, 0);
     keydown = true;
   }
   return true;
@@ -482,7 +508,7 @@ bool Alpha::onClick(){
   //check for special char
   // send a key via ezlink
   byte key = keys_p[selected];
-  if(selected == n - 2){ // kludge to detech shift button
+  if(selected == n - 2){ // kludge to detect shift button
     if(shifted){
       shifted = false;
     }
@@ -566,7 +592,7 @@ void Alpha::select(int position){
     value += n * ((abs(value)) / n + 1);
   }
   value = value % n;
-  char *msg = letters[value%n];
+  char *msg = letters[value];
   draw_key(selected, face_color);
   draw_key(value, face_selected);
   selected = value;
@@ -595,7 +621,7 @@ Numeric::Numeric(Adafruit_ST7735* _tft_p, Uart *_ezkey_p,
 	     bool _right,
 	     uint8_t _fontsize):
   KeyMenu(_tft_p, _ezkey_p,
-	  letters, keys, false,
+	  numbers, keys, false,
 	  1, _right, 
 	  _bg_color, _face_color, _bg_selected, _face_selected,
 	  _fontsize)
@@ -629,10 +655,10 @@ void Numeric::draw_key(uint8_t pos, uint16_t color){
   }
   if(pos < n){
     if(!shifted){
-      tft_p->print(letters[pos]);
+      tft_p->print(numbers[pos]);
     }
     else{
-      tft_p->print(shifted_letters[pos]);
+      tft_p->print(shifted_numbers[pos]);
     }
   }
 }
@@ -644,7 +670,7 @@ void Numeric::select(int position){
     value += n * ((abs(value)) / n + 1);
   }
   value = value % n;
-  char *msg = letters[value%n];
+  char *msg = numbers[value];
   draw_key(selected, face_color);
   draw_key(value, face_selected);
   selected = value;
