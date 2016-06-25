@@ -90,15 +90,14 @@ void UI::USB_keyCommand(uint8_t modifiers, uint8_t keycode){
 }
 
 void UI::keyCommand(uint8_t modifiers, uint8_t keycode){
-  if(ez_key_ready){
+  if(ezkey_ready){
     EZ_keyCommand(modifiers, keycode, 0, 0, 0, 0, 0);
   }
   else{
     USB_keyCommand(modifiers, keycode);
   }
 }
-void UI::USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
-  int wheel = 0;
+void UI::USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel){
   Mouse.move(delta_x, delta_y, wheel);
   if(buttons){
     if(buttons == EZKEY_LEFT_MOUSE_BUTTON){
@@ -118,7 +117,7 @@ void UI::USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
   }
 }
 
-void UI::EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
+void UI::EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel){
   ezkey_p->write(0xFD);
   ezkey_p->write((byte)0x00);
   ezkey_p->write((byte)0x03);
@@ -130,14 +129,22 @@ void UI::EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
   ezkey_p->write((byte)0x00);
   last_mouse_delta_x = delta_x;
   last_mouse_delta_y = delta_y;
+  for(int ii=0; ii < wheel; ii++){ // fake scroll wheel command!
+    keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP);
+    keyCommand(MODIFIER_NONE, 0);
+  }
+  for(int ii=0; ii < -wheel; ii++){ // fake scroll wheel command!
+    keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN);
+    keyCommand(MODIFIER_NONE, 0);
+  }
 }
 
-void UI::mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y){
-  if(ez_key_ready){
-    EZ_mouseCommand(buttons, delta_x, delta_y);
+void UI::mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel){
+  if(ezkey_ready){
+    EZ_mouseCommand(buttons, delta_x, delta_y, wheel);
   }
   else{
-    USB_mouseCommand(buttons, delta_x, delta_y);
+    USB_mouseCommand(buttons, delta_x, delta_y, wheel);
   }
 }
 
@@ -246,6 +253,7 @@ bool MenuUI::onScrollR(int enc){
 bool MenuUI::onPowerUp(){
 }
 void MenuUI::update(bool a_depressed, bool b_depressed){
+  UI::update(a_depressed, b_depressed);
 }
 
 KeyMenu::KeyMenu(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
@@ -280,6 +288,8 @@ bool KeyMenu::onClick(){
   return true;
 }
 void KeyMenu::update(bool a_depressed, bool b_depressed){
+  UI::update(a_depressed, b_depressed);
+
   if(keydown && !(a_depressed || b_depressed)){
     EZ_keyCommand(MODIFIER_NONE, 0, 0, 0, 0, 0, 0);
     keydown = false;
@@ -361,39 +371,39 @@ void Mouse_ui::begin(){
 bool Mouse_ui::onPressL(){
   //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
   //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
+  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
   return true;
 }
 bool Mouse_ui::onPressR(){
   //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
   //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0);
+  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0, 0);
   return true;
 }
 bool Mouse_ui::onReleaseL(){
-  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
-  //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(0, 0, 0);
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
+  //EZ_mouseCommand(0, 0, 0, 0);
+  mouseCommand(0, 0, 0, 0);
   return true;
 }
 bool Mouse_ui::onReleaseR(){
-  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
-  //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(0, 0, 0);
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
+  //EZ_mouseCommand(0, 0, 0, 0);
+  mouseCommand(0, 0, 0, 0);
   return true;
 }
 bool Mouse_ui::onClickL(){
-  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
-  //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
-  mouseCommand(0, 0, 0);
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
+  //EZ_mouseCommand(0, 0, 0, 0);
+  mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
+  mouseCommand(0, 0, 0, 0);
   return true;
 }
 bool Mouse_ui::onClickR(){
-  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0);
-  //EZ_mouseCommand(0, 0, 0);
-  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0);
-  mouseCommand(0, 0, 0);
+  //EZ_mouseCommand(EZKEY_LEFT_MOUSE_BUTTON, 0, 0, 0);
+  //EZ_mouseCommand(0, 0, 0, 0);
+  mouseCommand(EZKEY_RIGHT_MOUSE_BUTTON, 0, 0, 0);
+  mouseCommand(0, 0, 0, 0);
   return true;
 }
 void Mouse_ui::accelerate(unsigned int now){
@@ -423,7 +433,7 @@ bool Mouse_ui::onScrollL(int enc){
 
   accelerate(now);
   delta_x = -lencL->getDelta(enc) * velocity;
-  mouseCommand(0, delta_x, 0);
+  mouseCommand(0, delta_x, 0, 0);
   last_action = now;
 
   if(delta_x < 0 && !is_left){
@@ -453,7 +463,7 @@ bool Mouse_ui::onScrollR(int enc){
 
   accelerate(now);
   int delta_y = lencR->getDelta(enc) * velocity;
-  mouseCommand(0, 0, delta_y);
+  mouseCommand(0, 0, delta_y, 0);
   last_action = millis();
   if(delta_y < 0 && !is_up){
     tft_p->fillTriangle(TFT_W/2, TFT_H/2 - 60, 
@@ -478,6 +488,8 @@ bool Mouse_ui::onPowerUp(){
 }
 void Mouse_ui::update(bool a_depressed, bool b_depressed){
   unsigned long now = millis();
+
+  UI::update(a_depressed, b_depressed);
   if(!is_clear && (now - last_action) > 1000){
     // clear screen
     begin();
@@ -751,6 +763,7 @@ void BattLevel::update(bool depressed_a, bool depressed_b){
   //level = 128 * checkBattery() / 4.7;
   int new_level;
 
+  UI::update(depressed_a, depressed_b);
   float measuredvbat = 0; // analogRead(A7);
   measuredvbat *= 2;    // we divided by 2, so multiply back
   measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage

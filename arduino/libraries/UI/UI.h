@@ -22,7 +22,7 @@ class UI{
   int last_mouse_delta_x;
   int last_mouse_delta_y;
   byte ez_modifier = MODIFIER_NONE;
-  bool ez_key_ready = false;
+  bool ezkey_ready = false;
 
   UI(Adafruit_ST7735* _tft_, Uart *_ezkey_p,
      int _x, int _y, int _w, int _h,
@@ -46,9 +46,9 @@ class UI{
 		  uint8_t keycode6);
   void USB_keyCommand(uint8_t modifiers, uint8_t keycode);
 
-  void mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
-  void EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
-  void USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y);
+  void mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel);
+  void EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel);
+  void USB_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8_t wheel);
 };
 
 class MenuUI: public UI{
@@ -201,7 +201,6 @@ class Numeric: public KeyMenu{
     EZKEY_BACKSPACE,
     EZKEY_SHIFT_RIGHT, 
     EZKEY_RETURN};
-  byte *keys_p;
   bool immediate;
   bool shifted = false;
   Numeric(Adafruit_ST7735* _tft_p, Uart* _ezkey_p,
