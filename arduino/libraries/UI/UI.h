@@ -130,12 +130,12 @@ class Mouse_ui: public UI{
 
 class Alpha: public KeyMenu{
  public:
-  static const int n = 26 + 0 + 3;
+  static const int n = 26 + 1 + 3;
   char *letters[n] = {"a", "b", "c", "d", "e", "f", 
 		      "g", "h", "i", "j", "k", "l",
 		      "m", "n", "o", "p", "q", "r",
 		      "s", "t", "u", "v", "w", "x", 
-		      "y", "z",               "<-",
+		      "y", "z", "_",           "<-",
 		      "<Shift>",
 		      "<Enter>"
   };
@@ -143,7 +143,7 @@ class Alpha: public KeyMenu{
 			      "G", "H", "I", "J", "K", "L",
 			      "M", "N", "O", "P", "Q", "R",
 			      "S", "T", "U", "V", "W", "X", 
-			      "Y", "Z",               "<-",
+			      "Y", "Z", "_",           "<-",
 			      "<Shift>",
 			      "<Enter>"
   };
@@ -151,7 +151,7 @@ class Alpha: public KeyMenu{
     EZKEY_A, EZKEY_B, EZKEY_C, EZKEY_D, EZKEY_E, EZKEY_F, EZKEY_G, EZKEY_H, 
     EZKEY_I, EZKEY_J, EZKEY_K, EZKEY_L, EZKEY_M, EZKEY_N, EZKEY_O, EZKEY_P, 
     EZKEY_Q, EZKEY_R, EZKEY_S, EZKEY_T, EZKEY_U, EZKEY_V, EZKEY_W, EZKEY_X, 
-    EZKEY_Y, EZKEY_Z, EZKEY_BACKSPACE,
+    EZKEY_Y, EZKEY_Z, EZKEY_SPACE,                         EZKEY_BACKSPACE,
     EZKEY_SHIFT_RIGHT, EZKEY_RETURN};
   byte *keys_p;
   bool immediate;
@@ -173,33 +173,33 @@ class Alpha: public KeyMenu{
 
 class Numeric: public KeyMenu{
  public:
-  char *numbers[24] = {"1", "2", "3", "4", "5",
+  char *numbers[21 + 1 + 3] = {"1", "2", "3", "4", "5",
 		       "6", "7", "8", "9", "0",
 		       "`", ",", ".", "/", ";", 
 		       "'", "[", "]", "-", "=",
-		       "\\",
+		       "\\", "_",
 		       "<-",
 		       "<Shift>",
 		       "<Enter>"
   };
-  char *shifted_numbers[24] = {"!", "@", "#", "$", "%",
-			       "^", "&", "*", "(", ")",
-			       "~", "<", ">", "?", ":", 
-			       "\"", "{", "}", "_", "+",
-			       "|",
-			       "<-",
-			       "<Shift>",
-			       "<Enter>"
+  char *shifted_numbers[21 + 1 + 3] = {"!", "@", "#", "$", "%",
+				       "^", "&", "*", "(", ")",
+				       "~", "<", ">", "?", ":", 
+				       "\"", "{", "}", "_", "+",
+				       "|", "_",
+				       "<-",
+				       "<Shift>",
+				       "<Enter>"
   };
-  static const int n = 21 + 0 + 3;
+  static const int n = 21 + 1 + 3;
   byte keys[n] = {
     EZKEY_1, EZKEY_2, EZKEY_3, EZKEY_4, EZKEY_5, EZKEY_6, EZKEY_7, EZKEY_8, 
     EZKEY_9, EZKEY_0, EZKEY_GRAVE, EZKEY_COMMA, EZKEY_PERIOD, EZKEY_SLASH, 
     EZKEY_SEMICOLON, 
     EZKEY_APOSTROPHE, EZKEY_BRACKET_LEFT, EZKEY_BRACKET_RIGHT,
-    EZKEY_MINUS, EZKEY_EQUAL, EZKEY_BACKSLASH, 
+    EZKEY_MINUS, EZKEY_EQUAL, EZKEY_BACKSLASH, EZKEY_SPACE,
     EZKEY_BACKSPACE,
-    EZKEY_SHIFT_RIGHT, 
+    EZKEY_SHIFT_RIGHT,
     EZKEY_RETURN};
   bool immediate;
   bool shifted = false;

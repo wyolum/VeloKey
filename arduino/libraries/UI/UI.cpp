@@ -124,18 +124,18 @@ void UI::EZ_mouseCommand(uint8_t buttons, uint8_t delta_x, uint8_t delta_y, int8
   ezkey_p->write(buttons);
   ezkey_p->write(delta_x);
   ezkey_p->write(delta_y);
-  ezkey_p->write((byte)0x00);
+  ezkey_p->write((byte)wheel);
   ezkey_p->write((byte)0x00);
   ezkey_p->write((byte)0x00);
   last_mouse_delta_x = delta_x;
   last_mouse_delta_y = delta_y;
   for(int ii=0; ii < wheel; ii++){ // fake scroll wheel command!
-    keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP);
-    keyCommand(MODIFIER_NONE, 0);
+    //keyCommand(MODIFIER_NONE, EZKEY_ARROW_UP);
+    //keyCommand(MODIFIER_NONE, 0);
   }
   for(int ii=0; ii < -wheel; ii++){ // fake scroll wheel command!
-    keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN);
-    keyCommand(MODIFIER_NONE, 0);
+    //keyCommand(MODIFIER_NONE, EZKEY_ARROW_DOWN);
+    //keyCommand(MODIFIER_NONE, 0);
   }
 }
 
@@ -281,7 +281,7 @@ bool KeyMenu::onClick(){
   }
   else{
     // keyCommand(ez_modifier, keys_p[selected]);
-    keyCommand(ez_modifier, keys_p[selected]);
+    keyCommand(ez_modifier, key);
     keyCommand(ez_modifier, 0);
     keydown = true;
   }
@@ -575,16 +575,16 @@ void Alpha::draw_key(uint8_t pos, uint16_t color){
   int jj = pos / 6;
   tft_p->setTextColor(color);
   tft_p->setTextSize(2);
-  if(pos < 26 + 0){
+  if(pos < 26 + 1 + 0){
     tft_p->setCursor(12 * ii + right * 80, fontsize * jj);
     }
-  else if(pos == 26 + 0 + 0){ // backspace
+  else if(pos == 26 + 1 + 0){ // backspace
     tft_p->setCursor(12 * 4 + right * 80, fontsize * 4);
   }
-  else if(pos == 26 + 0 + 1){ // shift
+  else if(pos == 26 + 1 + 1){ // shift
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 5);
   }
-  else if(pos == 26 + 0 + 2){ // enter
+  else if(pos == 26 + 1 + 2){ // enter
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
   }
   if(pos < n){
@@ -592,7 +592,12 @@ void Alpha::draw_key(uint8_t pos, uint16_t color){
       tft_p->print(letters[pos]);
     }
     else{
-      tft_p->print(shifted_letters[pos]);
+      if(pos == n - 1){ // dont shif-enter
+	tft_p->print(letters[pos]);
+      }
+      else{
+	tft_p->print(shifted_letters[pos]);
+      }
     }
   }
 }
@@ -653,16 +658,16 @@ void Numeric::draw_key(uint8_t pos, uint16_t color){
   int jj = pos / 6;
   tft_p->setTextColor(color);
   tft_p->setTextSize(2);
-  if(pos < 21 + 0){
+  if(pos < 21 + 1){
     tft_p->setCursor(12 * ii + right * 80, fontsize * jj);
     }
-  else if(pos == 21 + 0 + 0){ // backspace
+  else if(pos == 21 + 1 + 0){ // backspace
     tft_p->setCursor(12 * 4 + right * 80, fontsize * 4);
   }
-  else if(pos == 21 + 0 + 1){ // shift
+  else if(pos == 21 + 1 + 1){ // shift
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 5);
   }
-  else if(pos == 21 + 0 + 2){ // enter
+  else if(pos == 21 + 1 + 2){ // enter
     tft_p->setCursor(12 * 0 + right * 80, fontsize * 6);
   }
   if(pos < n){
