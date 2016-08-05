@@ -251,7 +251,7 @@ module bottom(){
 }
 
 //keepout();
-//top();
+top();
 bottom();
 //knob();
 // knobs();

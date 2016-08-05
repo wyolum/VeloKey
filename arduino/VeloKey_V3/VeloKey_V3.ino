@@ -271,20 +271,21 @@ class Interface{
     tft.setTextSize(2);
     tft.println(name);
   }
-  void bt_indicator(bool force){
-    if(force || (bt_led_status != ezkey_linked)){
+  void bt_indicator(){
+    //if(!running || (bt_led_status != ezkey_linked)){ // only update if needed
+    if(true){ // just always update bt status
       if(ezkey_linked){
 	tft.fillCircle(155, 123, 3, ST7735_BLUE);
       }
       else{
-	tft.fillCircle(155, 123, 3, ST7735_BLUE);
-	tft.fillCircle(155, 123, 2, ST7735_BLACK);
+	tft.drawCircle(155, 123, 3, ST7735_BLUE);
+	//tft.fillCircle(155, 123, 2, ST7735_BLACK);
       }
       bt_led_status = ezkey_linked;
     }
   }
   virtual void draw(){ // on selected for 1 second
-    bt_indicator(true);
+    bt_indicator();
   }
   virtual void end(){}
   virtual void handleEvent(uint8_t event){
@@ -347,7 +348,7 @@ class Interface{
       draw();
       running = true;
     }
-    bt_indicator(false);
+    bt_indicator();
   }
 };
 
