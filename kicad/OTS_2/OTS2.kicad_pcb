@@ -348,7 +348,7 @@
       (net 72 /RX_PRO))
     (pad 2 smd rect (at 3.937 -1.27 180) (size 3.302 1.27) (layers F.Cu F.Paste F.Mask)
       (net 75 /TX_PRO))
-    (model dip_sw_smd.wrl
+    (model ${KIPRJMOD}/3d_models/dip_sw_smd.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -648,7 +648,7 @@
       (solder_mask_margin 0.762) (clearance 0.762))
     (pad "" np_thru_hole circle (at 22.86 -8.89 270) (size 3.048 3.048) (drill 3.048) (layers *.Cu *.Mask B.SilkS)
       (solder_mask_margin 0.762) (clearance 0.762))
-    (model M0.wrl
+    (model ${KIPRJMOD}/3d_models/M0.wrl
       (at (xyz 0 0 -0.15))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -682,7 +682,7 @@
       (net 47 "Net-(R1-Pad2)"))
     (pad 2 smd rect (at 2.2606 4.0894 270) (size 1.778 1.524) (layers B.Cu B.Paste B.Mask)
       (net 47 "Net-(R1-Pad2)"))
-    (model SW_smd.wrl
+    (model ${KIPRJMOD}/3d_models/SW_smd.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -816,7 +816,7 @@
       (net 17 "Net-(U7-Pad29)"))
     (pad 30 thru_hole oval (at 13.97 -7.62 90) (size 1.397 1.397) (drill 1.016) (layers *.Cu *.Mask F.SilkS)
       (net 18 "Net-(U7-Pad30)"))
-    (model BlueFruit.wrl
+    (model ${KIPRJMOD}/3d_models/BlueFruit.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -909,7 +909,7 @@
       (net 62 /EBA))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -938,7 +938,7 @@
       (net 61 /EBB))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -967,7 +967,7 @@
       (net 60 /EBS))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -996,7 +996,7 @@
       (net 59 /EAA))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1025,7 +1025,7 @@
       (net 58 /EAB))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1054,7 +1054,7 @@
       (net 57 /EAS))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1083,7 +1083,7 @@
       (net 56 /S5))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1112,7 +1112,7 @@
       (net 55 /S4))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1141,7 +1141,7 @@
       (net 54 /S3))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1170,7 +1170,7 @@
       (net 53 /S2))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1199,7 +1199,7 @@
       (net 52 /ECS))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1228,7 +1228,7 @@
       (net 51 /ECB))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1257,7 +1257,7 @@
       (net 50 /ECA))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 42 /GND))
-    (model Cap_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Cap_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1286,7 +1286,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 62 /EBA))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1315,7 +1315,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 61 /EBB))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1344,7 +1344,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 90) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 60 /EBS))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1373,7 +1373,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 59 /EAA))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1402,7 +1402,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 58 /EAB))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1431,7 +1431,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 270) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 57 /EAS))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1460,7 +1460,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 56 /S5))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1489,7 +1489,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 315) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 55 /S4))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1518,7 +1518,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 54 /S3))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1547,7 +1547,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 53 /S2))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1576,7 +1576,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 52 /ECS))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1605,7 +1605,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 51 /ECB))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1634,7 +1634,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 135) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 50 /ECA))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1663,7 +1663,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2 0 180) (size 2 2.5) (layers B.Cu B.Paste B.Mask)
       (net 47 "Net-(R1-Pad2)"))
-    (model Res_smd_1210.wrl
+    (model ${KIPRJMOD}/3d_models/Res_smd_1210.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3037,7 +3037,7 @@
       (net 41 "Net-(U10-Pad29)"))
     (pad 30 thru_hole oval (at 15.24 -5.08 90) (size 1.397 1.397) (drill 1.016) (layers *.Cu *.Mask F.SilkS)
       (net 56 /S5))
-    (model ArduinoProMini.wrl
+    (model ${KIPRJMOD}/3d_models/ArduinoProMini.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3065,7 +3065,7 @@
       (net 42 /GND))
     (pad 2 thru_hole circle (at 0 2.65 90) (size 2.6 2.6) (drill 1.6) (layers *.Cu *.Mask B.SilkS)
       (net 49 "Net-(S2-Pad2)"))
-    (model SW_spst.wrl
+    (model ${KIPRJMOD}/3d_models/SW_spst.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3099,7 +3099,7 @@
       (net 43 /VCC))
     (pad 2 smd rect (at 2.2606 4.0894 270) (size 1.778 1.524) (layers B.Cu B.Paste B.Mask)
       (net 43 /VCC))
-    (model SW_smd.wrl
+    (model ${KIPRJMOD}/3d_models/SW_smd.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
