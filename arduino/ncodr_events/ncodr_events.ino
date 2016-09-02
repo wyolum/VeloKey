@@ -1,6 +1,6 @@
 #include <Encoder.h>
 #include <ClickButton.h>
-
+TODO: THIS CODE IS BASED ON OLD HARDWARE.  UPDATE PIN13 TO PIN9 and TEST W/ NEW HW
 /*
   2 --> ENCA_a
   3 --> ENCA_b
