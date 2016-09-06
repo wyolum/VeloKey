@@ -754,35 +754,31 @@ Wire Wire Line
 	7000 6050 6700 6050
 Wire Wire Line
 	7000 6150 6700 6150
-Text Label 4050 5450 0    40   ~ 0
+Text Label 4050 5750 0    40   ~ 0
 eEAA
 Text Label 4050 5550 0    40   ~ 8
 eGND
 Text Label 4050 5650 0    40   ~ 0
 eEAA
-Text Label 4050 5750 0    40   ~ 8
-eGND
 Text Label 4050 5850 0    40   ~ 0
 eEAB
-Text Label 4050 6050 0    40   ~ 0
-eEAB
 Text Label 4050 5950 0    40   ~ 0
+eEAB
+Text Label 4050 6050 0    40   ~ 0
 eEAS
 Text Label 4050 6150 0    40   ~ 0
 eEAS
-Text Label 7000 5950 2    40   ~ 0
+Text Label 7000 6050 2    40   ~ 0
 eEBA
 Text Label 7000 6150 2    40   ~ 0
 eEBA
 Text Label 7000 5550 2    40   ~ 8
 eGND
-Text Label 7000 5750 2    40   ~ 8
-eGND
 Text Label 7000 5850 2    40   ~ 0
 eEBB
-Text Label 7000 6050 2    40   ~ 0
+Text Label 7000 5950 2    40   ~ 0
 eEBB
-Text Label 7000 5450 2    40   ~ 0
+Text Label 7000 5750 2    40   ~ 0
 eEBS
 Text Label 7000 5650 2    40   ~ 0
 eEBS
@@ -1007,5 +1003,28 @@ Wire Wire Line
 Text Label 8250 4450 0    40   ~ 8
 eGND
 Text Label 8225 3050 0    40   ~ 8
+eVCC
+Text Label 4050 5450 0    40   ~ 8
+eVCC
+Text Label 7000 5450 2    40   ~ 8
+eVCC
+$Comp
+L CONN_01X02 eP13
+U 1 1 57CF0C59
+P 10550 4150
+F 0 "eP13" H 10675 4200 40  0000 L CNB
+F 1 "ENC_C_5" H 10675 4125 40  0000 L CNB
+F 2 "velokey-footprints:Pin_Header_Straight_1x02" H 10550 4150 50  0001 C CNN
+F 3 "" H 10550 4150 50  0000 C CNN
+	1    10550 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10050 4100 10350 4100
+Wire Wire Line
+	10050 4200 10350 4200
+Text Label 10050 4200 0    40   ~ 8
+eVCC
+Text Label 10050 4100 0    40   ~ 8
 eVCC
 $EndSCHEMATC
