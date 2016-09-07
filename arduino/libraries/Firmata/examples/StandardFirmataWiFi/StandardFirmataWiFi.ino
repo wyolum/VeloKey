@@ -11,7 +11,9 @@
   Copyright (C) 2006-2008 Hans-Christoph Steiner.  All rights reserved.
   Copyright (C) 2010-2011 Paul Stoffregen.  All rights reserved.
   Copyright (C) 2009 Shigeru Kobayashi.  All rights reserved.
-  Copyright (C) 2009-2015 Jeff Hoefs.  All rights reserved.
+  Copyright (C) 2009-2016 Jeff Hoefs.  All rights reserved.
+  Copyright (C) 2015-2016 Jesse Frush. All rights reserved.
+  Copyright (C) 2016 Jens B. All rights reserved.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,55 +22,77 @@
 
   See file LICENSE.txt for further informations on licensing terms.
 
-  Last updated by Jeff Hoefs: December 26th, 2015
+  Last updated by Jeff Hoefs: April 24th, 2016
 */
 
 /*
   README
 
-  StandardFirmataEthernetPlus adds additional features that may exceed the Flash and
-  RAM sizes of Arduino boards such as ATMega328p (Uno) and ATMega32u4
-  (Leonardo, Micro, Yun, etc). It is best to use StandardFirmataPlus with a board that
-  has > 32k Flash and > 3k RAM such as: Arduino Mega, Arduino Due, Teensy 3.0/3.1/3.2, etc.
+  StandardFirmataWiFi enables the use of Firmata over a TCP connection. It can be configured as
+  either a TCP server or TCP client.
 
-  This sketch consumes too much Flash and RAM to run reliably on an
-  Arduino Leonardo, Yun, ATMega32u4-based board. Use StandardFirmataEthernet.ino instead
-  for those boards and other boards that do not meet the Flash and RAM requirements.
-
-  To use StandardFirmataEthernet you will need to have one of the following
+  To use StandardFirmataWiFi you will need to have one of the following
   boards or shields:
 
-  - Arduino Ethernet shield (or clone)
-  - Arduino Ethernet board (or clone)
+  - Arduino WiFi Shield (or clone)
+  - Arduino WiFi Shield 101
+  - Arduino MKR1000 board
+  - ESP8266 WiFi board compatible with ESP8266 Arduino core
 
-  Follow the instructions in the NETWORK CONFIGURATION section below to
+  Follow the instructions in the wifiConfig.h file (wifiConfig.h tab in Arduino IDE) to
   configure your particular hardware.
 
-  NOTE: If you are using an Arduino Ethernet shield you cannot use the following pins on
+  Dependencies:
+  - WiFi Shield 101 requires version 0.7.0 or higher of the WiFi101 library (available in Arduino
+    1.6.8 or higher, or update the library via the Arduino Library Manager or clone from source:
+    https://github.com/arduino-libraries/WiFi101)
+  - ESP8266 requires the Arduino ESP8266 core v2.1.0 or higher which can be obtained here:
+    https://github.com/esp8266/Arduino
+
+  In order to use the WiFi Shield 101 with Firmata you will need a board with at least 35k of Flash
+  memory. This means you cannot use the WiFi Shield 101 with an Arduino Uno or any other
+  ATmega328p-based microcontroller or with an Arduino Leonardo or other ATmega32u4-based
+  microcontroller. Some boards that will work are:
+
+  - Arduino Zero
+  - Arduino Due
+  - Arduino 101
+  - Arduino Mega
+
+  NOTE: If you are using an Arduino WiFi (legacy) shield you cannot use the following pins on
   the following boards. Firmata will ignore any requests to use these pins:
 
-  - Arduino Mega: (D4, D10, D50, D51, D52, D53)
-  - Arduino Due: (D4, D10)
-  - Arduino Uno or other ATMega328p boards: (D4, D10, D11, D12, D13)
+  - Arduino Uno or other ATMega328 boards: (D4, D7, D10, D11, D12, D13)
+  - Arduino Mega: (D4, D7, D10, D50, D51, D52, D53)
+  - Arduino Due, Zero or Leonardo: (D4, D7, D10)
 
-  If you are using an ArduinoEthernet board, the following pins cannot be used (same as Uno):
-  - D4, D10, D11, D12, D13
+  If you are using an Arduino WiFi 101 shield you cannot use the following pins on the following
+  boards:
+
+  - Arduino Due or Zero: (D5, D7, D10)
+  - Arduino Mega: (D5, D7, D10, D50, D52, D53)
 */
 
 #include <Servo.h>
 #include <Wire.h>
 #include <Firmata.h>
 
-// SoftwareSerial is currently only supported for AVR-based boards and the Arduino 101
-// The third condition checks if the IDE is in the 1.0.x series, if so, include SoftwareSerial
-// since it should be available to all boards in that IDE.
-#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_ARC32) || (ARDUINO >= 100 && ARDUINO < 10500)
-#include <SoftwareSerial.h>
-#endif
-#include "utility/serialUtils.h"
-
+/*
+ * Uncomment the #define SERIAL_DEBUG line below to receive serial output messages relating to your
+ * connection that may help in the event of connection issues. If defined, some boards may not begin
+ * executing this sketch until the Serial console is opened.
+ */
 //#define SERIAL_DEBUG
 #include "utility/firmataDebug.h"
+
+/*
+ * Uncomment the following include to enable interfacing with Serial devices via hardware or
+ * software serial.
+ */
+//#include "utility/SerialFirmata.h"
+
+// follow the instructions in wifiConfig.h to configure your particular hardware
+#include "wifiConfig.h"
 
 #define I2C_WRITE                   B00000000
 #define I2C_READ                    B00001000
@@ -85,66 +109,28 @@
 // the minimum interval for sampling analog input
 #define MINIMUM_SAMPLING_INTERVAL   1
 
-
-/*==============================================================================
- * NETWORK CONFIGURATION
- *
- * You must configure your particular hardware. Follow the steps below.
- *============================================================================*/
-
-#include <SPI.h>
-#include <Ethernet.h>
-
-// STEP 1 [REQUIRED for all boards and shields]
-// replace with IP of the server you want to connect to, comment out if using 'remote_host'
-#define remote_ip IPAddress(10, 0, 0, 3)
-// *** REMOTE HOST IS NOT YET WORKING ***
-// replace with hostname of server you want to connect to, comment out if using 'remote_ip'
-// #define remote_host "server.local"
-
-// STEP 2 [REQUIRED]
-// Replace with the port that your server is listening on
-#define remote_port 3030
-
-// STEP 3 [REQUIRED if not using DHCP]
-// Replace with your board or ethernet shield's IP address
-// Comment out if you want to use DHCP
-#define local_ip IPAddress(10, 0, 0, 15)
-
-// STEP 4 [REQUIRED]
-// replace with ethernet shield mac. Must be unique for your network
-const byte mac[] = {0x90, 0xA2, 0xDA, 0x00, 0x53, 0xE5};
-
-#if defined remote_ip && defined remote_host
-#error "cannot define both remote_ip and remote_host at the same time!"
-#endif
-
+#define MAX_CONN_ATTEMPTS           20  // [500 ms] -> 10 s
 
 /*==============================================================================
  * GLOBAL VARIABLES
  *============================================================================*/
 
-/* network */
-
-#include "utility/EthernetClientStream.h"
-
-EthernetClient client;
-
-#if defined remote_ip && !defined remote_host
-#ifdef local_ip
-EthernetClientStream stream(client, local_ip, remote_ip, NULL, remote_port);
-#else
-EthernetClientStream stream(client, IPAddress(0, 0, 0, 0), remote_ip, NULL, remote_port);
-#endif
+#ifdef FIRMATA_SERIAL_FEATURE
+SerialFirmata serialFeature;
 #endif
 
-#if !defined remote_ip && defined remote_host
-#ifdef local_ip
-EthernetClientStream stream(client, local_ip, IPAddress(0, 0, 0, 0), remote_host, remote_port);
-#else
-EthernetClientStream stream(client, IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0), remote_host, remote_port);
+#ifdef STATIC_IP_ADDRESS
+IPAddress local_ip(STATIC_IP_ADDRESS);
 #endif
+#ifdef SUBNET_MASK
+IPAddress subnet(SUBNET_MASK);
 #endif
+#ifdef GATEWAY_IP_ADDRESS
+IPAddress gateway(GATEWAY_IP_ADDRESS);
+#endif
+
+int connectionAttempts = 0;
+bool streamConnected = false;
 
 /* analog inputs */
 int analogInputsToReport = 0;      // bitwise array to store pin reporting
@@ -154,24 +140,12 @@ byte reportPINs[TOTAL_PORTS];       // 1 = report this port, 0 = silence
 byte previousPINs[TOTAL_PORTS];     // previous 8 bits sent
 
 /* pins configuration */
-byte pinConfig[TOTAL_PINS];         // configuration of every pin
 byte portConfigInputs[TOTAL_PORTS]; // each bit: 1 = pin in INPUT, 0 = anything else
-int pinState[TOTAL_PINS];           // any value that has been written
 
 /* timer variables */
 unsigned long currentMillis;        // store the current value from millis()
 unsigned long previousMillis;       // for comparison with currentMillis
 unsigned int samplingInterval = 19; // how often to sample analog inputs (in ms)
-
-/* serial message */
-Stream *swSerial0 = NULL;
-Stream *swSerial1 = NULL;
-Stream *swSerial2 = NULL;
-Stream *swSerial3 = NULL;
-
-byte reportSerial[MAX_SERIAL_PORTS];
-int serialBytesToRead[SERIAL_READ_ARR_LEN];
-signed char serialIndex;
 
 /* i2c data */
 struct i2c_device_info {
@@ -184,7 +158,7 @@ struct i2c_device_info {
 /* for i2c read continuous mode */
 i2c_device_info query[I2C_MAX_QUERIES];
 
-byte i2cRxData[32];
+byte i2cRxData[64];
 boolean isI2CEnabled = false;
 signed char queryIndex = -1;
 // default delay time between i2c read request and Wire.requestFrom()
@@ -220,103 +194,6 @@ byte wireRead(void)
 /*==============================================================================
  * FUNCTIONS
  *============================================================================*/
-
-// get a pointer to the serial port associated with the specified port id
-Stream* getPortFromId(byte portId)
-{
-  switch (portId) {
-    case HW_SERIAL0:
-      // block use of Serial (typically pins 0 and 1) until ability to reclaim Serial is implemented
-      //return &Serial;
-      return NULL;
-#if defined(PIN_SERIAL1_RX)
-    case HW_SERIAL1:
-      return &Serial1;
-#endif
-#if defined(PIN_SERIAL2_RX)
-    case HW_SERIAL2:
-      return &Serial2;
-#endif
-#if defined(PIN_SERIAL3_RX)
-    case HW_SERIAL3:
-      return &Serial3;
-#endif
-#if defined(SoftwareSerial_h)
-    case SW_SERIAL0:
-      if (swSerial0 != NULL) {
-        // instances of SoftwareSerial are already pointers so simply return the instance
-        return swSerial0;
-      }
-      break;
-    case SW_SERIAL1:
-      if (swSerial1 != NULL) {
-        return swSerial1;
-      }
-      break;
-    case SW_SERIAL2:
-      if (swSerial2 != NULL) {
-        return swSerial2;
-      }
-      break;
-    case SW_SERIAL3:
-      if (swSerial3 != NULL) {
-        return swSerial3;
-      }
-      break;
-#endif
-  }
-  return NULL;
-}
-
-// Check serial ports that have READ_CONTINUOUS mode set and relay any data
-// for each port to the device attached to that port.
-void checkSerial()
-{
-  byte portId, serialData;
-  int bytesToRead = 0;
-  int numBytesToRead = 0;
-  Stream* serialPort;
-
-  if (serialIndex > -1) {
-
-    // loop through all reporting (READ_CONTINUOUS) serial ports
-    for (byte i = 0; i < serialIndex + 1; i++) {
-      portId = reportSerial[i];
-      bytesToRead = serialBytesToRead[portId];
-      serialPort = getPortFromId(portId);
-      if (serialPort == NULL) {
-        continue;
-      }
-#if defined(SoftwareSerial_h)
-      // only the SoftwareSerial port that is "listening" can read data
-      if (portId > 7 && !((SoftwareSerial*)serialPort)->isListening()) {
-        continue;
-      }
-#endif
-      if (serialPort->available() > 0) {
-        Firmata.write(START_SYSEX);
-        Firmata.write(SERIAL_MESSAGE);
-        Firmata.write(SERIAL_REPLY | portId);
-
-        if (bytesToRead == 0 || (serialPort->available() <= bytesToRead)) {
-          numBytesToRead = serialPort->available();
-        } else {
-          numBytesToRead = bytesToRead;
-        }
-
-        // relay serial data to the serial device
-        while (numBytesToRead > 0) {
-          serialData = serialPort->read();
-          Firmata.write(serialData & 0x7F);
-          Firmata.write((serialData >> 7) & 0x7F);
-          numBytesToRead--;
-        }
-        Firmata.write(END_SYSEX);
-      }
-
-    }
-  }
-}
 
 void attachServo(byte pin, int minPulse, int maxPulse)
 {
@@ -431,15 +308,21 @@ void checkDigitalInputs(void)
 }
 
 // -----------------------------------------------------------------------------
+// function forward declarations for xtensa compiler (ESP8266)
+void enableI2CPins();
+void disableI2CPins();
+void reportAnalogCallback(byte analogPin, int value);
+
+// -----------------------------------------------------------------------------
 /* sets the pin mode to the correct state and sets the relevant bits in the
  * two bit-arrays that track Digital I/O and PWM status
  */
 void setPinModeCallback(byte pin, int mode)
 {
-  if (pinConfig[pin] == PIN_MODE_IGNORE)
+  if (Firmata.getPinMode(pin) == PIN_MODE_IGNORE)
     return;
 
-  if (pinConfig[pin] == PIN_MODE_I2C && isI2CEnabled && mode != PIN_MODE_I2C) {
+  if (Firmata.getPinMode(pin) == PIN_MODE_I2C && isI2CEnabled && mode != PIN_MODE_I2C) {
     // disable i2c so pins can be used for other functions
     // the following if statements should reconfigure the pins properly
     disableI2CPins();
@@ -459,7 +342,7 @@ void setPinModeCallback(byte pin, int mode)
       portConfigInputs[pin / 8] &= ~(1 << (pin & 7));
     }
   }
-  pinState[pin] = 0;
+  Firmata.setPinState(pin, 0);
   switch (mode) {
     case PIN_MODE_ANALOG:
       if (IS_PIN_ANALOG(pin)) {
@@ -470,7 +353,7 @@ void setPinModeCallback(byte pin, int mode)
           digitalWrite(PIN_TO_DIGITAL(pin), LOW); // disable internal pull-ups
 #endif
         }
-        pinConfig[pin] = PIN_MODE_ANALOG;
+        Firmata.setPinMode(pin, PIN_MODE_ANALOG);
       }
       break;
     case INPUT:
@@ -480,33 +363,33 @@ void setPinModeCallback(byte pin, int mode)
         // deprecated since Arduino 1.0.1 - TODO: drop support in Firmata 2.6
         digitalWrite(PIN_TO_DIGITAL(pin), LOW); // disable internal pull-ups
 #endif
-        pinConfig[pin] = INPUT;
+        Firmata.setPinMode(pin, INPUT);
       }
       break;
     case PIN_MODE_PULLUP:
       if (IS_PIN_DIGITAL(pin)) {
         pinMode(PIN_TO_DIGITAL(pin), INPUT_PULLUP);
-        pinConfig[pin] = PIN_MODE_PULLUP;
-        pinState[pin] = 1;
+        Firmata.setPinMode(pin, PIN_MODE_PULLUP);
+        Firmata.setPinState(pin, 1);
       }
       break;
     case OUTPUT:
       if (IS_PIN_DIGITAL(pin)) {
         digitalWrite(PIN_TO_DIGITAL(pin), LOW); // disable PWM
         pinMode(PIN_TO_DIGITAL(pin), OUTPUT);
-        pinConfig[pin] = OUTPUT;
+        Firmata.setPinMode(pin, OUTPUT);
       }
       break;
     case PIN_MODE_PWM:
       if (IS_PIN_PWM(pin)) {
         pinMode(PIN_TO_PWM(pin), OUTPUT);
         analogWrite(PIN_TO_PWM(pin), 0);
-        pinConfig[pin] = PIN_MODE_PWM;
+        Firmata.setPinMode(pin, PIN_MODE_PWM);
       }
       break;
     case PIN_MODE_SERVO:
       if (IS_PIN_DIGITAL(pin)) {
-        pinConfig[pin] = PIN_MODE_SERVO;
+        Firmata.setPinMode(pin, PIN_MODE_SERVO);
         if (servoPinMap[pin] == 255 || !servos[servoPinMap[pin]].attached()) {
           // pass -1 for min and max pulse values to use default values set
           // by Servo library
@@ -518,8 +401,13 @@ void setPinModeCallback(byte pin, int mode)
       if (IS_PIN_I2C(pin)) {
         // mark the pin as i2c
         // the user must call I2C_CONFIG to enable I2C for a device
-        pinConfig[pin] = PIN_MODE_I2C;
+        Firmata.setPinMode(pin, PIN_MODE_I2C);
       }
+      break;
+    case PIN_MODE_SERIAL:
+#ifdef FIRMATA_SERIAL_FEATURE
+      serialFeature.handlePinMode(pin, PIN_MODE_SERIAL);
+#endif
       break;
     default:
       Firmata.sendString("Unknown pin mode"); // TODO: put error msgs in EEPROM
@@ -536,8 +424,8 @@ void setPinModeCallback(byte pin, int mode)
 void setPinValueCallback(byte pin, int value)
 {
   if (pin < TOTAL_PINS && IS_PIN_DIGITAL(pin)) {
-    if (pinConfig[pin] == OUTPUT) {
-      pinState[pin] = value;
+    if (Firmata.getPinMode(pin) == OUTPUT) {
+      Firmata.setPinState(pin, value);
       digitalWrite(PIN_TO_DIGITAL(pin), value);
     }
   }
@@ -546,16 +434,16 @@ void setPinValueCallback(byte pin, int value)
 void analogWriteCallback(byte pin, int value)
 {
   if (pin < TOTAL_PINS) {
-    switch (pinConfig[pin]) {
+    switch (Firmata.getPinMode(pin)) {
       case PIN_MODE_SERVO:
         if (IS_PIN_DIGITAL(pin))
           servos[servoPinMap[pin]].write(value);
-        pinState[pin] = value;
+        Firmata.setPinState(pin, value);
         break;
       case PIN_MODE_PWM:
         if (IS_PIN_PWM(pin))
           analogWrite(PIN_TO_PWM(pin), value);
-        pinState[pin] = value;
+        Firmata.setPinState(pin, value);
         break;
     }
   }
@@ -573,11 +461,11 @@ void digitalWriteCallback(byte port, int value)
       // do not disturb non-digital pins (eg, Rx & Tx)
       if (IS_PIN_DIGITAL(pin)) {
         // do not touch pins in PWM, ANALOG, SERVO or other modes
-        if (pinConfig[pin] == OUTPUT || pinConfig[pin] == INPUT) {
+        if (Firmata.getPinMode(pin) == OUTPUT || Firmata.getPinMode(pin) == INPUT) {
           pinValue = ((byte)value & mask) ? 1 : 0;
-          if (pinConfig[pin] == OUTPUT) {
+          if (Firmata.getPinMode(pin) == OUTPUT) {
             pinWriteMask |= mask;
-          } else if (pinConfig[pin] == INPUT && pinValue == 1 && pinState[pin] != 1) {
+          } else if (Firmata.getPinMode(pin) == INPUT && pinValue == 1 && Firmata.getPinState(pin) != 1) {
             // only handle INPUT here for backwards compatibility
 #if ARDUINO > 100
             pinMode(pin, INPUT_PULLUP);
@@ -586,7 +474,7 @@ void digitalWriteCallback(byte port, int value)
             pinWriteMask |= mask;
 #endif
           }
-          pinState[pin] = pinValue;
+          Firmata.setPinState(pin, pinValue);
         }
       }
       mask = mask << 1;
@@ -697,7 +585,7 @@ void sysexCallback(byte command, byte argc, byte *argv)
         case I2C_READ_CONTINUOUSLY:
           if ((queryIndex + 1) >= I2C_MAX_QUERIES) {
             // too many queries, just ignore
-            Firmata.sendString("too many I2C queries");
+            Firmata.sendString("too many queries");
             break;
           }
           if (argc == 6) {
@@ -813,7 +701,7 @@ void sysexCallback(byte command, byte argc, byte *argv)
         }
         if (IS_PIN_PWM(pin)) {
           Firmata.write(PIN_MODE_PWM);
-          Firmata.write(8); // 8 = 8-bit resolution
+          Firmata.write(DEFAULT_PWM_RESOLUTION);
         }
         if (IS_PIN_DIGITAL(pin)) {
           Firmata.write(PIN_MODE_SERVO);
@@ -823,6 +711,9 @@ void sysexCallback(byte command, byte argc, byte *argv)
           Firmata.write(PIN_MODE_I2C);
           Firmata.write(1);  // TODO: could assign a number to map to SCL or SDA
         }
+#ifdef FIRMATA_SERIAL_FEATURE
+        serialFeature.handleCapability(pin);
+#endif
         Firmata.write(127);
       }
       Firmata.write(END_SYSEX);
@@ -834,10 +725,10 @@ void sysexCallback(byte command, byte argc, byte *argv)
         Firmata.write(PIN_STATE_RESPONSE);
         Firmata.write(pin);
         if (pin < TOTAL_PINS) {
-          Firmata.write((byte)pinConfig[pin]);
-          Firmata.write((byte)pinState[pin] & 0x7F);
-          if (pinState[pin] & 0xFF80) Firmata.write((byte)(pinState[pin] >> 7) & 0x7F);
-          if (pinState[pin] & 0xC000) Firmata.write((byte)(pinState[pin] >> 14) & 0x7F);
+          Firmata.write(Firmata.getPinMode(pin));
+          Firmata.write((byte)Firmata.getPinState(pin) & 0x7F);
+          if (Firmata.getPinState(pin) & 0xFF80) Firmata.write((byte)(Firmata.getPinState(pin) >> 7) & 0x7F);
+          if (Firmata.getPinState(pin) & 0xC000) Firmata.write((byte)(Firmata.getPinState(pin) >> 14) & 0x7F);
         }
         Firmata.write(END_SYSEX);
       }
@@ -852,155 +743,9 @@ void sysexCallback(byte command, byte argc, byte *argv)
       break;
 
     case SERIAL_MESSAGE:
-      Stream * serialPort;
-      mode = argv[0] & SERIAL_MODE_MASK;
-      byte portId = argv[0] & SERIAL_PORT_ID_MASK;
-
-      switch (mode) {
-        case SERIAL_CONFIG:
-          {
-            long baud = (long)argv[1] | ((long)argv[2] << 7) | ((long)argv[3] << 14);
-            byte swTxPin, swRxPin;
-            serial_pins pins;
-
-            if (portId < 8) {
-              serialPort = getPortFromId(portId);
-              if (serialPort != NULL) {
-                pins = getSerialPinNumbers(portId);
-                if (pins.rx != 0 && pins.tx != 0) {
-                  setPinModeCallback(pins.rx, PIN_MODE_SERIAL);
-                  setPinModeCallback(pins.tx, PIN_MODE_SERIAL);
-                  // Fixes an issue where some serial devices would not work properly with Arduino Due
-                  // because all Arduino pins are set to OUTPUT by default in StandardFirmata.
-                  pinMode(pins.rx, INPUT);
-                }
-                ((HardwareSerial*)serialPort)->begin(baud);
-              }
-            } else {
-#if defined(SoftwareSerial_h)
-              if (argc > 4) {
-                swRxPin = argv[4];
-                swTxPin = argv[5];
-              } else {
-                // RX and TX pins must be specified when using SW serial
-                Firmata.sendString("Specify serial RX and TX pins");
-                return;
-              }
-              switch (portId) {
-                case SW_SERIAL0:
-                  if (swSerial0 == NULL) {
-                    swSerial0 = new SoftwareSerial(swRxPin, swTxPin);
-                  }
-                  break;
-                case SW_SERIAL1:
-                  if (swSerial1 == NULL) {
-                    swSerial1 = new SoftwareSerial(swRxPin, swTxPin);
-                  }
-                  break;
-                case SW_SERIAL2:
-                  if (swSerial2 == NULL) {
-                    swSerial2 = new SoftwareSerial(swRxPin, swTxPin);
-                  }
-                  break;
-                case SW_SERIAL3:
-                  if (swSerial3 == NULL) {
-                    swSerial3 = new SoftwareSerial(swRxPin, swTxPin);
-                  }
-                  break;
-              }
-              serialPort = getPortFromId(portId);
-              if (serialPort != NULL) {
-                setPinModeCallback(swRxPin, PIN_MODE_SERIAL);
-                setPinModeCallback(swTxPin, PIN_MODE_SERIAL);
-                ((SoftwareSerial*)serialPort)->begin(baud);
-              }
+#ifdef FIRMATA_SERIAL_FEATURE
+      serialFeature.handleSysex(command, argc, argv);
 #endif
-            }
-            break; // SERIAL_CONFIG
-          }
-        case SERIAL_WRITE:
-          {
-            byte data;
-            serialPort = getPortFromId(portId);
-            if (serialPort == NULL) {
-              break;
-            }
-            for (byte i = 1; i < argc; i += 2) {
-              data = argv[i] + (argv[i + 1] << 7);
-              serialPort->write(data);
-            }
-            break; // SERIAL_WRITE
-          }
-        case SERIAL_READ:
-          if (argv[1] == SERIAL_READ_CONTINUOUSLY) {
-            if (serialIndex + 1 >= MAX_SERIAL_PORTS) {
-              break;
-            }
-
-            if (argc > 2) {
-              // maximum number of bytes to read from buffer per iteration of loop()
-              serialBytesToRead[portId] = (int)argv[2] | ((int)argv[3] << 7);
-            } else {
-              // read all available bytes per iteration of loop()
-              serialBytesToRead[portId] = 0;
-            }
-            serialIndex++;
-            reportSerial[serialIndex] = portId;
-          } else if (argv[1] == SERIAL_STOP_READING) {
-            byte serialIndexToSkip = 0;
-            if (serialIndex <= 0) {
-              serialIndex = -1;
-            } else {
-              for (byte i = 0; i < serialIndex + 1; i++) {
-                if (reportSerial[i] == portId) {
-                  serialIndexToSkip = i;
-                  break;
-                }
-              }
-              // shift elements over to fill space left by removed element
-              for (byte i = serialIndexToSkip; i < serialIndex + 1; i++) {
-                if (i < MAX_SERIAL_PORTS) {
-                  reportSerial[i] = reportSerial[i + 1];
-                }
-              }
-              serialIndex--;
-            }
-          }
-          break; // SERIAL_READ
-        case SERIAL_CLOSE:
-          serialPort = getPortFromId(portId);
-          if (serialPort != NULL) {
-            if (portId < 8) {
-              ((HardwareSerial*)serialPort)->end();
-            } else {
-#if defined(SoftwareSerial_h)
-              ((SoftwareSerial*)serialPort)->end();
-              if (serialPort != NULL) {
-                free(serialPort);
-                serialPort = NULL;
-              }
-#endif
-            }
-          }
-          break; // SERIAL_CLOSE
-        case SERIAL_FLUSH:
-          serialPort = getPortFromId(portId);
-          if (serialPort != NULL) {
-            getPortFromId(portId)->flush();
-          }
-          break; // SERIAL_FLUSH
-#if defined(SoftwareSerial_h)
-        case SERIAL_LISTEN:
-          // can only call listen() on software serial ports
-          if (portId > 7) {
-            serialPort = getPortFromId(portId);
-            if (serialPort != NULL) {
-              ((SoftwareSerial*)serialPort)->listen();
-            }
-          }
-          break; // SERIAL_LISTEN
-#endif
-      }
       break;
   }
 }
@@ -1035,30 +780,17 @@ void disableI2CPins() {
 
 void systemResetCallback()
 {
-  Stream *serialPort;
   isResetting = true;
 
   // initialize a defalt state
   // TODO: option to load config from EEPROM instead of default
 
-  if (isI2CEnabled) {
-    disableI2CPins();
-  }
-
-#if defined(SoftwareSerial_h)
-  // free memory allocated for SoftwareSerial ports
-  for (byte i = SW_SERIAL0; i < SW_SERIAL3 + 1; i++) {
-    serialPort = getPortFromId(i);
-    if (serialPort != NULL) {
-      free(serialPort);
-      serialPort = NULL;
-    }
-  }
+#ifdef FIRMATA_SERIAL_FEATURE
+  serialFeature.reset();
 #endif
 
-  serialIndex = -1;
-  for (byte i = 0; i < SERIAL_READ_ARR_LEN; i++) {
-    serialBytesToRead[i] = 0;
+  if (isI2CEnabled) {
+    disableI2CPins();
   }
 
   for (byte i = 0; i < TOTAL_PORTS; i++) {
@@ -1098,20 +830,141 @@ void systemResetCallback()
   isResetting = false;
 }
 
-void setup()
+/*
+ * Called when a TCP connection is either connected or disconnected.
+ * TODO:
+ * - report connected or reconnected state to host (to be added to protocol)
+ * - report current state to host (to be added to protocol)
+ */
+void hostConnectionCallback(byte state)
 {
-  DEBUG_BEGIN(9600);
+  switch (state) {
+    case HOST_CONNECTION_CONNECTED:
+      DEBUG_PRINTLN( "TCP connection established" );
+      break;
+    case HOST_CONNECTION_DISCONNECTED:
+      DEBUG_PRINTLN( "TCP connection disconnected" );
+      break;
+  }
+}
 
-#ifdef local_ip
-  Ethernet.begin((uint8_t *)mac, local_ip); //start ethernet
-#else
-  Ethernet.begin((uint8_t *)mac);           //start ethernet using dhcp
+/*
+ * Print the status of the WiFi connection. This is the connection to the access point rather
+ * than the TCP connection.
+ */
+void printWifiStatus() {
+  if ( WiFi.status() != WL_CONNECTED )
+  {
+    DEBUG_PRINT( "WiFi connection failed. Status value: " );
+    DEBUG_PRINTLN( WiFi.status() );
+  }
+  else
+  {
+    // print the SSID of the network you're attached to:
+    DEBUG_PRINT( "SSID: " );
+    DEBUG_PRINTLN( WiFi.SSID() );
+
+    // print your WiFi shield's IP address:
+    DEBUG_PRINT( "IP Address: " );
+    IPAddress ip = WiFi.localIP();
+    DEBUG_PRINTLN( ip );
+
+    // print the received signal strength:
+    DEBUG_PRINT( "signal strength (RSSI): " );
+    long rssi = WiFi.RSSI();
+    DEBUG_PRINT( rssi );
+    DEBUG_PRINTLN( " dBm" );
+  }
+}
+
+/*
+ * StandardFirmataWiFi communicates with WiFi shields over SPI. Therefore all
+ * SPI pins must be set to IGNORE. Otherwise Firmata would break SPI communication.
+ * Additional pins may also need to be ignored depending on the particular board or
+ * shield in use.
+ */
+void ignorePins()
+{
+#ifdef IS_IGNORE_PIN
+  for (byte i = 0; i < TOTAL_PINS; i++) {
+    if (IS_IGNORE_PIN(i)) {
+      Firmata.setPinMode(i, PIN_MODE_IGNORE);
+    }
+  }
 #endif
 
-  DEBUG_PRINTLN("connecting...");
+  //Set up controls for the Arduino WiFi Shield SS for the SD Card
+#ifdef ARDUINO_WIFI_SHIELD
+  // Arduino WiFi Shield has SD SS wired to D4
+  pinMode(PIN_TO_DIGITAL(4), OUTPUT);    // switch off SD card bypassing Firmata
+  digitalWrite(PIN_TO_DIGITAL(4), HIGH); // SS is active low;
 
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  pinMode(PIN_TO_DIGITAL(53), OUTPUT); // configure hardware SS as output on MEGA
+#endif //defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+
+#endif //ARDUINO_WIFI_SHIELD
+}
+
+void initTransport()
+{
+  // This statement will clarify how a connection is being made
+  DEBUG_PRINT( "StandardFirmataWiFi will attempt a WiFi connection " );
+#if defined(WIFI_101)
+  DEBUG_PRINTLN( "using the WiFi 101 library." );
+#elif defined(ARDUINO_WIFI_SHIELD)
+  DEBUG_PRINTLN( "using the legacy WiFi library." );
+#elif defined(ESP8266_WIFI)
+  DEBUG_PRINTLN( "using the ESP8266 WiFi library." );
+#elif defined(HUZZAH_WIFI)
+  DEBUG_PRINTLN( "using the HUZZAH WiFi library." );
+  //else should never happen here as error-checking in wifiConfig.h will catch this
+#endif  //defined(WIFI_101)
+
+  // Configure WiFi IP Address
+#ifdef STATIC_IP_ADDRESS
+  DEBUG_PRINT( "Using static IP: " );
+  DEBUG_PRINTLN( local_ip );
+#if defined(ESP8266_WIFI) || (defined(SUBNET_MASK) && defined(GATEWAY_IP_ADDRESS))
+  stream.config( local_ip , gateway, subnet );
+#else
+  // you can also provide a static IP in the begin() functions, but this simplifies
+  // ifdef logic in this sketch due to support for all different encryption types.
+  stream.config( local_ip );
+#endif
+#else
+  DEBUG_PRINTLN( "IP will be requested from DHCP ..." );
+#endif
+
+  stream.attach(hostConnectionCallback);
+
+  // Configure WiFi security and initiate WiFi connection
+#if defined(WIFI_WEP_SECURITY)
+  DEBUG_PRINT( "Attempting to connect to WEP SSID: " );
+  DEBUG_PRINTLN(ssid);
+  stream.begin(ssid, wep_index, wep_key);
+#elif defined(WIFI_WPA_SECURITY)
+  DEBUG_PRINT( "Attempting to connect to WPA SSID: " );
+  DEBUG_PRINTLN(ssid);
+  stream.begin(ssid, wpa_passphrase);
+#else                          //OPEN network
+  DEBUG_PRINTLN( "Attempting to connect to open SSID: " );
+  DEBUG_PRINTLN(ssid);
+  stream.begin(ssid);
+#endif //defined(WIFI_WEP_SECURITY)
+  DEBUG_PRINTLN( "WiFi setup done" );
+
+  // Wait for connection to access point to be established.
+  while (WiFi.status() != WL_CONNECTED && ++connectionAttempts <= MAX_CONN_ATTEMPTS) {
+    delay(500);
+    DEBUG_PRINT(".");
+  }
+  printWifiStatus();
+}
+
+void initFirmata()
+{
   Firmata.setFirmwareVersion(FIRMATA_FIRMWARE_MAJOR_VERSION, FIRMATA_FIRMWARE_MINOR_VERSION);
-
   Firmata.attach(ANALOG_MESSAGE, analogWriteCallback);
   Firmata.attach(DIGITAL_MESSAGE, digitalWriteCallback);
   Firmata.attach(REPORT_ANALOG, reportAnalogCallback);
@@ -1121,31 +974,20 @@ void setup()
   Firmata.attach(START_SYSEX, sysexCallback);
   Firmata.attach(SYSTEM_RESET, systemResetCallback);
 
-  // StandardFirmataEthernet communicates with Ethernet shields over SPI. Therefor all
-  // SPI pins must be set to IGNORE. Otherwise Firmata would break SPI communication.
-  // add Pin 10 and configure pin 53 as output if using a MEGA with an Ethernet shield.
+  ignorePins();
 
-  // ignore SPI and pin 4 that is SS for SD-Card on Ethernet-shield
-  for (byte i = 0; i < TOTAL_PINS; i++) {
-    if (IS_PIN_SPI(i)
-        || 4 == i  // SD-Card on Ethernet-shiedl uses pin 4 for SS
-        || 10 == i // Ethernet-shield uses pin 10 for SS
-       ) {
-      pinConfig[i] = PIN_MODE_IGNORE;
-    }
-  }
-
-  // Arduino EthernetShield has SD SS wired to D4
-  pinMode(PIN_TO_DIGITAL(4), OUTPUT);    // switch off SD card bypassing Firmata
-  digitalWrite(PIN_TO_DIGITAL(4), HIGH); // SS is active low;
-
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  pinMode(PIN_TO_DIGITAL(53), OUTPUT); // configure hardware SS as output on MEGA
-#endif
-
-  // start up Network Firmata:
+  // Initialize Firmata to use the WiFi stream object as the transport.
   Firmata.begin(stream);
   systemResetCallback();  // reset to default config
+}
+
+void setup()
+{
+  DEBUG_BEGIN(9600);
+
+  initTransport();
+
+  initFirmata();
 }
 
 /*==============================================================================
@@ -1161,8 +1003,9 @@ void loop()
 
   /* STREAMREAD - processing incoming messagse as soon as possible, while still
    * checking digital inputs.  */
-  while (Firmata.available())
+  while (Firmata.available()) {
     Firmata.processInput();
+  }
 
   // TODO - ensure that Stream buffer doesn't go over 60 bytes
 
@@ -1171,7 +1014,7 @@ void loop()
     previousMillis += samplingInterval;
     /* ANALOGREAD - do all analogReads() at the configured sampling interval */
     for (pin = 0; pin < TOTAL_PINS; pin++) {
-      if (IS_PIN_ANALOG(pin) && pinConfig[pin] == PIN_MODE_ANALOG) {
+      if (IS_PIN_ANALOG(pin) && Firmata.getPinMode(pin) == PIN_MODE_ANALOG) {
         analogPin = PIN_TO_ANALOG(pin);
         if (analogInputsToReport & (1 << analogPin)) {
           Firmata.sendAnalog(analogPin, analogRead(analogPin));
@@ -1186,13 +1029,9 @@ void loop()
     }
   }
 
-  checkSerial();
-
-#if !defined local_ip
-  if (Ethernet.maintain())
-  {
-    stream.maintain(Ethernet.localIP());
-  }
+#ifdef FIRMATA_SERIAL_FEATURE
+  serialFeature.update();
 #endif
 
+  stream.maintain();
 }
