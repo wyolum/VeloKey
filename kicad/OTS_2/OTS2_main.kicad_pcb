@@ -178,8 +178,6 @@
     (via_drill 0.508)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (diff_pair_gap 0.25)
-    (diff_pair_width 0.2)
   )
 
   (net_class 20mil ""
@@ -189,8 +187,6 @@
     (via_drill 0.508)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (diff_pair_gap 0.25)
-    (diff_pair_width 0.2)
     (add_net /CS)
     (add_net /DC)
     (add_net /EAA)
@@ -273,8 +269,6 @@
     (via_drill 0.508)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (diff_pair_gap 0.25)
-    (diff_pair_width 0.2)
     (add_net /GND)
     (add_net /VCC)
   )
@@ -286,8 +280,6 @@
     (via_drill 0.508)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (diff_pair_gap 0.25)
-    (diff_pair_width 0.2)
   )
 
   (module velokey-footprints:TSWB3NCB222LFS (layer F.Cu) (tedit 56FA4D54) (tstamp 56F83301)
