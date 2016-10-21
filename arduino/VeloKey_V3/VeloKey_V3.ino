@@ -32,11 +32,11 @@ Uart Serial2(&sercom1,
 	     PAD_SERIAL2_RX, PAD_SERIAL2_TX);
 //
 
+#define VBATPIN A7
 #define ncodr Serial1
 //#define SerialDBG SerialUSB // for M0
 #define SerialDBG SERIAL_PORT_USBVIRTUAL
 #define ezkey Serial2
-
 #define TFT_CS     5  
 #define TFT_RST    9  
 #define TFT_DC     6
@@ -45,6 +45,8 @@ Uart Serial2(&sercom1,
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, 
 				      TFT_SCLK, TFT_RST);
 Adafruit_ST7735 *tft_p = &tft;
+const uint32_t TIMEOUT_MS = 10000;
+
 const int ezkey_l2 = A4;
 unsigned long last_high = 0;
 unsigned long ezkey_l2_period = 0;
@@ -253,7 +255,8 @@ class Interface{
   long enc_r = 0;
   long enc_l = 0;
   int n_right, n_left;
-
+  float last_batt_voltage = 0;
+  
   char *name;
   unsigned int start_ms;
   bool running = false;
@@ -271,6 +274,40 @@ class Interface{
     tft.setTextSize(2);
     tft.println(name);
   }
+  void batt_voltage(){
+    int x = 136; 
+    int y = 120;
+    int w = 12;
+    int h = 7;
+    uint8_t i = 0;
+    //                       0      10    20  30     40    50    60    70     80   90   100
+    float percentiles[11] = {3.65, 3.68, 3.7, 3.725, 3.75, 3.82, 3.85, 3.857, 3.9, 4.05, 4.2};
+    float vmax = 4.;
+    float vmin = 4.;
+    
+    float voltage = getVBAT();
+    float percent = 100 * (voltage - vmin) / (vmax - vmin);
+    last_batt_voltage = voltage;
+    while(i < 11 && percentiles[i++] < voltage){
+    }
+    tft.fillRect(x, y, i, h, ST7735_BLUE);
+    tft.drawRect(x, y, w, h, ST7735_BLUE);
+    tft.fillRect(x+w, y+2, 1, h-4, ST7735_BLUE);
+    
+
+    /* // display the voltage value.  it flashes :( 
+    tft.setCursor(100, 120);
+    tft.setTextColor(ST7735_BLACK);
+    tft.setTextSize(1);
+    tft.println(last_batt_voltage);
+    
+    tft.setCursor(100, 120);
+    tft.setTextColor(ST7735_BLUE);
+    tft.println(voltage);
+    */
+    last_batt_voltage = voltage;
+  }
+  
   void bt_indicator(){
     //if(!running || (bt_led_status != ezkey_linked)){ // only update if needed
     if(true){ // just always update bt status
@@ -279,13 +316,13 @@ class Interface{
       }
       else{
 	tft.drawCircle(155, 123, 3, ST7735_BLUE);
-	//tft.fillCircle(155, 123, 2, ST7735_BLACK);
       }
       bt_led_status = ezkey_linked;
     }
   }
   virtual void draw(){ // on selected for 1 second
     bt_indicator();
+    batt_voltage();
   }
   virtual void end(){}
   virtual void handleEvent(uint8_t event){
@@ -349,6 +386,7 @@ class Interface{
       running = true;
     }
     bt_indicator();
+    batt_voltage();
   }
 };
 
@@ -495,12 +533,12 @@ class MouseInterface : public Interface{
       SerialDBG.println("SCROLL R RELEASE");      
     }
     else if(event == SCROLL_CENTER_CCW){
-      mouse.mouseCommand(0, 0, 0, 1);
+      mouse.mouseCommand(0, 0, 0, -1);
       SerialDBG.println("SCROLL C CCW");      
     }
     else if(event == SCROLL_CENTER_CW){
-      mouse.mouseCommand(0, 0, 0, -1);
-      SerialDBG.println("SCROLL C CCW");      
+      mouse.mouseCommand(0, 0, 0, 1);
+      SerialDBG.println("SCROLL C CW");      
     }
     else{
       Interface::handleEvent(event);
@@ -606,6 +644,14 @@ ZwiftInterface zwift_interface = ZwiftInterface();
 AlphaNumeric alpha_numeric = AlphaNumeric();
 Interface *interfaces[N_INTERFACE];
 
+float getVBAT(){
+  float measuredvbat = analogRead(VBATPIN);
+  measuredvbat *= 2;     // we divided by 2, so multiply back
+  measuredvbat *= 3.3;   // Multiply by 3.3V, our reference voltage
+  measuredvbat /= 1024.; // convert to voltage
+  return measuredvbat;
+}
+
 void changeInterfaces(){
   // display name
   current_interface = (interface_num) % N_INTERFACE;
@@ -643,20 +689,38 @@ void splash(){
   }
   int blink_counter = 0;
   char * by_wyolum = "by WyoLum";
-  //tft.fillCircle(160-10, 128-10, 7, ST7735_BLUE);
   tft.setCursor(80, 100);
   tft.setTextColor(ST7735_BLUE);
   tft.setTextSize(1);
   for(int ii = 0; ii < 9; ii ++){
     tft.print(by_wyolum[ii]);
-    delay(100);
+    //delay(100);
   }
-  delay(1000);
+  delay(500);
+  //delay(500);
   tft.fillScreen(ST7735_BLACK);
 }
 
+uint32_t last_activity = 0;
+bool display_backlit = true;
+
 void loop(void) {
-  read_ncodr_events();
+  uint32_t now = millis();
+
+  if(read_ncodr_events()){
+    last_activity = now;
+    if(!display_backlit){
+      digitalWrite(DISPLAY_BACKLIGHT, HIGH);
+      display_backlit = true;
+    }
+  }
+  if (now < last_activity){ // rollover (reset last activity)
+    last_activity = 0;
+  }
+  if(now - last_activity > TIMEOUT_MS && display_backlit){
+    digitalWrite(DISPLAY_BACKLIGHT, LOW);
+    display_backlit = false;
+  }
   handleEvents();
   interfaces[current_interface]->update();
 }
@@ -682,7 +746,7 @@ void handleEvents(){
 bool read_ncodr_events(){
   //read encoder value into global enca_u.value
   uint8_t event = 0;
-  bool out;
+  bool out = false;
 
   for(int ii=0; ii<ncodr.available(); ii++){
     out = true;

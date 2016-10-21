@@ -1,17 +1,18 @@
 #include <Encoder.h>
 #include <ClickButton.h>
-// TODO(DONE!): THIS CODE IS BASED ON OLD HARDWARE.  UPDATE PIN13 TO PIN9 and TEST W/ NEW HW
+#include "events.h" 
+// TODO(DONE!): THIS CODE IS updaged from OLD HARDWARE code.  UPDATEd PIN13 TO PIN9 and TEST W/ NEW HW
 /*
-  2 --> ENCA_a
-  3 --> ENCA_b
-  4 --> ENCA_btn
-  5 --> ENCB_a
-  6 --> ENCB_b
-  7 --> ENBB_btn
+   2 --> ENCA_a
+   3 --> ENCA_b
+   4 --> ENCA_btn
+   5 --> ENCB_a
+   6 --> ENCB_b
+   7 --> ENBB_btn
+   9 --> South Button
   10 -->  West Button
   11 --> North Button
   12 -->  East Button
-  13 --> South Button
   A0 --> Center Encoder A
   A1 --> Center Encoder B
   A2 --> Center Button
@@ -45,10 +46,10 @@
 #define ENCC_a   A2
 #define ENCC_b   A1
 #define ENCC_btn A0
-#define N_BUTTON 12
-#define S_BUTTON 10
-#define E_BUTTON 9
-#define W_BUTTON 11
+#define E_BUTTON 12 // was N (modified for OTS hardware v3)
+#define W_BUTTON 10 // was S
+#define S_BUTTON 9  // was E
+#define N_BUTTON 11 // was W
 
 Encoder enca(ENCA_a, ENCA_b);
 Encoder encb(ENCB_a, ENCB_b);
@@ -65,28 +66,28 @@ ClickButton buttons[n_button] = {
   ClickButton(ENCC_btn, LOW, CLICKBTN_PULLUP)
 };
 
-const byte DEV_SCROLL_R = 0b00010000;
-const byte DEV_SCROLL_L = 0b00100000;
-const byte DEV_SCROLL_C = 0b00110000;
-const byte DEV_N = 0b01000000;
-const byte DEV_S = 0b01010000;
-const byte DEV_E = 0b01100000;
-const byte DEV_W = 0b01110000;
+const byte DEV_SCROLL_R = SCROLL_LEFT;
+const byte DEV_SCROLL_L = SCROLL_RIGHT;
+const byte DEV_SCROLL_C = SCROLL_CENTER;
+const byte DEV_N = BUTTON_NORTH;
+const byte DEV_S = BUTTON_SOUTH;
+const byte DEV_E = BUTTON_EAST;
+const byte DEV_W = BUTTON_WEST;
 
 byte button_devs[n_button] = {DEV_N, DEV_S, DEV_E, DEV_W, DEV_SCROLL_L, DEV_SCROLL_R, DEV_SCROLL_C};
 const byte enca_dev = DEV_SCROLL_L;
 const byte encb_dev = DEV_SCROLL_R;
 const byte encc_dev = DEV_SCROLL_C;
 
+/* // already defined in events.h
 const byte CW = 0b0001;
 const byte PRESSED = 0b00000011;
 const byte RELEASED = 0b00000100;
 const byte CCW = 0b0010;
-
+*/
 void setup()
 {
   Serial.begin(57600);
-  Serial.println("Hello World");
 }
 
 void handle_ncodr(Encoder *ncodr_p, byte dev){
@@ -111,10 +112,10 @@ void loop()
     buttons[ii].Update();
     if(buttons[ii].changed){
       if(buttons[ii].depressed){
-	Serial.write(button_devs[ii] | PRESSED);
+	Serial.write(button_devs[ii] | PRESS);
       }
       else{
-	Serial.write(button_devs[ii] | RELEASED);
+	Serial.write(button_devs[ii] | RELEASE);
       }
       buttons[ii].changed = false;
     }
