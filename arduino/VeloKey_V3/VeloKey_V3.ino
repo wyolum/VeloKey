@@ -703,10 +703,24 @@ void splash(){
 
 uint32_t last_activity = 0;
 bool display_backlit = true;
-
+int minute = -1;
 void loop(void) {
   uint32_t now = millis();
-
+  byte digits[10] = {KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9};
+  // see how long the batter lasts
+  if((int)(now / 60000) != minute){
+    minute = now / 60000;
+    int hundreds = (minute / 100) % 10;
+    int tens = (minute / 10) % 10;
+    int ones = (minute / 1) % 10;
+    Serial.print(hundreds);
+    Serial.print(tens);
+    Serial.println(ones);
+    keyCommand(KC_MODIFIER_NONE, hundreds); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, tens); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, ones); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, KC_RETURN); keyCommand(MODIFIER_NONE, 0);
+  }
   if(read_ncodr_events()){
     last_activity = now;
     if(!display_backlit){
