@@ -275,25 +275,27 @@ class Interface{
     tft.println(name);
   }
   void batt_voltage(){
-    int x = 136; 
+    int x = 134; 
     int y = 120;
-    int w = 12;
+    int w = 15;
     int h = 7;
     uint8_t i = 0;
-    //                       0      10    20  30     40    50    60    70     80   90   100
-    float percentiles[11] = {3.65, 3.68, 3.7, 3.725, 3.75, 3.82, 3.85, 3.857, 3.9, 4.05, 4.2};
-    float vmax = 4.;
-    float vmin = 4.;
+    //                         0      10    20    30    40   50    60    70     80   90   100
+    //float percentiles[11] = {3.65, 3.68, 3.7, 3.725, 3.75, 3.82, 3.85, 3.857, 3.9, 4.05, 4.2};
+    //                        0    10        20    30     50   60      70     80    90   100
+    float percentiles[11] = {3.75, 3.82,  3.835,  3.85, 3.856, 3.857, 3.87,   3.9, 4.05, 4.19};
+    float vmax = 4.2;
+    float vmin = 3.75;
     
     float voltage = getVBAT();
-    float percent = 100 * (voltage - vmin) / (vmax - vmin);
     last_batt_voltage = voltage;
     while(i < 11 && percentiles[i++] < voltage){
     }
-    tft.fillRect(x, y, i, h, ST7735_BLUE);
-    tft.drawRect(x, y, w, h, ST7735_BLUE);
-    tft.fillRect(x+w, y+2, 1, h-4, ST7735_BLUE);
-    
+    tft.fillRect(x + 2, y + 2,      i, h - 4, ST7735_BLUE);  // % full
+    tft.fillRect(x + 2 + i, y + 2, 11 - i, h - 4, ST7735_BLACK); // % empty
+    tft.drawRect(    x,     y,      w,     h, ST7735_BLUE);  // outline
+    tft.fillRect(x + w, y + 2,      1, h - 4, ST7735_BLUE);  // positive nub
+     
 
     /* // display the voltage value.  it flashes :( 
     tft.setCursor(100, 120);
@@ -708,6 +710,7 @@ void loop(void) {
   uint32_t now = millis();
   byte digits[10] = {KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9};
   // see how long the batter lasts
+  /*
   if((int)(now / 60000) != minute){
     minute = now / 60000;
     int hundreds = (minute / 100) % 10;
@@ -716,11 +719,11 @@ void loop(void) {
     Serial.print(hundreds);
     Serial.print(tens);
     Serial.println(ones);
-    keyCommand(KC_MODIFIER_NONE, hundreds); keyCommand(MODIFIER_NONE, 0);
-    keyCommand(KC_MODIFIER_NONE, tens); keyCommand(MODIFIER_NONE, 0);
-    keyCommand(KC_MODIFIER_NONE, ones); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, digits[hundreds]); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, digits[tens]); keyCommand(MODIFIER_NONE, 0);
+    keyCommand(KC_MODIFIER_NONE, digits[ones]); keyCommand(MODIFIER_NONE, 0);
     keyCommand(KC_MODIFIER_NONE, KC_RETURN); keyCommand(MODIFIER_NONE, 0);
-  }
+    }*/
   if(read_ncodr_events()){
     last_activity = now;
     if(!display_backlit){
