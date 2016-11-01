@@ -50,8 +50,8 @@ const uint32_t TIMEOUT_MS = 10000;
 const int ezkey_l2 = A4;
 unsigned long last_high = 0;
 unsigned long ezkey_l2_period = 0;
-int8_t current_interface = 0; // signed int for modular arithmatic
-const uint8_t N_INTERFACE = 3;
+int8_t current_interface = 3; // signed int for modular arithmatic
+const uint8_t N_INTERFACE = 4;
 
 void ezkey_l2_cb(){
   unsigned long now = millis();
@@ -122,10 +122,10 @@ char *Camera_Views[n_camera_view] = {
   "Birdseye",
   "Helicopter",
   "Specator",
-  };
+};
 
 byte CameraKeys[n_camera_view]{ 
-    EZKEY_6, // Head on
+  EZKEY_6, // Head on
     EZKEY_3, // first person
     EZKEY_4, // Side
     EZKEY_1, // third person
@@ -158,10 +158,10 @@ char *Actions[n_action] = {
 };
 byte ActionKeys[n_action+1]{
   EZKEY_SPACE,
-  // EZKEY_ARROW_LEFT, 
-  // EZKEY_ARROW_UP,
-  // EZKEY_ARROW_RIGHT,
-  // EZKEY_ARROW_DOWN,
+    // EZKEY_ARROW_LEFT, 
+    // EZKEY_ARROW_UP,
+    // EZKEY_ARROW_RIGHT,
+    // EZKEY_ARROW_DOWN,
     EZKEY_F1, // Elbow
     EZKEY_F2, // Wave
     EZKEY_F3, // Ride on
@@ -298,14 +298,14 @@ class Interface{
      
 
     /* // display the voltage value.  it flashes :( 
-    tft.setCursor(100, 120);
-    tft.setTextColor(ST7735_BLACK);
-    tft.setTextSize(1);
-    tft.println(last_batt_voltage);
+       tft.setCursor(100, 120);
+       tft.setTextColor(ST7735_BLACK);
+       tft.setTextSize(1);
+       tft.println(last_batt_voltage);
     
-    tft.setCursor(100, 120);
-    tft.setTextColor(ST7735_BLUE);
-    tft.println(voltage);
+       tft.setCursor(100, 120);
+       tft.setTextColor(ST7735_BLUE);
+       tft.println(voltage);
     */
     last_batt_voltage = voltage;
   }
@@ -481,7 +481,6 @@ class MouseInterface : public Interface{
     Interface::draw();
   }
   void setup(){
-    SerialDBG.println("Mouse::setup");
   }
   void update(){
     if(update_ezkey_linking()){
@@ -624,6 +623,296 @@ class AlphaNumeric : public Interface{
   }
 };
 
+class Button{
+ public:
+  uint8_t x;
+  uint8_t y;
+  uint8_t keycode;
+  uint16_t color = ST7735_WHITE;
+  
+  Button(){}
+  virtual void draw(){}
+  void hover(){   // highlight when cursor is over button
+    color = ST7735_BLUE;
+    draw();
+  }
+  void unhover(){ //// highlight when cursor is NOT over button
+    color = ST7735_WHITE;
+    draw();
+  }
+  
+  void press(){  // draw pressed (and handle press if appropriate)
+    color = ST7735_GREEN;
+    draw();
+  }
+  void release(){ // draw released (and handle `release if appropriate)
+    color = ST7735_BLUE;
+    draw();
+    keyCommand(KC_NONE, keycode);
+    keyCommand(KC_NONE, 0);
+  }
+};
+
+class RewindButton : public Button {
+ public:
+  RewindButton(){
+    x = 10;
+    y = 58;
+    keycode = KC_ARROW_LEFT;
+  }
+  void draw(){
+    int size = 12;
+    tft.fillTriangle(x + size, y, 
+		     x, y + size / 2, 
+		     x + size, y + size,
+		     color);
+    tft.fillTriangle(x + 4 + size, y, 
+		     x + 4 , y + size / 2, 
+		     x + 4 + size, y + size,
+		     ST7735_BLACK);
+    tft.fillTriangle(x + 8 + size, y, 
+		     x + 8, y + size / 2, 
+		     x + 8 + size, y + size,
+		     color);
+  }
+};
+
+class PlayButton : public Button {
+ public:
+  PlayButton(){
+    x = 42;
+    y = 25;
+    keycode = KC_SPACE;
+  }
+  void draw(){
+    int size = 16;
+    // play/pause
+    tft.fillRect(x + size  - 2, y,
+		 4, size, color);
+    tft.fillRect(x + size + 8, y,
+		 4, size, color);
+    tft.fillTriangle(x + 2, y, 
+		     x + 2 + size, y + size / 2, 
+		     x + 2, y + size,
+		     ST7735_BLACK);
+    tft.fillTriangle(x, y, 
+		     x + size, y + size / 2, 
+		     x, y + size,
+		     color);
+  }
+};
+
+class FFButton : public Button {
+ public:
+  FFButton(){
+    x = 80;
+    y = 58;
+    keycode = KC_ARROW_RIGHT;
+  }
+  void draw(){
+    int size = 12;
+    tft.fillTriangle(x + 8, y, 
+		     x + 8 + size, y + size / 2, 
+		     x + 8, y + size,
+		     color);
+    tft.fillTriangle(x + 4, y, 
+		     x + 4 + size, y + size / 2, 
+		     x + 4, y + size,
+		     ST7735_BLACK);
+    tft.fillTriangle(x, y, 
+		     x + size, y + size / 2, 
+		     x, y + size,
+		     color);
+  }
+};
+
+class FullScreenButton : public Button {
+ public:
+  FullScreenButton(){
+    x = 47;
+    y = 90;
+    keycode = KC_F;
+  }
+  void draw(){
+    tft.drawRect(x, y, 20, 15, color);
+  }
+};
+
+class VolumeUp : public Button {
+ public:
+  VolumeUp(){
+    x = 120;
+    y = 25;
+    keycode = KC_ARROW_UP;
+    color = ST7735_BLUE;
+  }
+  void draw(){
+    int size = 16;
+    tft.fillTriangle(x + size / 2, y, 
+		     x + size, y + size, 
+		     x, y + size,
+		     color);
+  }
+};
+
+class VolumeDown : public Button {
+ public:
+  VolumeDown(){
+    x = 120;
+    y = 90;
+    keycode = KC_ARROW_DOWN;
+    color = ST7735_BLUE;
+  }
+  void draw(){
+    int size = 16;
+    tft.fillTriangle(x + size / 2, y + size, 
+		     x + size, y, 
+		     x, y,
+		     color);
+  }
+};
+
+class VolumeMute : public Button {
+ public:
+  bool muted = false;
+  
+  VolumeMute(){
+    x = 120;
+    y = 58;
+    keycode = KC_M;
+    color = ST7735_BLUE;
+  }
+  void draw(){
+    int size = 16;
+    if(!muted){
+      tft.drawLine(x, y, x + size, y + size, ST7735_BLACK);
+      tft.drawLine(x + 1, y, x + 1 + size, y + size, ST7735_BLACK);
+      tft.drawLine(x + size, y, x, y + size, ST7735_BLACK);
+      tft.drawLine(x + 1 + size, y, x + 1, y + size, ST7735_BLACK);
+    }      
+    tft.fillTriangle(x + size, y, 
+		     x, y + size/2, 
+		     x + size, y + size,
+		     color);
+    tft.fillRect(x, y + size/2 - 4,
+		 8, 8, color);
+    if(muted){
+      tft.drawLine(x, y, x + size, y + size, ST7735_RED);
+      tft.drawLine(x + 1, y, x + 1 + size, y + size, ST7735_RED);
+      tft.drawLine(x + size, y, x, y + size, ST7735_RED);
+      tft.drawLine(x + 1 + size, y, x + 1, y + size, ST7735_RED);
+    }
+  }
+  void toggle(){
+    if(muted){
+      muted = false;
+      color = ST7735_WHITE;
+      draw();
+    }
+    else{
+      muted = true;
+      color = ST7735_BLUE;
+      draw();
+    }
+  }
+};
+
+RewindButton rewindbutton = RewindButton();
+PlayButton playbutton = PlayButton();
+FFButton ffbutton = FFButton();
+FullScreenButton fullscreenbutton = FullScreenButton();
+Button *movie_buttons[4] = {&rewindbutton, &playbutton, &ffbutton, &fullscreenbutton};
+
+VolumeUp volume_up = VolumeUp();
+VolumeDown volume_down = VolumeDown();
+VolumeMute volume_mute = VolumeMute();
+Button *volume_buttons[3] = {&volume_up, &volume_mute, &volume_down};
+
+class MoviePlayback : public Interface{
+  int8_t current_button = 1;
+  int8_t current_vol_button = 0;
+  uint8_t n_button = 4;
+  uint8_t n_vol_button = 3;
+  void begin(){ // on start or restart of GUI display
+    name = "Movies";
+    Interface::begin();
+  }
+  void draw(){ // on selected for 1 second
+    tft.fillScreen(ST7735_BLACK);
+    for(int ii=0; ii < n_button; ii++){
+      if(ii == current_button){
+	movie_buttons[ii]->hover();
+      }
+      else{
+	movie_buttons[ii]->draw();
+      }
+      for(int ii=0; ii < n_vol_button; ii++){
+	volume_buttons[ii]->draw();
+      }
+    }
+  }
+  virtual void end(){}
+  void handleEvent(uint8_t event){
+    if(event == SCROLL_RIGHT_CW){
+      if(volume_mute.muted){
+	volume_mute.toggle();
+      }
+      volume_up.press();
+      delay(10);
+      volume_up.release();
+    }
+    else if(event == SCROLL_RIGHT_CCW){
+      if(volume_mute.muted){
+	volume_mute.toggle();
+      }
+      volume_down.press();
+      delay(10);
+      volume_down.release();
+    }
+    else if (event == SCROLL_RIGHT_PRESS){
+      volume_mute.press();
+    }
+    else if (event == SCROLL_RIGHT_RELEASE){
+      volume_mute.toggle();
+      volume_mute.release();
+    }
+    else if(event == SCROLL_LEFT_CW){
+      movie_buttons[current_button]->unhover();
+      current_button++;
+      current_button %= n_button;
+      movie_buttons[current_button]->hover();
+    }
+    else if(event == SCROLL_LEFT_CCW){
+      movie_buttons[current_button]->unhover();
+      current_button--;
+      if(current_button < 0){
+	current_button = n_button - 1;
+      }
+      movie_buttons[current_button]->hover();
+    }
+    else if(event == SCROLL_LEFT_PRESS){
+      movie_buttons[current_button]->press();
+    }
+    else if(event == SCROLL_LEFT_RELEASE){
+      movie_buttons[current_button]->release();
+    }
+    else{
+      Interface::handleEvent(event);
+    }
+  }
+  void update(){
+    Interface::update();
+    if(update_ezkey_linking()){
+      alpha.ezkey_ready = true;
+      numeric.ezkey_ready = true;
+    }
+    else{
+      alpha.ezkey_ready = false;
+      numeric.ezkey_ready = false;
+    }
+  }
+};
+
 const int DISPLAY_BACKLIGHT = A3;
 void ui_setup(){
   //  set display backlight to full on
@@ -637,13 +926,15 @@ void ui_setup(){
   tft.setTextWrap(false); // Allow text to run off right edge
   tft.fillScreen(ST7735_BLACK);
   tft.setRotation(3);
-  splash();
+  // splash();
   pinMode(A7, OUTPUT);
 }
 
 MouseInterface mouse_interface = MouseInterface();
 ZwiftInterface zwift_interface = ZwiftInterface();
 AlphaNumeric alpha_numeric = AlphaNumeric();
+MoviePlayback movie_playback = MoviePlayback();
+
 Interface *interfaces[N_INTERFACE];
 
 float getVBAT(){
@@ -673,13 +964,13 @@ void setup  (void) {
   interfaces[0] = &mouse_interface;
   interfaces[1] = &zwift_interface;
   interfaces[2] = &alpha_numeric;
+  interfaces[3] = &movie_playback;
   for(uint8_t ii=0; ii<N_INTERFACE; ii++){
     interfaces[ii]->setup(); // happens once
   }
   interfaces[0]->begin(); // on start or restart
 
   attachInterrupt(ezkey_l2, ezkey_l2_cb, RISING);
-  SerialDBG.println("end setup()");
 
 }
 
@@ -711,7 +1002,7 @@ void loop(void) {
   byte digits[10] = {KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9};
   // see how long the batter lasts
   /*
-  if((int)(now / 60000) != minute){
+    if((int)(now / 60000) != minute){
     minute = now / 60000;
     int hundreds = (minute / 100) % 10;
     int tens = (minute / 10) % 10;
