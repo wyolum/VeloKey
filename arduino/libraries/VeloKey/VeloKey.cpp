@@ -1,6 +1,6 @@
 #include "VeloKey.h"
 
-void VeloKey::handleEvent(){
+void VeloKey::handleEvents(){
     uint8_t device, action;
     for(uint8_t ii = 0; ii < n_events_pending; ii++){
       switch(events[ii]){

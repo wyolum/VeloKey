@@ -1,8 +1,8 @@
 #ifndef VELOKEY_H
 #define VELOKEY_H
-
-#include "events.h"
-#include "Adafruit_ST7735.h"
+#include <Arduino.h>
+#include <events.h>
+#include <Adafruit_ST7735.h>
 
 #define ncodr Serial1
 
@@ -88,11 +88,11 @@ class VeloKey{
   void fillTriangle(uint16_t x1, uint16_t y1,
 		    uint16_t x2, uint16_t y2,
 		    uint16_t x3, uint16_t y3,
-		    uint16_t color)
+		    uint16_t color);
   void drawTriangle(uint16_t x1, uint16_t y1,
 		    uint16_t x2, uint16_t y2,
 		    uint16_t x3, uint16_t y3,
-		    uint16_t color)
+		    uint16_t color);
   void drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, char* msg);
   void fillScreen(uint16_t color);
   void setRotation(uint8_t val) ; // val in {0, 1, 2, 3}
