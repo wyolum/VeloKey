@@ -1,37 +1,52 @@
+#ifndef VELOKEY_H
+#define VELOKEY_H
+
 #include "events.h"
+#include "Adafruit_ST7735.h"
+
+#define ncodr Serial1
+
+const uint8_t max_listeners = 5;
+const uint8_t max_events    = 10;
+const uint8_t TFT_CS        = 5;  
+const uint8_t TFT_RST       = 9;  
+const uint8_t TFT_DC        = 6;
+const uint8_t TFT_SCLK      = 13;   // set these to be whatever pins you like!
+const uint8_t TFT_MOSI      = 11;   // set these to be whatever pins you like!
+  
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, 
+				      TFT_SCLK, TFT_RST);
+Adafruit_ST7735 *tft_p      = &tft;
 
 class VeloKeyListener{
  public:
-  void onScrollLeftCW(){Serial.println("OnScrollLeftCW()");}
-  void onScrollLeftCCW(){Serial.println("OnScrollLeftCCW()");}
-  void onScrollLeftPress(){Serial.println("OnScrollLeftPress()");}
-  void onScrollLeftRelease(){Serial.println("OnScrollLeftRelease()");}
+  virtual void onScrollLeftCW(){Serial.println("OnScrollLeftCW()");}
+  virtual void onScrollLeftCCW(){Serial.println("OnScrollLeftCCW()");}
+  virtual void onScrollLeftPress(){Serial.println("OnScrollLeftPress()");}
+  virtual void onScrollLeftRelease(){Serial.println("OnScrollLeftRelease()");}
 
-  void onScrollRightCW(){Serial.println("OnScrollRightCW()");}
-  void onScrollRightCCW(){Serial.println("OnScrollRightCCW()");}
-  void onScrollRightPress(){Serial.println("OnScrollRightPress()");}
-  void onScrollRightRelease(){Serial.println("OnScrollRightRelease()");}
+  virtual void onScrollRightCW(){Serial.println("OnScrollRightCW()");}
+  virtual void onScrollRightCCW(){Serial.println("OnScrollRightCCW()");}
+  virtual void onScrollRightPress(){Serial.println("OnScrollRightPress()");}
+  virtual void onScrollRightRelease(){Serial.println("OnScrollRightRelease()");}
 
-  void onScrollCenterCW(){Serial.println("OnScrollCenterCW()");}
-  void onScrollCenterCCW(){Serial.println("OnScrollCenterCCW()");}
-  void onScrollCenterPress(){Serial.println("OnScrollCenterPress()");}
-  void onScrollCenterRelease(){Serial.println("OnScrollCenterRelease()");}
+  virtual void onScrollCenterCW(){Serial.println("OnScrollCenterCW()");}
+  virtual void onScrollCenterCCW(){Serial.println("OnScrollCenterCCW()");}
+  virtual void onScrollCenterPress(){Serial.println("OnScrollCenterPress()");}
+  virtual void onScrollCenterRelease(){Serial.println("OnScrollCenterRelease()");}
 
-  void onButtonNorthPress(){Serial.println("OnButtonNorthPress()");}
-  void onButtonNorthRelease(){Serial.println("OnButtonNorthRelease()");}
+  virtual void onButtonNorthPress(){Serial.println("OnButtonNorthPress()");}
+  virtual void onButtonNorthRelease(){Serial.println("OnButtonNorthRelease()");}
   
-  void onButtonSouthPress(){Serial.println("OnButtonSouthPress()");}
-  void onButtonSouthRelease(){Serial.println("OnButtonSouthRelease()");}
+  virtual void onButtonSouthPress(){Serial.println("OnButtonSouthPress()");}
+  virtual void onButtonSouthRelease(){Serial.println("OnButtonSouthRelease()");}
 
-  void onButtonEastPress(){Serial.println("OnButtonEastPress()");}
-  void onButtonEastRelease(){Serial.println("OnButtonEastRelease()");}
+  virtual void onButtonEastPress(){Serial.println("OnButtonEastPress()");}
+  virtual void onButtonEastRelease(){Serial.println("OnButtonEastRelease()");}
   
-  void onButtonWestPress(){Serial.println("OnButtonWestPress()");}
-  void onButtonWestRelease(){Serial.println("OnButtonWestRelease()");}
+  virtual void onButtonWestPress(){Serial.println("OnButtonWestPress()");}
+  virtual void onButtonWestRelease(){Serial.println("OnButtonWestRelease()");}
 };
-
-const uint8_t max_listeners = 5;
-const uint8_t max_events = 10;
 
 class VeloKey{
  public:
@@ -39,13 +54,15 @@ class VeloKey{
   uint8_t n_listener;
   uint8_t events[max_events];
   uint8_t n_events_pending;
-  Uart *ncodr_p;
     
   VeloKey(){
     n_listener = 0;
     n_events_pending = 0;
   }
 
+  void begin(){
+  }
+  
   void subscribe(VeloKeyListener *listener){
     if(n_listener < max_listeners){
       listeners[n_listener] = listener;
@@ -54,139 +71,31 @@ class VeloKey{
   }
 
   void captureEvents(){ // call as often as possible
-    uint8_t event_count = ncodr_p->available();
+    uint8_t event_count = ncodr.available();
     
-    for(uint8_t ii = 0; ii < event_count; ii++){
-      events[n_events_pending++] = ncodr_p->read();
+    for(uint8_t ii = 0; ii < event_count && ii < max_events; ii++){
+      events[n_events_pending++] = ncodr.read();
     }
   }
 
-  void handleEvents(){
-    uint8_t device, action;
-    for(uint8_t ii = 0; ii < n_events_pending; ii++){
-      switch(events[ii]){
+  void handleEvents();
 
-      case SCROLL_LEFT_CW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollLeftCW();
-	}
-	break;
-	
-      case SCROLL_LEFT_CCW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollLeftCCW();
-	}
-	break;
-	
-      case SCROLL_LEFT_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollLeftPress();
-	}
-	break;
-	
-      case SCROLL_LEFT_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollLeftRelease();
-	}
-	break;
-	
-      case SCROLL_RIGHT_CW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollRightCW();
-	}
-	break;
-	
-      case SCROLL_RIGHT_CCW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollRightCCW();
-	}
-	break;
-	
-      case SCROLL_RIGHT_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollRightPress();
-	}
-	break;
- 	
-      case SCROLL_RIGHT_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollRightRelease();
-	}
-	break;
-	
-      case SCROLL_CENTER_CW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollCenterCW();
-	}
-	break;
-	
-      case SCROLL_CENTER_CCW:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollCenterCCW();
-	}
-	break;
-	
-      case SCROLL_CENTER_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollCenterPress();
-	}
-	break;
-	
-      case SCROLL_CENTER_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onScrollCenterRelease();
-	}
-	break;
-
-      case BUTTON_NORTH_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonNorthPress();
-	}
-	break;
-	
-      case BUTTON_NORTH_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonNorthRelease();
-	}
-	break;
-
-      case BUTTON_SOUTH_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonSouthPress();
-	}
-	break;
-	
-      case BUTTON_SOUTH_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonSouthRelease();
-	}
-	break;
-
-      case BUTTON_EAST_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonEastPress();
-	}
-	break;
-	
-      case BUTTON_EAST_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonEastRelease();
-	}
-	break;
-
-      case BUTTON_WEST_PRESS:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonWestPress();
-	}
-	break;
-	
-      case BUTTON_WEST_RELEASE:
-	for(uint8_t jj = 0; jj < n_listener && n_events_pending < max_events; jj++){
-	  listeners[jj]->onButtonWestRelease();
-	}
-	break;
-      }
-    }
-  }
-  // drawing functions
+// drawing functions
+  void fillRect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
+  void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
+  void fillCircle(uint16_t, uint16_t, uint16_t, uint16_t);
+  void drawCircle(uint16_t, uint16_t, uint16_t, uint16_t);
+  void fillTriangle(uint16_t x1, uint16_t y1,
+		    uint16_t x2, uint16_t y2,
+		    uint16_t x3, uint16_t y3,
+		    uint16_t color)
+  void drawTriangle(uint16_t x1, uint16_t y1,
+		    uint16_t x2, uint16_t y2,
+		    uint16_t x3, uint16_t y3,
+		    uint16_t color)
+  void drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, char* msg);
+  void fillScreen(uint16_t color);
+  void setRotation(uint8_t val) ; // val in {0, 1, 2, 3}
 };
+
+#endif
