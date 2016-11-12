@@ -64,11 +64,13 @@ void loop(){
   }
   // now = millis();
   ball.move(dx, dy);
-  if (ball.collide(&player1)){
+  if (ball.collide(&player1) && dx < 0){
     Serial.println("ouch player 1");
+    dx *= -1;
   }
-  if (ball.collide(&player2)){
+  if (ball.collide(&player2) && dx > 0){
     Serial.println("ouch player 2");
+    dx *= -1;
   }
   player1.draw();
   player2.draw();
