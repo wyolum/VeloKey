@@ -168,6 +168,7 @@ class RectSprite : public Sprite{
   RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color);
   void move(int16_t dx, int16_t dy);
   void draw();
+  bool collide(RectSprite *other);
 };
 
 static VeloKey velokey = VeloKey();

@@ -1,6 +1,6 @@
 #ifndef EVENTS_H
 #define EVENTS_H
-#include <ctype.h>
+#include <Arduino.h>
 
 const uint8_t INPUT_MASK = 0xF0;
 const uint8_t ACTION_MASK = 0x0F;

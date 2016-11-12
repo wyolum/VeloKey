@@ -262,4 +262,31 @@ void RectSprite::move(int16_t dx, int16_t dy){
 void RectSprite::draw(){
   velokey.fillRect(x, y, w, h, color);
 }
+
+bool RectSprite::collide(RectSprite* other){
+  // check four corners of self in other
+  bool out = false;
+  
+  // top left (x, y)
+  if(other->x < x && x < other->x + other->w &&
+     other->y < y && y < other->y + other->h){
+    out = true;
+  }
+  // top right (x, y)
+  else if(other->x < x + w && x + w < other->x + other->w &&
+     other->y < y && y < other->y + other->h){
+    out = true;
+  }
+  // bottom right (x, y)
+  else if(other->x < x + w && x + w < other->x + other->w &&
+     other->y < y + h && y + h < other->y + other->h){
+    out = true;
+  }
+  // bottom left (x, y)
+  else if(other->x < x && x < other->x + other->w &&
+     other->y < y + h && y + h < other->y + other->h){
+    out = true;
+  }
+  return out;
+}
 			   

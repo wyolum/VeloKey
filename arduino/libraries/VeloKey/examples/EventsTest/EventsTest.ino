@@ -50,20 +50,26 @@ void loop(){
     velokey.captureEvents();
     velokey.handleEvents();
   }
-  if(dx > 0 and ball.x > VELOKEY_WIDTH - ball.w - player2.w){
+  if(dx > 0 && ball.x+ball.w > VELOKEY_WIDTH ){
     dx *= -1;
   }
-  if(dx < 0 and ball.x < player1.w){
+  if(dx < 0 && ball.x < 0){
     dx *= -1;
   }
-  if(dy > 0 and ball.y > VELOKEY_HEIGHT - ball.h){
+  if(dy > 0 &&  ball.y > VELOKEY_HEIGHT - ball.h){
     dy *= -1;
   }
-  if(dy < 0 and ball.y < 0){
+  if(dy < 0 && ball.y < 0){
     dy *= -1;
   }
   // now = millis();
   ball.move(dx, dy);
+  if (ball.collide(&player1)){
+    Serial.println("ouch player 1");
+  }
+  if (ball.collide(&player2)){
+    Serial.println("ouch player 2");
+  }
   player1.draw();
   player2.draw();
   if(count++ == 100){
