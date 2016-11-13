@@ -36,6 +36,13 @@ void VeloKey::drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, ch
   tft.print(msg);
 }
 
+void VeloKey::drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, int msg){
+  tft.setCursor(x, y);
+  tft.setTextColor(color);
+  tft.setTextSize(size);
+  tft.print(msg);
+}
+
 void VeloKey::splash(uint16_t hold_ms){
   backlightOn();
   fillScreen(ST7735_WHITE);
@@ -44,8 +51,10 @@ void VeloKey::splash(uint16_t hold_ms){
   }
   int blink_counter = 0;
   char * by_wyolum = "by WyoLum";
-  drawText(80, 100, ST7735_BLUE, 1, by_wyolum);
-  delay(hold_ms);
+  if(!scroll_center_down){
+    drawText(80, 100, ST7735_BLUE, 1, by_wyolum);
+    delay(hold_ms);
+  }
   fillScreen(ST7735_BLACK);
   backlightOff();
 }
@@ -102,12 +111,14 @@ void VeloKey::handleEvents(){
 	break;
 	
       case SCROLL_LEFT_PRESS:
+	scroll_left_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollLeftPress();
 	}
 	break;
 	
       case SCROLL_LEFT_RELEASE:
+	scroll_left_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollLeftRelease();
 	}
@@ -126,12 +137,14 @@ void VeloKey::handleEvents(){
 	break;
 	
       case SCROLL_RIGHT_PRESS:
+	scroll_right_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollRightPress();
 	}
 	break;
  	
       case SCROLL_RIGHT_RELEASE:
+	scroll_right_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollRightRelease();
 	}
@@ -150,60 +163,70 @@ void VeloKey::handleEvents(){
 	break;
 	
       case SCROLL_CENTER_PRESS:
+	scroll_center_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollCenterPress();
 	}
 	break;
 	
       case SCROLL_CENTER_RELEASE:
+	scroll_center_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onScrollCenterRelease();
 	}
 	break;
 
       case BUTTON_NORTH_PRESS:
+	button_north_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonNorthPress();
 	}
 	break;
 	
       case BUTTON_NORTH_RELEASE:
+	button_north_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonNorthRelease();
 	}
 	break;
 
       case BUTTON_SOUTH_PRESS:
+	button_south_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonSouthPress();
 	}
 	break;
 	
       case BUTTON_SOUTH_RELEASE:
+	button_south_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonSouthRelease();
 	}
 	break;
 
       case BUTTON_EAST_PRESS:
+	button_east_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonEastPress();
 	}
 	break;
 	
       case BUTTON_EAST_RELEASE:
+	button_east_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonEastRelease();
 	}
 	break;
 
       case BUTTON_WEST_PRESS:
+	button_west_down = true;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonWestPress();
 	}
 	break;
 	
       case BUTTON_WEST_RELEASE:
+	button_west_down = false;
 	for(uint8_t jj = 0; jj < n_listener; jj++){
 	  listeners[jj]->onButtonWestRelease();
 	}
@@ -239,6 +262,11 @@ RectSprite::RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_
   w = _w;
   h = _h;
   color = _color;
+  n_point = 4;
+  xs[0] = x    ;  ys[0] = y;
+  xs[1] = x + w;  ys[1] = y;
+  xs[2] = x + w;  ys[2] = y + h;
+  xs[3] = x    ;  ys[3] = y + h;
 }
 
 void RectSprite::move(int16_t dx, int16_t dy){
@@ -267,6 +295,7 @@ bool RectSprite::collide(RectSprite* other){
   // check four corners of self in other
   bool out = false;
   
+  // check if one of my corners is in other
   // top left (x, y)
   if(other->x < x && x < other->x + other->w &&
      other->y < y && y < other->y + other->h){
@@ -285,6 +314,12 @@ bool RectSprite::collide(RectSprite* other){
   // bottom left (x, y)
   else if(other->x < x && x < other->x + other->w &&
      other->y < y + h && y + h < other->y + other->h){
+    out = true;
+  }
+
+  // check if other corner is inside me
+  else if(x < other->x && other->x < x + w &&
+	  y < other->y && other->y < y + h){
     out = true;
   }
   return out;

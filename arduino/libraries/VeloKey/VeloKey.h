@@ -65,12 +65,26 @@ class VeloKeyListener{
 class VeloKey{
 
  public:
+  bool scroll_right_down;
+  bool scroll_left_down;
+  bool scroll_center_down;
+  bool button_north_down;
+  bool button_south_down;
+  bool button_east_down;
+  bool button_west_down;
   VeloKeyListener *listeners[max_listeners];
   uint8_t n_listener;
   uint8_t events[max_events];
   uint8_t n_events_pending;
     
   VeloKey(){
+    scroll_right_down = false;
+    scroll_left_down = false;
+    scroll_center_down = false;
+    button_north_down = false;
+    button_south_down = false;
+    button_east_down = false;
+    button_west_down = false;
     n_listener = 0;
     n_events_pending = 0;
   }
@@ -82,6 +96,18 @@ class VeloKey{
     if(n_listener < max_listeners){
       listeners[n_listener] = listener;
       n_listener += 1;
+    }
+  }
+
+  void unsubscribe(VeloKeyListener *listener){
+    for(byte ii = 0; ii < n_listener; ii++){
+      if(listener == listeners[ii]){
+	for(byte jj = ii + 1; jj < n_listener; jj++){
+	  listeners[jj - 1] = listeners[jj];
+	}
+	n_listener--;
+	break;
+      }
     }
   }
 
@@ -115,6 +141,7 @@ class VeloKey{
   void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
   
   void drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, char* msg);
+  void drawText(uint16_t x, uint16_t y, uint16_t color, uint16_t size, int msg);
   void fillScreen(uint16_t color);
   void drawPixel(uint16_t row, uint16_t col, uint16_t color);
   void setRotation(uint8_t val) ; // val in {0, 1, 2, 3}
@@ -160,11 +187,18 @@ class CircleSprite : public Sprite{
   void draw();
 };
 
-class RectSprite : public Sprite{
+const byte POLY_N_MAX = 16;
+class PolygonSprite : public Sprite{
+ public:
+  byte n_point;
+  int16_t xs[POLY_N_MAX];
+  int16_t ys[POLY_N_MAX];
+};
+
+class RectSprite : public PolygonSprite{
  public:
   uint16_t w;
   uint16_t h;
-  
   RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color);
   void move(int16_t dx, int16_t dy);
   void draw();
