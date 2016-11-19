@@ -257,8 +257,9 @@ void CircleSprite::draw(){
 }
 			   
 RectSprite::RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color){
-  x = _x;
-  y = _y;
+  x = _x + _w / 2;
+  y = _y + _h / 2;
+  r = min(_w, _h) / 2;
   w = _w;
   h = _h;
   color = _color;
@@ -291,10 +292,92 @@ void RectSprite::draw(){
   velokey.fillRect(x, y, w, h, color);
 }
 
+bool z_sign(int16_t x1, int16_t y1, int16_t x2, int16_t y2,int16_t x, int16_t y){
+  // deterime what side (x, y) is on the line defined by p1 = x1, y1 and p2 = x2, y2
+  // derived from the z component of the cross product of (x, y) - p1 and p2 - p1
+  return (x - x1) * (y2 - y1) - (x2 - x1) * (y - y1);
+}
+
+bool pt_in_triangle(int16_t px, int16_t py, int16_t vx1,int16_t vy1, int16_t vx2, int16_t vy2, int16_t vx3, int16_t vy3){
+  bool s1, s2, s3;
+  s1 = z_sign(vx1, vy1, vx2, vy2, px, py);
+  s2 = z_sign(vx2, vy2, vx3, vy3, px, py);
+  s3 = z_sign(vx3, vy3, vx1, vy1, px, py);
+  return s1 == s2 && s2 == s3;
+}
+
+ConvexPolygonSprite::ConvexPolygonSprite(){
+}
+
+void ConvexPolygonSprite::setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint16_t _color){
+  n_point = _n_point;
+  color = _color;
+  x = 0;
+  y = 0;
+  for(byte i=0; i<n_point; i++){
+    xs[i] = _xs[i];
+    ys[i] = _ys[i];
+    x += xs[i];
+    y += ys[i];
+  }
+  x = x / n_point;
+  y = y / n_point;
+}
+
+void ConvexPolygonSprite::draw(){
+  for(byte i=0; i < n_point; i++){
+    velokey.drawLine(xs[i], ys[i], xs[(i + 1) % n_point], ys[(i + 1) % n_point], color);
+  }
+}
+
+bool ConvexPolygonSprite::rotate(int degrees){
+  float theta = degrees * 3.14159 / 180;
+  Serial.println(theta);
+  for(byte i=1; i<n_point-1; i++){
+    xs[i] -= x;
+    ys[i] -= y;
+    xs[i] = cos(theta) * xs[i] - sin(theta) * ys[i];
+    ys[i] = sin(theta) * xs[i] + cos(theta) * ys[i];
+    xs[i] += x;
+    ys[i] += y;
+  }
+}
+
+bool ConvexPolygonSprite::contains_point(int16_t x, int16_t y){
+  bool out = false;
+  for(byte ii=1; ii<n_point-1; ii++){
+    if(pt_in_triangle(x, y, xs[0], ys[0], xs[ii], ys[ii], xs[ii+1], ys[ii+1])){
+      out = true;
+      break;
+    }
+  }
+  return out;
+}
+
+bool ConvexPolygonSprite::collide(ConvexPolygonSprite *other){
+  bool out=false;
+  int i;
+  
+  // see if any of my points are in other
+  for(int i=0; i < n_point && out == false; i++){
+    if(other->contains_point(xs[i], ys[i])){
+      out = true;
+    }
+  }
+
+  //see if any of other's points are in me
+  for(int i=0; i < other->n_point && out == false; i++){
+    if(contains_point(other->xs[i], other->ys[i])){
+      out = true;
+    }
+  }
+  return out;
+}
+
 bool RectSprite::collide(RectSprite* other){
   // check four corners of self in other
   bool out = false;
-  
+
   // check if one of my corners is in other
   // top left (x, y)
   if(other->x < x && x < other->x + other->w &&

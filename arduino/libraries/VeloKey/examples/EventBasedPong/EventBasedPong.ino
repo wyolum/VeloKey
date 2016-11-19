@@ -4,6 +4,7 @@
 //VeloKey vk = VeloKey();
 
 const byte PLAYER_H = 30;
+const byte WIN_SCORE = 5;
 
 RectSprite ball = RectSprite(80, 80, 4, 4, VELOKEY_WHITE);
 RectSprite player1 = RectSprite(    0, 80 - 15, 3, PLAYER_H, VELOKEY_BLUE);
@@ -88,7 +89,7 @@ void display_score(){
     velokey.drawText(160-2*font_w,  (128 - h) / 2, VELOKEY_GREEN, 3, p2_score);
   }
   eventDelay(1000);
-  if(p1_score > 9){
+  if(p1_score >= WIN_SCORE){
     velokey.fillRect((160 - w) / 2, (128 - h) / 2 + h / 2, w, h, VELOKEY_BLACK);
     velokey.drawText((160 - w) / 2, (128 - h) / 2 + h / 2, VELOKEY_BLUE, 3, (char*)"P1 WINS!");
     if(player1.h > 5){
@@ -100,7 +101,7 @@ void display_score(){
     eventDelay(2000);
     display_score();
   }
-  else if(p2_score > 9){
+  else if(p2_score >= WIN_SCORE){
     velokey.fillRect((160 - w) / 2, (128 - h) / 2 + h / 2, w, h, VELOKEY_BLACK);
     velokey.drawText((160 - w) / 2, (128 - h) / 2 + h / 2, VELOKEY_GREEN, 3, "P2 WINS!");
     if(player2.h > 5){
@@ -123,8 +124,7 @@ void reset(){
   p2_score = 0;
   player1.h = PLAYER_H;
   player2.h = PLAYER_H;
-  player1.y = 80 - player1.h / 2;
-  player2.y = 80 - player2.h / 2;
+
   velokey.fillRect(26, 10, 140, 40, VELOKEY_BLACK);
   velokey.drawText(26, 10, VELOKEY_RED, 3, "RESET!");
   player1.draw();

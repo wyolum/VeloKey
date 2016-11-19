@@ -159,7 +159,8 @@ class XPM2{
 
 class Sprite{
  public:
-  int16_t x, y;
+  int16_t x, y; // center
+  int16_t r;    // radius used for collision detection
   uint16_t color;
   
   virtual void move(int16_t dx, int16_t dy){
@@ -177,25 +178,34 @@ class Sprite{
     color = c;
   }
   virtual void draw();
+  virtual bool collide(Sprite *other){
+    return (x - other->x) * (x - other->x) + (y - other->y) * (y - other->y)  <
+      (r + other->r) * (r + other->r);
+  }
 };
 
 class CircleSprite : public Sprite{
  public:
-  uint16_t r;
   
   CircleSprite(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color);
   void draw();
 };
 
 const byte POLY_N_MAX = 16;
-class PolygonSprite : public Sprite{
+class ConvexPolygonSprite : public Sprite{
  public:
   byte n_point;
   int16_t xs[POLY_N_MAX];
   int16_t ys[POLY_N_MAX];
+  ConvexPolygonSprite();
+  void setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint16_t _color);
+  bool contains_point(int16_t x, int16_t y);
+  bool collide(ConvexPolygonSprite *other);
+  bool rotate(int degrees);
+  void draw();
 };
 
-class RectSprite : public PolygonSprite{
+class RectSprite : public ConvexPolygonSprite{
  public:
   uint16_t w;
   uint16_t h;
