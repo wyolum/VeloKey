@@ -120,6 +120,14 @@ class VeloKey{
   }
 
   void handleEvents();
+  
+  void eventDelay(uint16_t ms){
+    unsigned int now = millis();
+    while(millis() - now < ms){
+      captureEvents();
+      handleEvents();
+    }
+  }
 
 // drawing functions
   void backlightOn();
@@ -159,10 +167,16 @@ class XPM2{
 
 class Sprite{
  public:
-  int16_t x, y; // center
+  bool active;
+  Sprite();
+  float fx, fy; // floating point position
+  float vx, vy; // floating point velocity
+  int16_t x, y; // integer center
   int16_t r;    // radius used for collision detection
   uint16_t color;
-  
+  bool screen_wrap;
+
+  virtual void update();
   virtual void move(int16_t dx, int16_t dy){
     //Sprite::move(int16 dx, int16 dy){
     draw(VELOKEY_BLACK);
@@ -184,6 +198,13 @@ class Sprite{
   }
 };
 
+class PixelSprite : public Sprite{
+ public:
+  void setup(int16_t _x, int16_t _y, uint16_t _color);
+  void draw(uint16_t c);
+  void draw();
+};
+
 class CircleSprite : public Sprite{
  public:
   
@@ -197,11 +218,17 @@ class ConvexPolygonSprite : public Sprite{
   byte n_point;
   int16_t xs[POLY_N_MAX];
   int16_t ys[POLY_N_MAX];
+  int16_t orig_xs[POLY_N_MAX]; // prevent shrinkage when rotating, by always rotating orig points
+  int16_t orig_ys[POLY_N_MAX];
+  int theta_deg;
+  
   ConvexPolygonSprite();
-  void setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint16_t _color);
+  virtual void setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint16_t _color);
   bool contains_point(int16_t x, int16_t y);
   bool collide(ConvexPolygonSprite *other);
   bool rotate(int degrees);
+  void move(int16_t dx, int16_t dy);
+  void draw(uint16_t _color);
   void draw();
 };
 
@@ -209,9 +236,13 @@ class RectSprite : public ConvexPolygonSprite{
  public:
   uint16_t w;
   uint16_t h;
+  
+  RectSprite(){}
   RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color);
+  void setup(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color);
   void move(int16_t dx, int16_t dy);
   void draw();
+  void draw(uint16_t color);
   bool collide(RectSprite *other);
 };
 

@@ -245,10 +245,62 @@ XPM2::XPM2(uint8_t _n_color, uint16_t *_colors, uint16_t _w, uint16_t _h, uint16
   data = _data;
 }
 
+Sprite::Sprite(){
+  screen_wrap = true;
+  active = true;
+}
+void Sprite::update(){
+  if(active){
+    fx += vx;
+    fy += vy;
+    if(screen_wrap){
+      if(fx > VELOKEY_WIDTH){
+	fx -= VELOKEY_WIDTH;
+      }
+      if(fx < 0){
+	fx += VELOKEY_WIDTH;
+      }
+      if(fy > VELOKEY_HEIGHT){
+	fy -= VELOKEY_HEIGHT;
+      }
+      if(fy < 0){
+	fy += VELOKEY_HEIGHT;
+      }
+    }
+    if((x != (int)(fx + .5)) ||
+       (y != (int)(fy + .5))){
+      move((int)(fx + .5) - x, (int)(fy + .5) - y);
+    }
+  }
+}
+
+void PixelSprite::setup(int16_t _x, int16_t _y, uint16_t _color){
+  x = _x;
+  y = _y;
+  fx = x;
+  fy = y;
+  vx = 0;
+  vy = 0;
+  color = _color;
+}
+
+void PixelSprite::draw(uint16_t c){
+  velokey.drawPixel(x, y, c);
+}
+void PixelSprite::draw(){
+  velokey.drawPixel(x, y, color);
+}
+
 CircleSprite::CircleSprite(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color){
   x = _x;
   y = _y;
   r = _r;
+  fx = x;
+  fy = y;
+  vx = 0;
+  vy = 0;
+  screen_wrap = true;
+  active = true;
   color = _color;
 }
 
@@ -257,8 +309,27 @@ void CircleSprite::draw(){
 }
 			   
 RectSprite::RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color){
+  setup(_x, _y, _w, _h, _color);
+  screen_wrap = true;
+  active = true;
+  xs[0] = _x;
+  xs[1] = _x + _w;
+  xs[2] = _x + _w;
+  xs[3] = _x;
+  ys[0] = _y;
+  ys[1] = _y;
+  ys[2] = _y + _h;
+  ys[3] = _y + _h;
+}
+
+void RectSprite::setup(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color){
   x = _x + _w / 2;
   y = _y + _h / 2;
+  fx = x;
+  fy = y;
+  vx = 0;
+  vy = 0;
+  
   r = min(_w, _h) / 2;
   w = _w;
   h = _h;
@@ -291,6 +362,12 @@ void RectSprite::move(int16_t dx, int16_t dy){
 void RectSprite::draw(){
   velokey.fillRect(x, y, w, h, color);
 }
+void RectSprite::draw(uint16_t c){
+  uint16_t orig = color;
+  color = c;
+  draw();
+  color = orig;
+}
 
 bool z_sign(int16_t x1, int16_t y1, int16_t x2, int16_t y2,int16_t x, int16_t y){
   // deterime what side (x, y) is on the line defined by p1 = x1, y1 and p2 = x2, y2
@@ -307,6 +384,8 @@ bool pt_in_triangle(int16_t px, int16_t py, int16_t vx1,int16_t vy1, int16_t vx2
 }
 
 ConvexPolygonSprite::ConvexPolygonSprite(){
+  screen_wrap = true;
+  active = true;
 }
 
 void ConvexPolygonSprite::setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint16_t _color){
@@ -315,13 +394,31 @@ void ConvexPolygonSprite::setup(byte _n_point, int16_t *_xs, int16_t *_ys, uint1
   x = 0;
   y = 0;
   for(byte i=0; i<n_point; i++){
-    xs[i] = _xs[i];
-    ys[i] = _ys[i];
+    orig_xs[i] = xs[i] = _xs[i];
+    orig_ys[i] = ys[i] = _ys[i];
     x += xs[i];
     y += ys[i];
   }
   x = x / n_point;
   y = y / n_point;
+  fx = x;
+  fy = y;
+  vx = 0;
+  vy = 0;
+}
+
+
+void ConvexPolygonSprite::move(int16_t dx, int16_t dy){
+  draw(VELOKEY_BLACK);
+  for(byte i = 0; i < n_point; i++){
+    xs[i] += dx;
+    ys[i] += dy;
+    orig_xs[i] += dx;
+    orig_ys[i] += dy;
+  }
+  x += dx;
+  y += dy;
+  draw();
 }
 
 void ConvexPolygonSprite::draw(){
@@ -330,17 +427,26 @@ void ConvexPolygonSprite::draw(){
   }
 }
 
+void ConvexPolygonSprite::draw(uint16_t _color){
+  uint16_t old_color = color;
+  color = _color;
+  draw();
+  color = old_color;
+}
+
 bool ConvexPolygonSprite::rotate(int degrees){
-  float theta = degrees * 3.14159 / 180;
-  Serial.println(theta);
-  for(byte i=1; i<n_point-1; i++){
-    xs[i] -= x;
-    ys[i] -= y;
-    xs[i] = cos(theta) * xs[i] - sin(theta) * ys[i];
-    ys[i] = sin(theta) * xs[i] + cos(theta) * ys[i];
-    xs[i] += x;
-    ys[i] += y;
+  theta_deg += degrees;
+  float theta =  theta_deg * 3.14159 / 180;
+  draw(VELOKEY_BLACK);
+  int16_t tx, ty;
+
+  for(byte i=0; i<n_point; i++){
+    tx = x + (orig_xs[i] - x) * cos(theta) - (orig_ys[i] - y) * sin(theta);
+    ty = y + (orig_xs[i] - x) * sin(theta) + (orig_ys[i] - y) * cos(theta);
+    xs[i] = tx;
+    ys[i] = ty;
   }
+  draw();
 }
 
 bool ConvexPolygonSprite::contains_point(int16_t x, int16_t y){
@@ -357,18 +463,19 @@ bool ConvexPolygonSprite::contains_point(int16_t x, int16_t y){
 bool ConvexPolygonSprite::collide(ConvexPolygonSprite *other){
   bool out=false;
   int i;
-  
-  // see if any of my points are in other
-  for(int i=0; i < n_point && out == false; i++){
-    if(other->contains_point(xs[i], ys[i])){
-      out = true;
-    }
-  }
-
   //see if any of other's points are in me
   for(int i=0; i < other->n_point && out == false; i++){
     if(contains_point(other->xs[i], other->ys[i])){
       out = true;
+    }
+  }
+  return out;
+  if(active){
+    // see if any of my points are in other
+    for(int i=0; i < n_point && out == false; i++){
+      if(other->contains_point(xs[i], ys[i])){
+	out = true;
+      }
     }
   }
   return out;
@@ -378,32 +485,34 @@ bool RectSprite::collide(RectSprite* other){
   // check four corners of self in other
   bool out = false;
 
-  // check if one of my corners is in other
-  // top left (x, y)
-  if(other->x < x && x < other->x + other->w &&
-     other->y < y && y < other->y + other->h){
-    out = true;
-  }
-  // top right (x, y)
-  else if(other->x < x + w && x + w < other->x + other->w &&
-     other->y < y && y < other->y + other->h){
-    out = true;
-  }
-  // bottom right (x, y)
-  else if(other->x < x + w && x + w < other->x + other->w &&
-     other->y < y + h && y + h < other->y + other->h){
-    out = true;
-  }
-  // bottom left (x, y)
-  else if(other->x < x && x < other->x + other->w &&
-     other->y < y + h && y + h < other->y + other->h){
-    out = true;
-  }
+  if(active){
+    // check if one of my corners is in other
+    // top left (x, y)
+    if(other->x < x && x < other->x + other->w &&
+       other->y < y && y < other->y + other->h){
+      out = true;
+    }
+    // top right (x, y)
+    else if(other->x < x + w && x + w < other->x + other->w &&
+	    other->y < y && y < other->y + other->h){
+      out = true;
+    }
+    // bottom right (x, y)
+    else if(other->x < x + w && x + w < other->x + other->w &&
+	    other->y < y + h && y + h < other->y + other->h){
+      out = true;
+    }
+    // bottom left (x, y)
+    else if(other->x < x && x < other->x + other->w &&
+	    other->y < y + h && y + h < other->y + other->h){
+      out = true;
+    }
 
-  // check if other corner is inside me
-  else if(x < other->x && other->x < x + w &&
-	  y < other->y && other->y < y + h){
-    out = true;
+    // check if other corner is inside me
+    else if(x < other->x && other->x < x + w &&
+	    y < other->y && other->y < y + h){
+      out = true;
+    }
   }
   return out;
 }

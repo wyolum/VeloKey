@@ -13,6 +13,8 @@ RectSprite player2 = RectSprite(160-3, 80 - 15, 3, PLAYER_H, VELOKEY_GREEN);
 bool pending_p1_serve = true;
 bool pending_p2_serve = false;
 
+void eventDelay(uint16_t ms);
+
 class MyListener : public VeloKeyListener{
   void onScrollLeftCW(){
     if(player1.y + player1.h < 128){
