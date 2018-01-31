@@ -76,7 +76,9 @@ class VeloKey{
   uint8_t n_listener;
   uint8_t events[max_events];
   uint8_t n_events_pending;
-    
+  uint32_t last_event_time_us = 0;
+  bool backlight_status = false;
+  
   VeloKey(){
     scroll_right_down = false;
     scroll_left_down = false;
@@ -123,6 +125,8 @@ class VeloKey{
   
   void eventDelay(uint16_t ms){
     unsigned int now = millis();
+    captureEvents(); // do at least once
+    handleEvents(); // do at least once
     while(millis() - now < ms){
       captureEvents();
       handleEvents();
@@ -208,7 +212,9 @@ class PixelSprite : public Sprite{
 class CircleSprite : public Sprite{
  public:
   
+  CircleSprite();
   CircleSprite(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color);
+  void setup(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color);
   void draw();
 };
 

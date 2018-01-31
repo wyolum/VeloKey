@@ -15,10 +15,16 @@ void VeloKey::begin(){
 }
 
 void VeloKey::backlightOn(){
-  digitalWrite(DISPLAY_BACKLIGHT, HIGH);
+  if(backlight_status == LOW){
+    digitalWrite(DISPLAY_BACKLIGHT, HIGH);
+    backlight_status = HIGH;
+  }
 }
 void VeloKey::backlightOff(){
-  digitalWrite(DISPLAY_BACKLIGHT, LOW);
+  if(backlight_status == HIGH){
+    digitalWrite(DISPLAY_BACKLIGHT, LOW);
+    backlight_status = LOW;
+  }
 }
 
 void VeloKey::fillScreen(uint16_t color){
@@ -95,6 +101,9 @@ void VeloKey::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color){
 
 void VeloKey::handleEvents(){
     uint8_t device, action;
+    if(n_events_pending > 0){
+      last_event_time_us = millis();
+    }
     for(uint8_t ii = 0; ii < n_events_pending; ii++){
       switch(events[ii]){
 
@@ -291,7 +300,14 @@ void PixelSprite::draw(){
   velokey.drawPixel(x, y, color);
 }
 
+CircleSprite::CircleSprite(){
+}
+
 CircleSprite::CircleSprite(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color){
+  setup(_x, _y, _r, _color);
+}
+
+void CircleSprite::setup(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color){
   x = _x;
   y = _y;
   r = _r;
@@ -305,7 +321,7 @@ CircleSprite::CircleSprite(int16_t _x, int16_t _y, uint16_t _r, uint16_t _color)
 }
 
 void CircleSprite::draw(){
-  velokey.fillCircle(x, y, r, color);
+  velokey.drawCircle(x, y, r, color);
 }
 			   
 RectSprite::RectSprite(int16_t _x, int16_t _y, uint16_t _w, uint16_t _h, uint16_t _color){
@@ -463,14 +479,14 @@ bool ConvexPolygonSprite::contains_point(int16_t x, int16_t y){
 bool ConvexPolygonSprite::collide(ConvexPolygonSprite *other){
   bool out=false;
   int i;
-  //see if any of other's points are in me
-  for(int i=0; i < other->n_point && out == false; i++){
-    if(contains_point(other->xs[i], other->ys[i])){
-      out = true;
+
+  if(active && other->active){
+    //see if any of other's points are in me
+    for(int i=0; i < other->n_point && out == false; i++){
+      if(contains_point(other->xs[i], other->ys[i])){
+	out = true;
+      }
     }
-  }
-  return out;
-  if(active){
     // see if any of my points are in other
     for(int i=0; i < n_point && out == false; i++){
       if(other->contains_point(xs[i], ys[i])){

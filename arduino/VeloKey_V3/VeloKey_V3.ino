@@ -2,6 +2,7 @@
  * changes from V2:
  *     uses VeloKey_OTS_V2 hardware
  *     added NSEW Center scroll
+ *     added battery indicator
  * 
  * changes from V1:
  *     new splash screen
@@ -50,8 +51,8 @@ const uint32_t TIMEOUT_MS = 10000;
 const int ezkey_l2 = A4;
 unsigned long last_high = 0;
 unsigned long ezkey_l2_period = 0;
-int8_t current_interface = 3; // signed int for modular arithmatic
-const uint8_t N_INTERFACE = 4;
+int8_t current_interface = 1; // signed int for modular arithmatic
+const uint8_t N_INTERFACE = 3;
 
 void ezkey_l2_cb(){
   unsigned long now = millis();
@@ -410,6 +411,8 @@ class ZwiftInterface : public Interface{
       if(enc_r < n_camera_view - 1){
 	enc_r += 1;
 	camera_views.select(enc_r);
+	camera_views.onClickR();
+	camera_views.onReleaseR();
 	SerialDBG.println("SCROLL R CCW");
       }
     }
@@ -417,6 +420,8 @@ class ZwiftInterface : public Interface{
       if(enc_r > 0){
 	enc_r -= 1;
 	camera_views.select(enc_r);
+	camera_views.onClickR();
+	camera_views.onReleaseR();
 	SerialDBG.println("SCROLL R CW");
       }
     }
@@ -935,7 +940,7 @@ ZwiftInterface zwift_interface = ZwiftInterface();
 AlphaNumeric alpha_numeric = AlphaNumeric();
 MoviePlayback movie_playback = MoviePlayback();
 
-Interface *interfaces[N_INTERFACE];
+Interface *interfaces[N_INTERFACE + 5];
 
 float getVBAT(){
   float measuredvbat = analogRead(VBATPIN);

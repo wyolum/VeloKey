@@ -30,6 +30,16 @@ class Asteroid: public RectSprite{
   void move(uint16_t dx, uint16_t dy){
     RectSprite::move(dx, dy);
   }
+  bool xx_collide(ConvexPolygonSprite *other){
+    bool out = false;
+    for(int i=0; i<other->n_point && !out; i++){
+      if(x <= other->xs[i] && other->xs[i] <= x + w &&
+	 y <= other->ys[i] && other->ys[i] <= y + h){
+	out = true;
+      }
+    }
+    return out;
+  }
 };
 
 class Bullet: public RectSprite{
@@ -47,10 +57,10 @@ class Bullet: public RectSprite{
       active = millis() < start + BULLET_DURATION;
       if(active){
 	RectSprite::update();
-	if((x < 0) || (VELOKEY_WIDTH < x) ||
-	   (y < 0) || (VELOKEY_HEIGHT < y)){
-	  active = false;
-	}
+	/* if((x < 0) || (VELOKEY_WIDTH < x) || */
+	/*    (y < 0) || (VELOKEY_HEIGHT < y)){ */
+	/*   active = false; */
+	/* } */
       }
       else{
 	color = VELOKEY_BLACK;
@@ -152,6 +162,9 @@ void setup(){
     bullets[i].setup(80, 80, 2, 2, VELOKEY_WHITE);
     bullets_p[i] = &bullets[i];
   }
+  //bullets[0].move(-79,-12);
+  //bullets[0].draw();
+  //while(1) delay(100);
   restart();
 }
 
@@ -170,9 +183,9 @@ void loop(){
     asteroids[i].update();
     if(asteroids[i].active){
       n_asteroid++;
-    
+      
       for(int j = 0; j < bullets_active; j++){
-	if(asteroids[i].collide(bullets_p[j])){
+	if(bullets_p[j]->active && asteroids[i].collide(bullets_p[j])){
 	  // 0 -->  4, 5  /*   4 + 2 * i, 5 + 2 * i */
 	  // 1 -->  6, 7   
 	  // 2 -->  8, 9
@@ -188,7 +201,11 @@ void loop(){
 	  asteroids[i].color = VELOKEY_BLACK;
 	  asteroids[i].draw();
 	  asteroids[i].active = false;
+	  bullets[j].color = VELOKEY_BLACK;
+	  bullets[j].draw();
 	  bullets[j].active = false;
+	  bullets[j].vx = 0;
+	  bullets[j].vy = 0;
 	  if(i < 12){ // explode
 	    asteroids[2 * i + 4].active = true;
 	    asteroids[2 * i + 5].active = true;
@@ -210,10 +227,12 @@ void loop(){
 	  }
 	}
       }
-      if(ship.collide(&asteroids[i])){
+      /*
+      if(asteroids[i].xx_collide(&ship) && ship.collide(&asteroids[i])){
 	Serial.print(i);
 	Serial.println(" crash!");
-      }
+	ship.active = false;
+	}*/
     }
   }
   if(n_asteroid == 0){
