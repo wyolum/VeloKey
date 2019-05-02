@@ -54,16 +54,16 @@ char *Camera_Views[n_camera_view] = {
   };
 
 byte CameraKeys[n_camera_view]{ 
-  KEY_3,
-    KEY_1,
-    KEY_2,
-    KEY_4,
-    KEY_5,
-    KEY_6,
-    KEY_7,
-    KEY_8,
-    KEY_9,
-    KEY_0,  
+  EZKEY_3,
+    EZKEY_1,
+    EZKEY_2,
+    EZKEY_4,
+    EZKEY_5,
+    EZKEY_6,
+    EZKEY_7,
+    EZKEY_8,
+    EZKEY_9,
+    EZKEY_0,  
     };
 
 const uint8_t n_action = 12;
@@ -82,16 +82,16 @@ char *Actions[n_action] = {
   "<Alt-Tab>"
 };
 byte ActionKeys[n_action+1]{
-  KEY_F1,
-    KEY_F2,
-    KEY_F3,
-    KEY_F4,
-    KEY_F5,
-    KEY_F6,
-    KEY_F7,
-    KEY_F8,
-    KEY_F10,
-    KEY_ESCAPE,
+  EZKEY_F1,
+    EZKEY_F2,
+    EZKEY_F3,
+    EZKEY_F4,
+    EZKEY_F5,
+    EZKEY_F6,
+    EZKEY_F7,
+    EZKEY_F8,
+    EZKEY_F10,
+    EZKEY_ESCAPE,
     0,
     ALT_TAB,
     };
